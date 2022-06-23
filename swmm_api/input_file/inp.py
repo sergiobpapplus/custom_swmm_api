@@ -21,7 +21,13 @@ class SwmmInput(CustomDict):
     """
 
     def __init__(self, *args, custom_section_handler=None, **kwargs):
-        super().__init__(*args, **kwargs)
+        filename = None
+        if len(args) == 1 and isinstance(args[0], str) and os.path.isfile(args[0]):
+            # argument is an inp-file.
+            super().__init__()
+            filename = args[0]
+        else:
+            super().__init__(*args, **kwargs)
         self._converter = SECTION_TYPES.copy()
 
         self._default_encoding = None
@@ -31,6 +37,9 @@ class SwmmInput(CustomDict):
 
         # only when reading a new file
         self._original_section_order = SECTIONS_ORDER_MP
+
+        if filename is not None:
+            self._init_from_file(filename, force_ignore_case=False)
 
     def copy(self):
         new = type(self)()
@@ -51,6 +60,39 @@ class SwmmInput(CustomDict):
                 else:
                     self[sec].update(d[sec])
 
+    def _init_from_file(self, filename, force_ignore_case=False, encoding=None):
+        if encoding is None:
+            encoding = detect_encoding(filename)
+
+        self._default_encoding = encoding
+
+        if os.path.isfile(filename) or filename.endswith('.inp'):
+            with open(filename, 'r', encoding=encoding) as inp_file:
+                txt = inp_file.read()
+
+        else:
+            txt = filename
+
+        # __________________________________
+        if force_ignore_case:
+            txt = txt.upper()
+
+        # __________________________________
+        self._original_section_order = []
+        for head, lines in zip(re.findall(r"\[(\w+)\]", txt),
+                               re.split(r"\[\w+\]", txt)[1:]):
+            self._data[head.upper()] = lines.strip()
+            self._original_section_order.append(head.upper())
+
+        # ----------------
+        # if order in inp follows default SWMM GUI order
+        #   set full/complete order list of SWMM GUI
+        #   to use the right order for additional created setions
+        if check_order(self, SECTION_ORDER_DEFAULT):
+            self._original_section_order = SECTION_ORDER_DEFAULT
+
+        self.set_default_infiltration_from_options()
+
     @classmethod
     def read_file(cls, filename, custom_converter=None, force_ignore_case=False, encoding=None):
         """
@@ -69,38 +111,7 @@ class SwmmInput(CustomDict):
             SwmmInput: dict-like data of the sections in the ``.inp``-file
         """
         inp = cls(custom_section_handler=custom_converter)
-
-        if encoding is None:
-            encoding = detect_encoding(filename)
-
-        inp._default_encoding = encoding
-
-        if os.path.isfile(filename) or filename.endswith('.inp'):
-            with open(filename, 'r', encoding=encoding) as inp_file:
-                txt = inp_file.read()
-
-        else:
-            txt = filename
-
-        # __________________________________
-        if force_ignore_case:
-            txt = txt.upper()
-
-        # __________________________________
-        inp._original_section_order = []
-        for head, lines in zip(re.findall(r"\[(\w+)\]", txt),
-                               re.split(r"\[\w+\]", txt)[1:]):
-            inp._data[head.upper()] = lines.strip()
-            inp._original_section_order.append(head.upper())
-
-        # ----------------
-        # if order in inp follows default SWMM GUI order
-        #   set full/complete order list of SWMM GUI
-        #   to use the right order for additional created setions
-        if check_order(inp, SECTION_ORDER_DEFAULT):
-            inp._original_section_order = SECTION_ORDER_DEFAULT
-
-        inp.set_default_infiltration_from_options()
+        inp._init_from_file(filename, force_ignore_case, encoding)
         return inp
 
     def force_convert_all(self):
