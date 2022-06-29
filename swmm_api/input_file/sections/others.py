@@ -856,12 +856,23 @@ class Control(BaseSectionObject):
             ORIFICE ORI_23 SETTING = PID 0.1 0.1 0.0
         """
         def __init__(self, logic, kind, label, action, relation, *value):
-            self.logic = logic.upper()  # THAN, AND
+            self.logic = logic.upper()  # THEN, AND
             self.kind = kind.upper()  # Control.OBJECTS
-            self.label = label
-            self.action = action.upper()
+            self.label = label  # label of the object
+            self.action = action.upper()  #
             self.relation = relation  # immer "="  # always equal
             self.value = ' '.join(value)
+
+        def to_inp_line(self):
+            """
+            Convert object to one line of the ``.inp``-file.
+
+            for ``.inp``-file writing
+
+            Returns:
+                str: SWMM .inp file compatible string
+            """
+            return f'{self.logic} {self.kind} {self.label} {self.action} {self.relation} {self.value}'
 
     def __init__(self, name, conditions, actions, priority=0):
         self.name = str(name)
