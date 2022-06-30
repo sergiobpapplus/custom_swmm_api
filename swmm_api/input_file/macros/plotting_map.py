@@ -1,7 +1,7 @@
 import copy
 
 from matplotlib import pyplot as plt, patches, cm
-from matplotlib.colors import Normalize
+from matplotlib.colors import Normalize, BoundaryNorm, LinearSegmentedColormap
 
 from swmm_api import SwmmInput
 from swmm_api.input_file.macros import complete_vertices
@@ -29,6 +29,18 @@ def custom_color_mapper(cmap, vmin=None, vmax=None, set_under='lightgray', set_b
     cmap = get_matplotlib_colormap(cmap, set_under, set_bad)
     return get_color_mapper(cmap, vmin=vmin, vmax=vmax)
 
+
+def get_discrete_colormap(cmap):
+    # cmap = copy.copy(plt.cm.get_cmap(cmap))  # define the colormap
+    # extract all colors from the .jet map
+    cmaplist = [cmap(i) for i in range(cmap.N)]
+    # force the first color entry to be grey
+    cmaplist[0] = (.85, .85, .85, 1.0)
+
+    # create the new map
+    cmap = LinearSegmentedColormap.from_list('Custom cmap', cmaplist, cmap.N)
+
+    return cmap
 
 def set_inp_dimensions(ax: plt.Axes, inp: SwmmInput):
     map_dim = inp[MAP]['DIMENSIONS']
@@ -165,7 +177,8 @@ def add_node_map(ax: plt.Axes, inp: SwmmInput,
                  cmap_label=None,
                  make_cmap_bar=True,
                  value_min=0.001,
-                 value_max=None
+                 value_max=None,
+                 discrete=False,
                  ):
     """
     Only one marker per scatter possible.
@@ -217,10 +230,27 @@ def add_node_map(ax: plt.Axes, inp: SwmmInput,
                         dict(
                             c=node_values,
                             cmap=cmap,
-                            vmin=value_min,
-                            vmax=value_max,
                         )
                     )
+
+                    if discrete:
+                        # define the bins and normalize
+                        bounds = list(range(0, value_max + 2, 1))
+                        norm = BoundaryNorm(bounds, cmap.N)
+
+                        kwargs.update(
+                            dict(
+                                norm=norm,
+                            )
+                        )
+                    else:
+                        kwargs.update(
+                            dict(
+                                vmin=value_min,
+                                vmax=value_max,
+                            )
+                        )
+
                 else:
                     kwargs.update(
                         dict(
@@ -238,7 +268,12 @@ def add_node_map(ax: plt.Axes, inp: SwmmInput,
         fig = ax.get_figure()
         cb = fig.colorbar(ax.collections[0], ax=ax, location='bottom', label=cmap_label, pad=0, shrink=0.3,
                           # ticks=range(0, 13, 2)
+                          **(dict(spacing='proportional', ticks=[b+.5 for b in bounds], boundaries=bounds, format='%1i',
+                          drawedges=True) if discrete else dict())
                           )
+        if discrete:
+            cb.ax.tick_params(length=0)
+
 
 def add_node_labels(ax: plt.Axes, inp: SwmmInput):
     for name, node in inp.COORDINATES.items():
