@@ -2,6 +2,7 @@ import copy
 
 from matplotlib import pyplot as plt, patches, cm
 from matplotlib.colors import Normalize, BoundaryNorm, LinearSegmentedColormap
+from matplotlib.lines import Line2D
 
 from swmm_api import SwmmInput
 from swmm_api.input_file.macros import complete_vertices
@@ -311,3 +312,20 @@ def plot_map(inp, sc_connector=True, sc_center=True,
 
     fig.tight_layout()
     return fig, ax
+
+
+def add_custom_legend(ax, lines_dict, **kwargs):
+    """
+    lines_dict:
+    { label in legend: {line_dict ie: color, marker, linewidth, linestyle, ...) }
+    kwargs: for legend
+    """
+    lines = []
+    labels = []
+    for label, line in lines_dict.items():
+        labels.append(label)
+        if isinstance(line, Line2D):
+            lines.append(line)
+        else:
+            lines.append(Line2D([0], [0], **line))
+    return ax.legend(lines, labels, **kwargs)
