@@ -4,7 +4,8 @@ import warnings
 
 from .helpers import (section_to_string, CustomDict, convert_section, InpSection,
                       InpSectionGeneric, SECTION_ORDER_DEFAULT, check_order, SECTIONS_ORDER_MP, head_to_str,
-                      iter_section_lines, SwmmInputWarning, BaseSectionObject, detect_encoding, )
+                      iter_section_lines, SwmmInputWarning, BaseSectionObject, )
+from .._read_txt import detect_encoding, read_txt_file
 from .section_types import SECTION_TYPES
 from .section_labels import *
 from .sections import *
@@ -60,19 +61,7 @@ class SwmmInput(CustomDict):
                 else:
                     self[sec].update(d[sec])
 
-    def _init_from_file(self, filename, force_ignore_case=False, encoding=None):
-        if encoding is None:
-            encoding = detect_encoding(filename)
-
-        self._default_encoding = encoding
-
-        if os.path.isfile(filename) or filename.endswith('.inp'):
-            with open(filename, 'r', encoding=encoding) as inp_file:
-                txt = inp_file.read()
-
-        else:
-            txt = filename
-
+    def _init_from_str(self, txt, force_ignore_case=False):
         # __________________________________
         if force_ignore_case:
             txt = txt.upper()
@@ -93,12 +82,24 @@ class SwmmInput(CustomDict):
 
         self.set_default_infiltration_from_options()
 
+    def _init_from_file(self, filename, force_ignore_case=False, encoding=None):
+        self._default_encoding = encoding
+
+        if os.path.isfile(filename) or filename.endswith('.inp'):
+            txt = read_txt_file(filename, encoding=encoding)
+
+        else:
+            warnings.warn('Reading a string with SwmmInput.read_file is deprecated. Use SwmmInput.read_text instead.', DeprecationWarning)
+            txt = filename
+
+        self._init_from_str(txt, force_ignore_case=force_ignore_case)
+
     @classmethod
     def read_file(cls, filename, custom_converter=None, force_ignore_case=False, encoding=None):
         """
-        read ``.inp``-file and convert the sections in pythonic objects
+        Read ``.inp``-file and convert the sections in pythonic objects.
 
-        the sections will be converted when used
+        The sections will be converted when used.
 
         Args:
             filename (str): path/filename to .inp file
@@ -113,6 +114,25 @@ class SwmmInput(CustomDict):
         inp = cls(custom_section_handler=custom_converter)
         inp._init_from_file(filename, force_ignore_case, encoding)
         return inp
+
+    @classmethod
+    def read_text(cls, txt, custom_converter=None, force_ignore_case=False):
+        """
+        Read the text of an ``.inp``-file and convert the sections in pythonic objects.
+
+        The sections will be converted when used.
+
+        Args:
+            txt (str): text of the .inp file
+            custom_converter (dict): dictionary of {section: converter/section_type} Default: :py:const:`SECTION_TYPES`
+            force_ignore_case (bool): SWMM is case-insensitive but python is case-sensitive -> set True to ignore case
+                                        all text/labels will be set to uppercase
+
+        Returns:
+            SwmmInput: dict-like data of the sections in the ``.inp``-file
+        """
+        inp = cls(custom_section_handler=custom_converter)
+        inp._init_from_str(txt, force_ignore_case=force_ignore_case)
 
     def force_convert_all(self):
         for key in self:

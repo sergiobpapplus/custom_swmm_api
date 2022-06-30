@@ -16,9 +16,11 @@ def run(fn_inp):
         print()
     except Exception as e:
         fn_rpt, fn_out = get_result_filenames(fn_inp)
-        message = e.args[0] + '\n' + fn_inp
+        message = e.args[0] + '\n' + fn_inp + '\n'
         if os.path.isfile(fn_rpt):
-            message += str(SwmmReport(fn_rpt).get_errors())
+            rpt = SwmmReport(fn_rpt)
+            message += rpt._pretty_dict(rpt.get_errors())
+            # message += str(SwmmReport(fn_rpt).get_errors())
 
             with open(fn_rpt, 'r') as f:
                 rpt_content = f.read()

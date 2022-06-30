@@ -12,6 +12,7 @@ import pandas as pd
 
 from .helpers import (_get_title_of_part, _remove_lines, _part_to_frame, _continuity_part_to_dict, ReportUnitConversion,
                       _routing_part_to_dict, _quality_continuity_part_to_dict, )
+from .._read_txt import read_txt_file
 
 
 class SwmmReport:
@@ -123,8 +124,8 @@ class SwmmReport:
         if not self.is_file():
             return
 
-        with open(self._filename, 'r') as file:
-            lines = file.readlines()
+        txt = read_txt_file(self._filename)
+        lines = txt.split('\n')
 
         if not lines:
             return

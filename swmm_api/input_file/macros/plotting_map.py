@@ -156,8 +156,8 @@ def add_subcatchment_map(ax: plt.Axes, inp: SwmmInput,
 
 
 def add_node_map(ax: plt.Axes, inp: SwmmInput,
-                 size_default=30,
-                 size_max=60,
+                 size_default=20,
+                 size_max=40,
                  make_size_proportional=False,
                  values_dict=None,
 
@@ -173,7 +173,7 @@ def add_node_map(ax: plt.Axes, inp: SwmmInput,
     if COORDINATES in inp:
         coords = inp[COORDINATES].frame
         node_style = {
-            JUNCTIONS: {'marker': '.', 'color': 'b'},
+            JUNCTIONS: {'marker': 'o', 'color': 'b'},
             STORAGE: {'marker': 's', 'color': 'g'},
             OUTFALLS: {'marker': '^', 'color': 'r'},
         }

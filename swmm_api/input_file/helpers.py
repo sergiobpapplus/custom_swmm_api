@@ -1087,23 +1087,3 @@ def iter_section_lines(section, sort_objects_alphabetical=False):
     elif isinstance(section, InpSection):  # V4
         for line in section.iter_inp_lines(sort_objects_alphabetical=sort_objects_alphabetical):
             yield line
-
-
-def detect_encoding(filename):
-    import sys
-    import subprocess
-    import os
-    if "linux" in sys.platform:
-        shell_output = subprocess.check_output(['file', '-i', filename]).decode().strip()
-    else:
-        try:
-            cwd = os.path.dirname(filename)
-            if not cwd:
-                cwd = None
-            shell_output = subprocess.check_output(f'bash -ic "file -i {os.path.basename(filename)}"',
-                                                   cwd=cwd
-                                                   ).decode().strip()
-        except:
-            return 'utf-8'
-
-    return shell_output.split('charset=')[-1]
