@@ -37,7 +37,4 @@ from .split_inp_file import split_inp_to_files, read_split_inp_file
 from .summerize import print_summary
 from .tags import get_node_tags, get_link_tags, get_subcatchment_tags, filter_tags, delete_tag_group
 
-try:
-    from .cross_section_curve import (get_cross_section_maker, profil_area, to_cross_section_maker)
-except ImportError as e:
-    print('Missing package: pip install SWMM-xsections-shape-generator')
+from .cross_section_curve import (get_cross_section_maker, profil_area, to_cross_section_maker)

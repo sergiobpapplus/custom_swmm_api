@@ -83,6 +83,9 @@ class SwmmInput(CustomDict):
         self.set_default_infiltration_from_options()
 
     def _init_from_file(self, filename, force_ignore_case=False, encoding=None):
+        if encoding is None:
+            encoding = detect_encoding(filename)
+
         self._default_encoding = encoding
 
         if os.path.isfile(filename) or filename.endswith('.inp'):

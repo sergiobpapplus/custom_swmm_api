@@ -1,10 +1,6 @@
-import shape_generator
-from .macros import find_link
 from .. import SEC
-from ..sections import CrossSection, Pump
+from ..sections import CrossSection
 from ..inp import SwmmInput
-from shape_generator.swmm_predefined import (Egg, Circular, CircularFilled, RectangularOpen, RectangularClosed,
-                                             RectangularRound, RectangularTriangular, Triangular, Parabolic, Power)
 
 
 def get_cross_section_maker(inp, link_label):
@@ -30,6 +26,14 @@ def get_cross_section_maker(inp, link_label):
 
 
 def to_cross_section_maker(xs: CrossSection, inp: SwmmInput=None):
+    try:
+        import shape_generator
+        from shape_generator.swmm_predefined import (Egg, Circular, CircularFilled, RectangularOpen, RectangularClosed,
+                                                     RectangularRound, RectangularTriangular, Triangular, Parabolic,
+                                                     Power)
+    except ImportError as e:
+        print('Missing package: pip install SWMM-xsections-shape-generator')
+
     if xs.shape == CrossSection.SHAPES.CUSTOM:
         curve = inp.CURVES[xs.curve_name]
         return shape_generator.CrossSection.from_curve(curve, height=xs.height)
