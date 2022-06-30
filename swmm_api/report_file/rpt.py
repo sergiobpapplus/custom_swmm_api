@@ -130,9 +130,9 @@ class SwmmReport:
         if not lines:
             return
 
-        self._raw_parts['Simulation Infos'] = ''.join(lines[-3:])
+        self._raw_parts['Simulation Infos'] = '\n'.join(lines[-3:])
         lines = lines[:-3]
-        parts0 = ''.join(lines).replace('\n\n  ****', '\n  \n  ****').split('\n  \n  ****')
+        parts0 = '\n'.join(lines).replace('\n\n  ****', '\n  \n  ****').split('\n  \n  ****')
 
         def _concat_lines(a, b):
             index_continuity = 28

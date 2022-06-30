@@ -41,7 +41,7 @@ def read_txt_file(filename, encoding=None):
     if encoding is None:
         encoding = detect_encoding(filename)
 
-        with open(filename, 'r', encoding=encoding) as inp_file:
-            txt = inp_file.read()
+    with open(filename, 'r', encoding=encoding) as file:
+        txt = file.read()
 
     return txt
