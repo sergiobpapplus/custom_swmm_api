@@ -1,6 +1,7 @@
 import sys
 import subprocess
 import os
+import warnings
 
 
 def detect_encoding(filename):
@@ -31,17 +32,23 @@ def detect_encoding(filename):
 
 def read_txt_file(filename, encoding=None):
 
+    # import cchardet as chardet
     # with open(filename, "rb") as f:
     #     binary_txt = f.read()
     #     detection = chardet.detect(binary_txt)
     #     encoding1 = detection["encoding"]
-    #     confidence = detection["confidence"]
+    #     confidence1 = detection["confidence"]
     #     txt1 = binary_txt.decode(encoding1)
 
     if encoding is None:
         encoding = detect_encoding(filename)
 
-    with open(filename, 'r', encoding=encoding) as file:
-        txt = file.read()
+    try:
+        with open(filename, 'r', encoding=encoding) as file:
+            txt = file.read()
+    except UnicodeDecodeError:
+        warnings.warn(f'Could not find correct encoding (found "{encoding}", but is wrong) for inp-file ("{filename}"). Please set encoding manually.')
+        with open(filename, 'r') as file:
+            txt = file.read()
 
     return txt
