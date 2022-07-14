@@ -1585,7 +1585,7 @@ class TimeseriesData(Timeseries):
         return '\n'.join(
             f'{self.name} {datetime_to_str(date_time)} {value}'
             for date_time, value in self.data
-        )
+        ) + '\n'
 
     @classmethod
     def from_pandas(cls, series, label=None):
