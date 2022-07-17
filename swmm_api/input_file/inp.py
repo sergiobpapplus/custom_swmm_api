@@ -68,15 +68,19 @@ class SwmmInput(CustomDict):
 
         # __________________________________
         self._original_section_order = []
-        for head, lines in zip(re.findall(r"\[(\w+)\]", txt),
-                               re.split(r"\[\w+\]", txt)[1:]):
-            self._data[head.upper()] = lines.strip()
-            self._original_section_order.append(head.upper())
+        for head, lines in zip(re.findall(r'\[(\w+)\]', txt),
+                               re.split(r'\[\w+\]', txt)[1:]):
+            head = head.upper()
+            if head in self._data:
+                self._data[head] += '\n' + lines.strip()
+            else:
+                self._data[head] = lines.strip()
+                self._original_section_order.append(head)
 
         # ----------------
         # if order in inp follows default SWMM GUI order
         #   set full/complete order list of SWMM GUI
-        #   to use the right order for additional created setions
+        #   to use the right order for additional created sections
         if check_order(self, SECTION_ORDER_DEFAULT):
             self._original_section_order = SECTION_ORDER_DEFAULT
 
