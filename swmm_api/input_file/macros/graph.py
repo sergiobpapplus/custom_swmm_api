@@ -54,7 +54,7 @@ def next_links(inp, node, g=None):
     if g is None:
         g = inp_to_graph(inp)
     links = links_dict(inp)
-    for label in next_links_labels(g, node):
+    for label in _next_links_labels(g, node):
         yield links[label]
 
 
@@ -69,8 +69,7 @@ def _next_links_labels(g, node):
 
 
 def next_links_labels(g, node):
-    # TODO multiple labels
-    return [label for label in _next_links_labels(g, node)]
+    return list(_next_links_labels(g, node))
 
 
 def next_nodes(g, node):
@@ -81,13 +80,22 @@ def previous_links(inp, node, g=None):
     if g is None:
         g = inp_to_graph(inp)
     links = links_dict(inp)
-    for label in previous_links_labels(g, node):
+    for label in _previous_links_labels(g, node):
         yield links[label]
 
 
+def _previous_links_labels(g, node):
+    for i in g.in_edges(node):
+        label = g.get_edge_data(*i)['label']
+        if isinstance(label, list):
+            for l in label:
+                yield l
+        else:
+            yield label
+
+
 def previous_links_labels(g, node):
-    # TODO multiple labels
-    return [g.get_edge_data(*i)['label'] for i in g.in_edges(node)]
+    return list(_previous_links_labels(g, node))
 
 
 def previous_nodes(g, node):
