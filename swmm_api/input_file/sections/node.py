@@ -132,11 +132,7 @@ class Outfall(_Node):
         self.data = NaN
 
         if args:
-            if kind in [Outfall.TYPES.FIXED,
-                        Outfall.TYPES.TIDAL,
-                        Outfall.TYPES.TIMESERIES]:
-                self._data_init(*args)
-            elif len(args) == 3:
+            if (kind in [Outfall.TYPES.FIXED, Outfall.TYPES.TIDAL, Outfall.TYPES.TIMESERIES]) or (len(args) == 3):
                 self._data_init(*args)
             else:
                 self._no_data_init(*args)
@@ -156,7 +152,7 @@ class Outfall(_Node):
         self.has_flap_gate = to_bool(has_flap_gate)
         self.route_to = route_to
 
-    def _data_init(self, Data=NaN, has_flap_gate=False, route_to=NaN):
+    def _data_init(self, data=NaN, has_flap_gate=False, route_to=NaN):
         """
         Init function if no keyword arguments were used and outfall has data.
 
@@ -170,7 +166,7 @@ class Outfall(_Node):
             has_flap_gate (bool): ``YES`` (:obj:`True`) or ``NO`` (:obj:`False`) depending on whether a flap gate is present that prevents reverse flow. The default is ``NO``.
             route_to (str): name of a subcatchment that receives the outfall's discharge. The default is not to route the outfall’s discharge.
         """
-        self.data = Data
+        self.data = data
         self.has_flap_gate = to_bool(has_flap_gate)
         self.route_to = route_to
 

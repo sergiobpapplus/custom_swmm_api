@@ -127,7 +127,7 @@ class Outfall(_Node):
 
     def _no_data_init(self, has_flap_gate=False, route_to=NaN):
         """
-        if no keyword arguments used
+        If no keyword arguments were used.
 
         Args:
             has_flap_gate (bool): YES or NO depending on whether a flap gate is present that prevents reverse flow. The
@@ -138,23 +138,19 @@ class Outfall(_Node):
         self.has_flap_gate = to_bool(has_flap_gate)
         self.route_to = route_to
 
-    def _data_init(self, Data=NaN, has_flap_gate=False, route_to=NaN):
+    def _data_init(self, data=NaN, has_flap_gate=False, route_to=NaN):
         """
-        if not keyword arguments were used
+        If no keyword arguments were used.
 
         Args:
-            Data (float | str): one of the following
+            data (float | str): one of the following
                 Stage (float): elevation of fixed stage outfall (ft or m).
-                Tcurve (str): name of curve in [CURVES] section containing tidal height (i.e., outfall stage) v.
-                  hour of day over a complete tidal cycle.
-                Tseries (str): name of time series in [TIMESERIES] section that describes how outfall stage varies
-                with time.
-            has_flap_gate (bool): YES or NO depending on whether a flap gate is present that prevents reverse flow. The
-            default is NO.
-            route_to (str): optional name of a subcatchment that receives the outfall's discharge.
-                           The default is not to route the outfall’s discharge.
+                Tcurve (str): name of curve in [CURVES] section containing tidal height (i.e., outfall stage) v. hour of day over a complete tidal cycle.
+                Tseries (str): name of time series in [TIMESERIES] section that describes how outfall stage varies with time.
+            has_flap_gate (bool): YES or NO depending on whether a flap gate is present that prevents reverse flow. The default is NO.
+            route_to (str): optional name of a subcatchment that receives the outfall's discharge. The default is not to route the outfall’s discharge.
         """
-        self.data = Data
+        self.data = data
         self.has_flap_gate = to_bool(has_flap_gate)
         self.route_to = route_to
 
