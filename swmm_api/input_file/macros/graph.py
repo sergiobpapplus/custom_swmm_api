@@ -25,7 +25,16 @@ def inp_to_graph(inp):
         #     g.add_node(link.FromNode)
         # if link.ToNode not in g:
         #     g.add_node(link.ToNode)
-        g.add_edge(link.from_node, link.to_node, label=link.name)
+        if g.has_edge(link.from_node, link.to_node):
+            old_label = g.get_edge_data(link.from_node, link.to_node)['label']
+            if isinstance(old_label, str):
+                new_label = [old_label, link.name]
+            elif isinstance(old_label, list):
+                new_label.append(link.name)
+            g.add_edge(link.from_node, link.to_node, label=new_label)
+            print(new_label)
+        else:
+            g.add_edge(link.from_node, link.to_node, label=link.name)
     return g
 
 
@@ -45,12 +54,23 @@ def next_links(inp, node, g=None):
     if g is None:
         g = inp_to_graph(inp)
     links = links_dict(inp)
+    for label in next_links_labels(g, node):
+        yield links[label]
+
+
+def _next_links_labels(g, node):
     for i in g.out_edges(node):
-        yield links[g.get_edge_data(*i)['label']]
+        label = g.get_edge_data(*i)['label']
+        if isinstance(label, list):
+            for l in label:
+                yield l
+        else:
+            yield label
 
 
 def next_links_labels(g, node):
-    return [g.get_edge_data(*i)['label'] for i in g.out_edges(node)]
+    # TODO multiple labels
+    return [label for label in _next_links_labels(g, node)]
 
 
 def next_nodes(g, node):
@@ -61,11 +81,12 @@ def previous_links(inp, node, g=None):
     if g is None:
         g = inp_to_graph(inp)
     links = links_dict(inp)
-    for i in g.in_edges(node):
-        yield links[g.get_edge_data(*i)['label']]
+    for label in previous_links_labels(g, node):
+        yield links[label]
 
 
 def previous_links_labels(g, node):
+    # TODO multiple labels
     return [g.get_edge_data(*i)['label'] for i in g.in_edges(node)]
 
 
@@ -87,9 +108,8 @@ def links_connected(inp, node, g=None):
     """
     if g is None:
         g = inp_to_graph(inp)
-    links = links_dict(inp)
-    next_ = [links[g.get_edge_data(*i)['label']] for i in g.out_edges(node)]
-    previous_ = [links[g.get_edge_data(*i)['label']] for i in g.in_edges(node)]
+    next_ = list(next_links(inp, node, g=g))
+    previous_ = list(previous_links(inp, node, g=g))
     return previous_, next_
 
 
@@ -236,6 +256,7 @@ def conduit_iter_over_inp(inp, start, end):
         for n in shortest_path_nodes:
             for i in g.out_edges(n):
                 if i[1] in shortest_path_nodes:
+                    # TODO multiple labels
                     yield g.get_edge_data(*i)['label']
     # else:
     #     node = start
@@ -258,6 +279,7 @@ def conduit_iter_over_inp(inp, start, end):
     #             break
     #     if not found or (node is not None and (node == end)):
     #         break
+
 
 def inp_to_graph2(inp):
     """
@@ -285,5 +307,17 @@ def inp_to_graph2(inp):
         #     g.add_node(link.FromNode)
         # if link.ToNode not in g:
         #     g.add_node(link.ToNode)
-        g.add_edge(link.from_node, link.to_node, label=link.name, obj=link)
+        if g.has_edge(link.from_node, link.to_node):
+            old_label = g.get_edge_data(link.from_node, link.to_node)['label']
+            old_obj = g.get_edge_data(link.from_node, link.to_node)['obj']
+            if isinstance(old_label, str):
+                new_label = [old_label, link.name]
+                new_obj = [old_obj, link]
+            elif isinstance(old_label, list):
+                new_label.append(link.name)
+                new_obj.append(old_obj)
+            g.add_edge(link.from_node, link.to_node, label=new_label, obj=new_obj)
+            print(new_label)
+        else:
+            g.add_edge(link.from_node, link.to_node, label=link.name, obj=link)
     return g

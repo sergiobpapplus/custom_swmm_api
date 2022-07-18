@@ -42,7 +42,7 @@ def delete_node(inp, node_label, graph=None, alt_node=None):
             if section in inp:
                 links += list(inp[section].filter_keys([node_label], by='from_node')) + \
                          list(inp[section].filter_keys([node_label], by='to_node'))  # type: list[Conduit]
-        links = [l.Name for l in links]  # type: list[str]
+        links = [l.name for l in links]  # type: list[str]
 
     for link in links:
         delete_link(inp, link)
