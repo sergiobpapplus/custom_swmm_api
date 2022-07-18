@@ -41,7 +41,7 @@ def junction_to_outfall(inp, label, *args, **kwargs):
     inp[OUTFALLS].add_obj(Outfall(name=label, elevation=j.elevation, *args, **kwargs))
 
 
-def conduit_to_orifice(inp, label, Type, Offset, Qcoeff, has_flap_gate=False, Orate=0):
+def conduit_to_orifice(inp, label, orientation, offset, discharge_coefficient, has_flap_gate=False, hours_to_open=0):
     """
     convert :class:`~swmm_api.input_file.inp_sections.link.Conduit` to
     :class:`~swmm_api.input_file.inp_sections.link.Orifice`
@@ -51,17 +51,18 @@ def conduit_to_orifice(inp, label, Type, Offset, Qcoeff, has_flap_gate=False, Or
     Args:
         inp (SwmmInput): inp-file data
         label (str): label of the conduit
-        Type (str): orientation of orifice: either SIDE or BOTTOM.
-        Offset (float): amount that a Side Orifice’s bottom or the position of a Bottom Orifice is offset above
+        orientation (str): orientation of orifice: either SIDE or BOTTOM.
+        offset (float): amount that a Side Orifice’s bottom or the position of a Bottom Orifice is offset above
             the invert of inlet node (ft or m, expressed as either a depth or as an elevation,
             depending on the LINK_OFFSETS option setting).
-        Qcoeff (float): discharge coefficient (unitless).
+        discharge_coefficient (float): discharge coefficient (unitless).
         has_flap_gate (bool): YES if flap gate present to prevent reverse flow, NO if not (default is NO).
-        Orate (int): time in decimal hours to open a fully closed orifice (or close a fully open one).
+        hours_to_open (int): time in decimal hours to open a fully closed orifice (or close a fully open one).
                         Use 0 if the orifice can open/close instantaneously.
     """
     c = inp[CONDUITS].pop(label)  # type: Conduit
     if ORIFICES not in inp:
         inp[ORIFICES] = Orifice.create_section()
     inp[ORIFICES].add_obj(Orifice(name=label, from_node=c.from_node, to_node=c.to_node,
-                                  orientation=Type, offset=Offset, discharge_coefficient=Qcoeff, has_flap_gate=has_flap_gate, hours_to_open=Orate))
+                                  orientation=orientation, offset=offset, discharge_coefficient=discharge_coefficient,
+                                  has_flap_gate=has_flap_gate, hours_to_open=hours_to_open))
