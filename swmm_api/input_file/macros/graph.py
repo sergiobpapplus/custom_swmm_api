@@ -32,7 +32,6 @@ def inp_to_graph(inp):
             elif isinstance(old_label, list):
                 new_label.append(link.name)
             g.add_edge(link.from_node, link.to_node, label=new_label)
-            print(new_label)
         else:
             g.add_edge(link.from_node, link.to_node, label=link.name)
     return g
@@ -62,8 +61,7 @@ def _next_links_labels(g, node):
     for i in g.out_edges(node):
         label = g.get_edge_data(*i)['label']
         if isinstance(label, list):
-            for l in label:
-                yield l
+            yield from label
         else:
             yield label
 
@@ -88,8 +86,7 @@ def _previous_links_labels(g, node):
     for i in g.in_edges(node):
         label = g.get_edge_data(*i)['label']
         if isinstance(label, list):
-            for l in label:
-                yield l
+            yield from label
         else:
             yield label
 
