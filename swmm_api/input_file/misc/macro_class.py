@@ -12,7 +12,7 @@ from swmm_api import read_inp_file
 from swmm_api.input_file.section_types import SECTION_TYPES
 from swmm_api.input_file import SwmmInput, section_labels as sec
 from swmm_api.input_file._type_converter import offset2delta
-from swmm_api.output_file import parquet
+from swmm_api.output_file import parquet_helpers as parquet
 from swmm_api.output_file.out import read_out_file
 from swmm_api.run import swmm5_run
 

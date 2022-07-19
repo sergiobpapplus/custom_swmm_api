@@ -378,7 +378,7 @@ class InpSection(CustomDict):
             return COMMENT_EMPTY_SECTION
 
         if fast or not self._table_inp_export:
-            return '\n'.join(self.iter_inp_lines(sort_objects_alphabetical))
+            return '\n'.join(self.iter_inp_lines(sort_objects_alphabetical)) + '\n'
         else:
             return dataframe_to_inp_string(self.get_dataframe(set_index=True,
                                                               sort_objects_alphabetical=sort_objects_alphabetical))

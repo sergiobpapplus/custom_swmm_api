@@ -7,6 +7,7 @@ from ..inp import SwmmInput
 from ..section_labels import *
 from ..section_lists import NODE_SECTIONS, LINK_SECTIONS, SUBCATCHMENT_SECTIONS, POLLUTANT_SECTIONS
 from ..sections import Tag, DryWeatherFlow, Junction, Coordinate, Conduit, Loss, Vertices, EvaporationSection
+from ..sections._identifiers import IDENTIFIERS
 
 
 def delete_node(inp, node_label, graph=None, alt_node=None):
@@ -416,7 +417,8 @@ def rename_node(inp: SwmmInput, old_label: str, new_label: str, g=None):
     for section in NODE_SECTIONS + [COORDINATES, RDII]:
         if (section in inp) and (old_label in inp[section]):
             inp[section][new_label] = inp[section].pop(old_label)
-            if hasattr(inp[section][new_label], 'Name'):
+            if hasattr(inp[section][new_label], IDENTIFIERS.name):
+
                 inp[section][new_label].name = new_label
             else:
                 inp[section][new_label].node = new_label

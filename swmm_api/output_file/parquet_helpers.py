@@ -5,7 +5,7 @@ __email__ = "markus.pichler@tugraz.at"
 __version__ = "0.1"
 __license__ = "MIT"
 
-from pandas import read_parquet, MultiIndex, Series
+import pandas as pd
 import numpy as np
 
 """
@@ -42,7 +42,7 @@ def _multiindex_to_index(multiindex, sep='/'):
     Returns:
         pandas.Index: new index with one levels
     """
-    if isinstance(multiindex, MultiIndex):
+    if isinstance(multiindex, pd.MultiIndex):
         # compact_name = '/'.join(str(c) for c in multiindex.names)
         multiindex = [sep.join(str(c) for c in col).strip() for col in multiindex.values]
         # multiindex.name = compact_name
@@ -66,7 +66,7 @@ def write(data, filename, compression='brotli', sep='/'):
         sep (str): Character used to separate multiindex labels in the parquet file. (default: ``'/'``)
     """
     filename = _check_name(filename)
-    if isinstance(data, Series):
+    if isinstance(data, pd.Series):
         df = data.to_frame()
     else:
         df = data.copy()
@@ -88,7 +88,7 @@ def _index_to_multiindex(index, sep='/'):
     """
     if (index.dtype == np.object) and index.str.contains(sep).all():
         # old_name = index.name
-        index = MultiIndex.from_tuples([col.split(sep) for col in index])
+        index = pd.MultiIndex.from_tuples([col.split(sep) for col in index])
         # if isinstance(old_name, str):
         #     new_names = old_name.split('/')
         #     index.names = new_names
@@ -113,7 +113,7 @@ def read(filename, sep='/'):
         pandas.DataFrame: data
     """
     filename = _check_name(filename)
-    df = read_parquet(filename)
+    df = pd.read_parquet(filename)
     df.columns = _index_to_multiindex(df.columns, sep=sep)
     df.index = _index_to_multiindex(df.index, sep=sep)
     return df

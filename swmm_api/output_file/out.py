@@ -14,7 +14,7 @@ from pandas._libs import OutOfBoundsDatetime
 from .extract import SwmmOutExtract
 from .definitions import OBJECTS, VARIABLES
 
-from . import parquet
+from . import parquet_helpers as parquet
 
 
 class SwmmOutput(SwmmOutExtract):

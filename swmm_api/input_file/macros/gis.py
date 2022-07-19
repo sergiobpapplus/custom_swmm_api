@@ -167,7 +167,7 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
         gs_connector = get_subcatchment_connectors(inp)
         GeoDataFrame(gs_connector).to_file(gpkg_fn, driver=driver, layer=SUBCATCHMENTS + '_connector')
     else:
-        print(f'{f"-":^{len(SUBCATCHMENTS)}s}', end=' | ')
+        print(f'{f"-":^{len(SUBCATCHMENTS)}s}')
 
 
 def get_subcatchment_connectors(inp):
