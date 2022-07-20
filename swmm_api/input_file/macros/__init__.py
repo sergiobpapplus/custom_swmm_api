@@ -27,7 +27,8 @@ from .graph import (inp_to_graph, get_path, get_path_subgraph, next_links, next_
                     previous_links, previous_links_labels, previous_nodes, links_connected, number_in_out,
                     downstream_nodes, upstream_nodes, get_network_forks, split_network, conduit_iter_over_inp)
 from .macros import (find_node, find_link, calc_slope, conduit_slopes, conduits_are_equal, update_no_duplicates,
-                     increase_max_node_depth, set_times, combined_subcatchment_frame, delete_sections)
+                     increase_max_node_depth, set_times, combined_subcatchment_frame, delete_sections,
+                     set_absolute_file_paths)
 from .plotting_longitudinal import plot_longitudinal
 from .plotting_map import (plot_map, init_empty_map_plot, add_node_map, add_link_map, add_subcatchment_map,
                            add_node_labels, set_inp_dimensions)
