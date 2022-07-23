@@ -1,0 +1,4 @@
+examples/* linguist-documentation
+website/* linguist-documentation
+make_pypi.sh linguist-detectable=false
+dicker_website/* linguist-detectable=false

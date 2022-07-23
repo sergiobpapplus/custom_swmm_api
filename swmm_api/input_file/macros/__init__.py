@@ -1,4 +1,4 @@
-from .check import check_for_nodes, check_for_duplicates
+from .check import check_for_nodes, check_for_duplicates, check_for_duplicate_links, check_for_duplicate_nodes, check_for_subcatchment_outlets
 from .collection import nodes_dict, links_dict, subcatchments_per_node_dict, nodes_subcatchments_dict
 from .compare import CompareSections, compare_inp_files, compare_sections
 from .convert import junction_to_storage, junction_to_outfall, conduit_to_orifice
