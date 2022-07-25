@@ -1,7 +1,9 @@
 import itertools
 
-from ..section_labels import SUBCATCHMENTS
+from ._helpers import get_used_curves
 from .collection import links_dict, nodes_dict
+from .graph import inp_to_graph, next_links_labels, previous_links_labels
+from ..section_labels import SUBCATCHMENTS, CURVES
 from ..section_lists import NODE_SECTIONS, LINK_SECTIONS
 
 
@@ -148,3 +150,40 @@ def check_for_subcatchment_outlets(inp):
         import pandas as pd
         subcatchments_by_outlets_missing = pd.Series(index=outlets.values, data=outlets.index).groupby(level=0).apply(list).loc[list(outlets_missing)].to_dict()
         return subcatchments_by_outlets_missing
+
+
+def check_for_curves(inp):
+    """
+    Check if any curve is missing.
+
+    Args:
+        inp (swmm_api.SwmmInput): inp data
+
+    Returns:
+       dict[str, list[swmm_api.input_file.sections.link._Link]]: dict of missing nodes with connected corrupt links
+    """
+    used_curves = get_used_curves(inp)
+    if CURVES not in inp:
+        return used_curves
+    return used_curves - set(inp.CURVES)
+
+
+def check_outfall_connections(inp):
+    """
+    ERROR 141: Outfall ____ has more than 1 inlet link or an outlet link.
+
+    Args:
+        inp (swmm_api.SwmmInput): inp data
+
+    Returns:
+
+    """
+    #
+    g = inp_to_graph(inp)
+    error_nodes = {}
+    for outfall_label in inp.OUTFALLS:
+        upstream_links = previous_links_labels(g, outfall_label)
+        downstream_links = next_links_labels(g, outfall_label)
+        if len(upstream_links) > 1 or downstream_links:
+            error_nodes[outfall_label] = (upstream_links, downstream_links)
+    return error_nodes

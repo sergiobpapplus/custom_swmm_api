@@ -1,4 +1,5 @@
-from .check import check_for_nodes, check_for_duplicates, check_for_duplicate_links, check_for_duplicate_nodes, check_for_subcatchment_outlets
+from .check import (check_for_nodes, check_for_duplicates, check_for_duplicate_links, check_for_duplicate_nodes,
+                    check_for_subcatchment_outlets, check_outfall_connections)
 from .collection import nodes_dict, links_dict, subcatchments_per_node_dict, nodes_subcatchments_dict
 from .compare import CompareSections, compare_inp_files, compare_sections
 from .convert import junction_to_storage, junction_to_outfall, conduit_to_orifice
@@ -36,6 +37,7 @@ from .reduce_unneeded import (reduce_curves, reduce_controls, simplify_curves, r
                               remove_empty_sections, reduce_timeseries, reduce_pattern)
 from .split_inp_file import split_inp_to_files, read_split_inp_file
 from .summerize import print_summary
+from ._helpers import get_used_curves
 from .tags import get_node_tags, get_link_tags, get_subcatchment_tags, filter_tags, delete_tag_group
 
 from .cross_section_curve import (get_cross_section_maker, profil_area, to_cross_section_maker)

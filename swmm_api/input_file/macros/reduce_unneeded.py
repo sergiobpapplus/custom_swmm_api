@@ -1,5 +1,6 @@
-from ..section_labels import *
 from .collection import links_dict, nodes_dict
+from ._helpers import get_used_curves
+from ..section_labels import *
 from ..misc.curve_simplification import ramer_douglas
 from ..section_types import SECTION_TYPES
 from ..sections import Control, EvaporationSection
@@ -7,9 +8,9 @@ from ..sections import Control, EvaporationSection
 
 def reduce_curves(inp):
     """
-    remove unused curves
+    Remove unused curves.
 
-    only keep used CURVES from the sections [STORAGE, OUTLETS, PUMPS and XSECTIONS]
+    Only keep used CURVES from the sections [STORAGE, OUTFALLS, OUTLETS, PUMPS and XSECTIONS].
 
     Args:
         inp (swmm_api.SwmmInput): inp-file data
@@ -19,13 +20,7 @@ def reduce_curves(inp):
     """
     if CURVES not in inp:
         return inp
-    used_curves = set()
-    for section in [STORAGE, OUTLETS, PUMPS, XSECTIONS]:
-        if section in inp:
-            for name in inp[section]:
-                if isinstance(inp[section][name].curve_name, str):
-                    used_curves.add(inp[section][name].curve_name)
-
+    used_curves = get_used_curves(inp)
     inp[CURVES] = inp[CURVES].slice_section(used_curves)
 
 

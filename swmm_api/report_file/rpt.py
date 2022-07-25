@@ -196,14 +196,14 @@ class SwmmReport:
                     if last_initial_spaces > initial_spaces:
                         last_key = None
 
-                    if last_key is not None:
+                    if last_key:
                         res[last_key].update({key: value})
                     else:
                         res[key] = value
 
                     last_initial_spaces = initial_spaces
 
-                else:
+                elif line.strip():
                     last_key = line.replace(':', '').strip()
                     res[last_key] = {}
 
@@ -218,7 +218,8 @@ class SwmmReport:
         Returns:
             str: flow unit
         """
-        return self.analysis_options['Flow Units']
+        if 'Flow Units' in self.analysis_options:
+            return self.analysis_options['Flow Units']
 
     @property
     def unit(self):
@@ -230,7 +231,8 @@ class SwmmReport:
         Returns:
             swmm_api.report_file.helpers.ReportUnitConversion: helper for unit labels
         """
-        return ReportUnitConversion(self.flow_unit)
+        if self.flow_unit:
+            return ReportUnitConversion(self.flow_unit)
 
     @property
     def element_count(self):
@@ -257,14 +259,14 @@ class SwmmReport:
                     if last_initial_spaces > initial_spaces:
                         last_key = None
 
-                    if last_key is not None:
+                    if last_key:
                         res[last_key].update({key: value})
                     else:
                         res[key] = value
 
                     last_initial_spaces = initial_spaces
 
-                else:
+                elif line.strip():
                     last_key = line.replace(':', '').strip()
                     res[last_key] = {}
 
@@ -808,6 +810,14 @@ class SwmmReport:
         if t:
             return dict(line.strip().split(':', 1) for line in t.split('\n'))
 
+    def _convert_str_time(self, s):
+        import locale
+        orig_locale = locale.getlocale()
+        locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+        date_time = datetime.datetime.strptime(s.strip(), '%a %b %d %H:%M:%S %Y')
+        locale.setlocale(locale.LC_ALL, orig_locale)
+        return date_time
+
     @property
     def analyse_start(self):
         """
@@ -818,7 +828,7 @@ class SwmmReport:
         """
         v = self.get_simulation_info()['Analysis begun on']
         if v:
-            return datetime.datetime.strptime(v.strip(), '%a %b %d %H:%M:%S %Y')
+            return self._convert_str_time(v)
 
     @property
     def analyse_end(self):
@@ -830,8 +840,7 @@ class SwmmReport:
         """
         v = self.get_simulation_info()['Analysis ended on']
         if v:
-            # datetime.datetime.strptime(v.strip(), '%c')
-            return datetime.datetime.strptime(v.strip(), '%a %b %d %H:%M:%S %Y')
+            return self._convert_str_time(v)
 
     @property
     def analyse_duration(self):

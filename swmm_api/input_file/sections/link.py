@@ -310,7 +310,7 @@ class Pump(_Link):
             name (str): Name assigned to pump link.
             from_node (str): Name of node on inlet side of pump.
             to_node (str): Name of node on outlet side of pump.
-            curve_name (str): Name of pump curve listed in the [``CURVES``] section of the input.
+            curve_name (str): Name of pump curve listed in the [``CURVES``] section of the input. (or * for an Ideal pump)
             status (str): Status at start of simulation (either ``ON`` or ``OFF``; default is ``ON``).
             depth_on (float): Depth at inlet node when pump turns on (ft or m) (default is 0).
             depth_off (float): Depth at inlet node when pump shuts off (ft or m) (default is 0).

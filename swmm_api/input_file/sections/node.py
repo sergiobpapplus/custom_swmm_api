@@ -170,6 +170,12 @@ class Outfall(_Node):
         self.has_flap_gate = to_bool(has_flap_gate)
         self.route_to = route_to
 
+    @property
+    def curve_name(self):
+        """Name of the curve if outfall-kind is ``TIDAL``"""
+        if self.kind == self.TYPES.TIDAL:
+            return self.data
+
 
 class Storage(_Node):
     """
@@ -399,5 +405,5 @@ class Storage(_Node):
     @property
     def curve_name(self):
         """Name of the curve if storage-kind is ``TABULAR``"""
-        if self.kind == Storage.TYPES.TABULAR:
+        if self.kind == self.TYPES.TABULAR:
             return self.data

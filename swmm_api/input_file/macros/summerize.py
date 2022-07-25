@@ -1,6 +1,6 @@
-from swmm_api import SwmmInput
-from swmm_api.input_file import SEC
-from swmm_api.input_file.macros import nodes_dict, links_dict
+from .. import SwmmInput
+from .. import SEC
+from .macros import nodes_dict, links_dict
 
 
 def print_summary(inp):
