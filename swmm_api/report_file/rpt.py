@@ -13,6 +13,7 @@ import pandas as pd
 from .helpers import (_get_title_of_part, _remove_lines, _part_to_frame, _continuity_part_to_dict, ReportUnitConversion,
                       _routing_part_to_dict, _quality_continuity_part_to_dict, )
 from .._read_txt import read_txt_file
+from ..input_file.helpers import natural_keys
 
 
 class SwmmReport:
@@ -870,6 +871,7 @@ class SwmmReport:
         for key, value in di.items():
             if isinstance(value, (list, tuple, set)):
                 key += f' ({len(value)})'
+                value = sorted(value, key=natural_keys)
             key += ':'
             if isinstance(value, list) and len(value) > 20:
                 start = 0

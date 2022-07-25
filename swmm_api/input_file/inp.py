@@ -54,10 +54,13 @@ class SwmmInput(CustomDict):
     def update(self, d=None, **kwargs):
         for sec in d:
             if sec not in self:
-                self[sec] = d[sec]
+                self._data[sec] = d._data[sec]
             else:
-                if isinstance(self[sec], str):
-                    pass
+                if isinstance(self._data[sec], str):
+                    if isinstance(d._data[sec], str):
+                        self._data[sec] += d._data[sec]
+                    else:
+                        warnings.warn(f'Updating of string section in INP-file not implemented! Skip Section {sec}')
                 else:
                     self[sec].update(d[sec])
 
