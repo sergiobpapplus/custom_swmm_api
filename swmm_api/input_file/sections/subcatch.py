@@ -77,8 +77,8 @@ class SubArea(BaseSectionObject):
         N_Perv (float): Manning's n for overland flow over the pervious sub-area. ``Nperv``
         S_Imperv (float): depression storage for impervious sub-area (inches or mm). ``Simp``
         S_Perv (float): depression storage for pervious sub-area (inches or mm). ``Sperv``
-        PctZero (float): percent of impervious area with no depression storage. ``%Zero``
-        RouteTo (str):
+        pct_zero (float): percent of impervious area with no depression storage. ``%Zero``
+        route_to (str):
 
             - ``IMPERVIOUS`` if pervious area runoff runs onto impervious area,
             - ``PERVIOUS`` if impervious runoff runs onto pervious area,
@@ -95,8 +95,8 @@ class SubArea(BaseSectionObject):
         PERVIOUS = 'PERVIOUS'
         OUTLET = 'OUTLET'
 
-    def __init__(self, subcatchment, N_Imperv, N_Perv, S_Imperv, S_Perv, PctZero, RouteTo=RoutToOption.OUTLET,
-                 PctRouted=100):
+    def __init__(self, subcatchment, N_Imperv, N_Perv, S_Imperv, S_Perv, pct_zero, route_to=RoutToOption.OUTLET,
+                 pct_routed=100):
         """
         SubArea object.
 
@@ -106,23 +106,23 @@ class SubArea(BaseSectionObject):
             N_Perv (float): Manning's n for overland flow over the pervious sub-area. ``Nperv``
             S_Imperv (float): depression storage for impervious sub-area (inches or mm). ``Simp``
             S_Perv (float): depression storage for pervious sub-area (inches or mm). ``Sperv``
-            PctZero (float): percent of impervious area with no depression storage. ``%Zero``
-            RouteTo (str):
+            pct_zero (float): percent of impervious area with no depression storage. ``%Zero``
+            route_to (str):
 
                 - ``IMPERVIOUS`` if pervious area runoff runs onto impervious area,
                 - ``PERVIOUS`` if impervious runoff runs onto pervious area,
                 - ``OUTLET`` if both areas drain to the subcatchment's outlet (default = ``OUTLET``).
 
-            PctRouted (float): percent of runoff routed from one type of area to another (default = 100). ``%Routed``
+            pct_routed (float): percent of runoff routed from one type of area to another (default = 100). ``%Routed``
         """
         self.subcatchment = str(subcatchment)
         self.N_Imperv = float(N_Imperv)
         self.N_Perv = float(N_Perv)
         self.S_Imperv = float(S_Imperv)
         self.S_Perv = float(S_Perv)
-        self.PctZero = float(PctZero)
-        self.RouteTo = str(RouteTo)
-        self.PctRouted = float(PctRouted)
+        self.pct_zero = float(pct_zero)
+        self.route_to = str(route_to)
+        self.pct_routed = float(pct_routed)
 
 
 class Infiltration(BaseSectionObject):
