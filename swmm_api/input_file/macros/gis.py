@@ -164,8 +164,9 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
 
         print(f'{f"{time.perf_counter() - t0:0.1f}s":^{len(SUBCATCHMENTS)}s}')
 
-        gs_connector = get_subcatchment_connectors(inp)
-        GeoDataFrame(gs_connector).to_file(gpkg_fn, driver=driver, layer=SUBCATCHMENTS + '_connector')
+        if COORDINATES in inp:
+            gs_connector = get_subcatchment_connectors(inp)
+            GeoDataFrame(gs_connector).to_file(gpkg_fn, driver=driver, layer=SUBCATCHMENTS + '_connector')
     else:
         print(f'{f"-":^{len(SUBCATCHMENTS)}s}')
 

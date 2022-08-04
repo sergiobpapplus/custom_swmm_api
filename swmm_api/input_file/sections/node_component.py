@@ -214,18 +214,18 @@ class Coordinate(BaseSectionObject):
         return cls.create_section(zip(data.index, data.x, data.y))
 
     @classmethod
-    def from_shapely(cls, Node, point):
+    def from_shapely(cls, node, point):
         """
         Create a Coordinate object with a shapely Point
 
         Args:
-            Node (str): label of the node
+            node (str): label of the node
             point (shapely.geometry.Point):
 
         Returns:
             Coordinate: Coordinate object
         """
-        return cls(Node, point.x, point.y)
+        return cls(node, point.x, point.y)
 
 
 class RainfallDependentInfiltrationInflow(BaseSectionObject):
