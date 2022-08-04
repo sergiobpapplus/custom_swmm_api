@@ -140,5 +140,6 @@ def simplify_vertices(inp, dist=1.):
     .. Important::
         works inplace
     """
-    for v in inp.VERTICES:
-        simplify_link_vertices(inp.VERTICES[v], dist)
+    if VERTICES in inp:
+        for v in inp.VERTICES:
+            simplify_link_vertices(inp.VERTICES[v], dist)
