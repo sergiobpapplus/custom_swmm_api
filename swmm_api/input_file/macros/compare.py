@@ -65,11 +65,11 @@ class CompareSections:
 
         if self.set_labels_not_in_1:
             s_warnings += (f'not in inp1 ({len(self.set_labels_not_in_1)}): '
-                           + ' | '.join(sorted(self.set_labels_not_in_1)) + '\n')
+                           + ' | '.join(map(str, sorted(self.set_labels_not_in_1))) + '\n')
 
         if self.set_labels_not_in_2:
             s_warnings += (f'not in inp2 ({len(self.set_labels_not_in_2)}): '
-                           + ' | '.join(sorted(self.set_labels_not_in_2)) + '\n')
+                           + ' | '.join(map(str, sorted(self.set_labels_not_in_2))) + '\n')
 
         return (s_warnings or 'good!\n') + f'{len(self.set_labels_equal)}/{self.len_full} objects are equal\n'
 

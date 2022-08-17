@@ -863,22 +863,30 @@ class SwmmReport:
             return datetime.timedelta(*(int(i) for i in v.strip().split(':')))
 
     @staticmethod
-    def _pretty_dict(di):
+    def _pretty_dict(di, chunk_size=20):
         if not di:
             return '{}'
         f = ''
-        max_len = len(max(di.keys(), key=len)) + 5
-        for key, value in di.items():
+        max_len = len(max(di.keys(), key=len)) + 7
+        for key in sorted(di.keys()):
+            value = di[key]
             if isinstance(value, (list, tuple, set)):
                 key += f' ({len(value)})'
                 value = sorted(value, key=natural_keys)
             key += ':'
-            if isinstance(value, list) and len(value) > 20:
-                start = 0
-                for end in range(20, len(value), 20):
-                    f += f'{key:<{max_len}}{", ".join(value[start:end])}\",\n'
-                    key = ''
-                    start = end
+            if isinstance(value, list) and len(value) > chunk_size:
+                n = len(value)
+                for i in range(0, n, chunk_size):
+                    sub_value = str(value[i:i + chunk_size])
+                    if i == 0:
+                        sub_value = sub_value.replace(']', ',')
+                    elif i + chunk_size >= n:
+                        sub_value = sub_value.replace('[', ' ')
+
+                    if i != 0:
+                        key = ''
+
+                    f += f'{key:<{max_len}}{sub_value}\n'
             else:
                 f += f'{key:<{max_len}}{value}\n'
         return f
