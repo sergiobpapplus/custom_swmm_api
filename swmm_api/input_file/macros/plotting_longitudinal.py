@@ -2,8 +2,7 @@ import matplotlib.pyplot as plt
 
 from .collection import nodes_dict, links_dict
 from .graph import get_path_subgraph, links_connected
-from ..section_labels import (XSECTIONS, )
-from ..sections import Outfall
+from ..sections import Outfall, Junction, Storage, Conduit
 from ...output_file import OBJECTS, VARIABLES
 
 
@@ -42,14 +41,14 @@ def get_longitudinal_data(inp, start_node, end_node, out=None, zero_node=None):
     stations_ = list(iter_over_inp_(inp, sub_list, sub_graph))
     stations = dict(stations_)
     for node, x in stations_:
-        n = nodes[node]
+        n = nodes[node]  # type: swmm_api.input_file.sections.node._Node
         sok = n.elevation
         # ---------------
         gok = sok
         if isinstance(n, Outfall):
             gok += profile_height
-        else:
-            gok += n.MaxDepth
+        elif isinstance(n, (Storage, Junction)):
+            gok += n.depth_max
         # ---------------
         if out is not None:
             water = sok + nodes_depth[node]
@@ -60,14 +59,14 @@ def get_longitudinal_data(inp, start_node, end_node, out=None, zero_node=None):
 
         if prior_conduit:
             prior_conduit = prior_conduit[0]
-            profile_height = inp[XSECTIONS][prior_conduit.name].height
+            profile_height = inp.XSECTIONS[prior_conduit.name].height
             sok_ = sok + prior_conduit.offset_downstream
             buk = profile_height + sok_
             _update_res(x - stations[zero_node], sok_, buk, gok, water)
 
         if following_conduit:
             following_conduit = following_conduit[0]
-            profile_height = inp[XSECTIONS][following_conduit.name].height
+            profile_height = inp.XSECTIONS[following_conduit.name].height
             sok_ = sok + following_conduit.offset_upstream
             buk = profile_height + sok_
             _update_res(x - stations[zero_node], sok_, buk, gok, water)
@@ -102,7 +101,8 @@ def iter_over_inp_(inp, sub_list, sub_graph):
         out_edges = list(sub_graph.out_edges(node))
         if out_edges:
             following_conduit = links[sub_graph.get_edge_data(*out_edges[0])['label']]
-            x += following_conduit.Length
+            if isinstance(following_conduit, Conduit):
+                x += following_conduit.length
 
 
 def iter_over_inp(inp, start_node, end_node):
