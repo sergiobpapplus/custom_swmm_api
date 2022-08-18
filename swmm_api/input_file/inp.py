@@ -58,9 +58,10 @@ class SwmmInput(CustomDict):
             else:
                 if isinstance(self._data[sec], str):
                     if isinstance(d._data[sec], str):
-                        self._data[sec] += d._data[sec]
+                        self._data[sec] += '\n' + d._data[sec]
                     else:
-                        warnings.warn(f'Updating of string section in INP-file not implemented! Skip Section {sec}')
+                        self[sec].update(d[sec])
+                        # warnings.warn(f'Updating of string section in INP-file not implemented! Skip Section {sec}')
                 else:
                     self[sec].update(d[sec])
 
