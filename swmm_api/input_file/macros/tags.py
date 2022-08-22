@@ -7,13 +7,15 @@ from ..section_labels import TAGS, SUBCATCHMENTS
 from .collection import nodes_dict, links_dict
 from ..sections import Tag
 
+TAG_COL_NAME = 'tag'
+
 
 def _get_tags_frame(inp, part=None):
     if TAGS in inp and inp[TAGS]:
         df_tags = inp[TAGS].frame
         if part in df_tags.index.levels[0]:
             return inp[TAGS].frame.xs(part, axis=0, level=0)
-    return pd.Series(name='tags', dtype=str)
+    return pd.Series(name=TAG_COL_NAME, dtype=str)
 
 
 def get_node_tags(inp):

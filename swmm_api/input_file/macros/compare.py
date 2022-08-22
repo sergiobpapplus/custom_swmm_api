@@ -34,9 +34,12 @@ class CompareSections:
                         self.dict_not_equal[key] = f'{section_1[key]} != {section_2[key]}'
                     else:
                         diff = []
-                        for param in section_1[key].to_dict_():
-                            if not is_equal(section_1[key][param], section_2[key][param], precision=precision):
-                                diff.append(f'{param}=({section_1[key][param]} != {section_2[key][param]})')
+                        if type(section_1[key]) != type(section_2[key]):
+                            diff.append(f'{type(section_1[key]).__name__} != {type(section_2[key]).__name__}')
+                        else:
+                            for param in section_1[key].to_dict_():
+                                if not is_equal(section_1[key][param], section_2[key][param], precision=precision):
+                                    diff.append(f'{param}=({section_1[key][param]} != {section_2[key][param]})')
                         if diff:
                             self.dict_not_equal[key] = ' | '.join(diff)
                         else:
@@ -136,7 +139,11 @@ def compare_inp_files(fn1, fn2, precision=2, skip_section=None, sep='\n' + '#' *
         f'   "{fn2}" (=inp2)\n'
     inp1 = SwmmInput.read_file(fn1)
     inp2 = SwmmInput.read_file(fn2)
+    return s + compare_inp_objects(inp1, inp2, precision=precision, skip_section=skip_section, sep=sep)
 
+
+def compare_inp_objects(inp1, inp2, precision=2, skip_section=None, sep='\n' + '#' * 100):
+    s = ''
     sections = set(inp1.keys()) | set(inp2.keys())
 
     for section in sections:  # sorted(sections, key=_sort_by):
@@ -161,7 +168,6 @@ def compare_inp_files(fn1, fn2, precision=2, skip_section=None, sep='\n' + '#' *
         s += ss
 
     inp_version_control(inp1, inp2)
-
     return s
 
 

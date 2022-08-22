@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 from .collection import nodes_dict, links_dict
 from .graph import get_path_subgraph, links_connected
-from ..sections import Outfall, Junction, Storage, Conduit
+from ..sections import Outfall, Junction, Storage, Conduit, Weir, Orifice
 from ...output_file import OBJECTS, VARIABLES
 
 
@@ -60,14 +60,30 @@ def get_longitudinal_data(inp, start_node, end_node, out=None, zero_node=None):
         if prior_conduit:
             prior_conduit = prior_conduit[0]
             profile_height = inp.XSECTIONS[prior_conduit.name].height
-            sok_ = sok + prior_conduit.offset_downstream
+
+            sok_ = sok
+            if isinstance(following_conduit, Weir):
+                pass
+            elif isinstance(following_conduit, Orifice):
+                pass
+            elif isinstance(following_conduit, Conduit):
+                sok_ += prior_conduit.offset_downstream
+
             buk = profile_height + sok_
             _update_res(x - stations[zero_node], sok_, buk, gok, water)
 
         if following_conduit:
             following_conduit = following_conduit[0]
             profile_height = inp.XSECTIONS[following_conduit.name].height
-            sok_ = sok + following_conduit.offset_upstream
+
+            sok_ = sok
+            if isinstance(following_conduit, Weir):
+                sok_ += following_conduit.height_crest
+            elif isinstance(following_conduit, Orifice):
+                sok_ += following_conduit.offset
+            elif isinstance(following_conduit, Conduit):
+                sok_ += following_conduit.offset_upstream
+
             buk = profile_height + sok_
             _update_res(x - stations[zero_node], sok_, buk, gok, water)
 
@@ -100,9 +116,12 @@ def iter_over_inp_(inp, sub_list, sub_graph):
         # ------------------
         out_edges = list(sub_graph.out_edges(node))
         if out_edges:
-            following_conduit = links[sub_graph.get_edge_data(*out_edges[0])['label']]
-            if isinstance(following_conduit, Conduit):
-                x += following_conduit.length
+            following_link_label = sub_graph.get_edge_data(*out_edges[0])['label']
+            if isinstance(following_link_label, list):
+                following_link_label = following_link_label[0]
+            following_link = links[following_link_label]
+            if isinstance(following_link, Conduit):
+                x += following_link.length
 
 
 def iter_over_inp(inp, start_node, end_node):

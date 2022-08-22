@@ -16,11 +16,11 @@ inp = read_inp_file('epaswmm5_apps_manual/Example6-Final.inp')
 # exit()
 #%%
 
-fig, ax = plot_map(inp)
+# fig, ax = plot_map(inp)
 
 
 #%%
 
-fig, ax = plot_longitudinal(inp, start_node='9', end_node='18', out=None, ax=None, zero_node=None)
-ax.set_title("start_node='9', end_node='18'")
+fig, ax = plot_longitudinal(inp, start_node='J12', end_node='O2', out=None, ax=None, zero_node=None)
+# ax.set_title("start_node='9', end_node='18'")
 

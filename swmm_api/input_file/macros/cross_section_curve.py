@@ -25,12 +25,12 @@ def get_cross_section_maker(inp, link_label):
     return to_cross_section_maker(inp.XSECTIONS[link_label], inp)
 
 
-def to_cross_section_maker(xs: CrossSection, inp: SwmmInput=None):
+def to_cross_section_maker(xs: CrossSection, inp: SwmmInput = None):
     try:
         import shape_generator
         from shape_generator.swmm_predefined import (Egg, Circular, CircularFilled, RectangularOpen, RectangularClosed,
                                                      RectangularRound, RectangularTriangular, Triangular, Parabolic,
-                                                     Power)
+                                                     Power, Trapezoidal)
     except ImportError as e:
         print('Missing package: pip install SWMM-xsections-shape-generator')
 
@@ -41,13 +41,13 @@ def to_cross_section_maker(xs: CrossSection, inp: SwmmInput=None):
     elif xs.shape == CrossSection.SHAPES.IRREGULAR:
         return  # Todo: I don't know how
 
-    elif xs.shape  == CrossSection.SHAPES.CIRCULAR:
+    elif xs.shape == CrossSection.SHAPES.CIRCULAR:
         return Circular(xs.height, label=xs.link)
-    elif xs.shape  == CrossSection.SHAPES.FILLED_CIRCULAR:
+    elif xs.shape == CrossSection.SHAPES.FILLED_CIRCULAR:
         return CircularFilled(xs.height, xs.parameter_2, label=xs.link)
-    elif xs.shape  == CrossSection.SHAPES.EGG:
+    elif xs.shape == CrossSection.SHAPES.EGG:
         return Egg(xs.height, label=xs.link)
-    elif xs.shape  == CrossSection.SHAPES.RECT_OPEN:
+    elif xs.shape == CrossSection.SHAPES.RECT_OPEN:
         return RectangularOpen(xs.height, xs.parameter_2, label=xs.link)
     elif xs.shape == CrossSection.SHAPES.RECT_CLOSED:
         return RectangularClosed(xs.height, xs.parameter_2, label=xs.link)
@@ -71,8 +71,8 @@ def to_cross_section_maker(xs: CrossSection, inp: SwmmInput=None):
         return shape_generator.swmm_std_cross_sections(xs.shape, height=xs.height, label=xs.link)
 
     elif xs.shape in (CrossSection.SHAPES.ARCH,
-        CrossSection.SHAPES.HORIZ_ELLIPSE,
-        CrossSection.SHAPES.VERT_ELLIPSE):
+                      CrossSection.SHAPES.HORIZ_ELLIPSE,
+                      CrossSection.SHAPES.VERT_ELLIPSE):
         # ++ Height+Width ++
         return shape_generator.swmm_std_cross_sections(xs.shape, height=xs.height, width=xs.parameter_2, label=xs.link)
 
@@ -80,7 +80,8 @@ def to_cross_section_maker(xs: CrossSection, inp: SwmmInput=None):
         return Parabolic(xs.height, xs.parameter_2, label=xs.link)
     elif xs.shape == CrossSection.SHAPES.POWER:
         return Power(xs.height, xs.parameter_2, xs.parameter_3, label=xs.link)
-
+    elif xs.shape == CrossSection.SHAPES.TRAPEZOIDAL:
+        return Trapezoidal(xs.height, xs.parameter_2, xs.parameter_3, xs.parameter_4, label=xs.link)
     else:
         # CrossSection.SHAPES.TRAPEZOIDAL
         # CrossSection.SHAPES.MODBASKETHANDLE
@@ -101,7 +102,6 @@ def profil_area(inp, link_label):
     cs = get_cross_section_maker(inp, link_label)
     if cs is not None:
         return cs.area_v
-
 
 # def velocity(inp, link_label, flow):
 #     # TODO

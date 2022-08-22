@@ -7,7 +7,7 @@ from .curve import curve_figure
 from .edit import (combine_conduits, combine_conduits_keep_slope, combine_vertices, delete_link, delete_node,
                    delete_subcatchment, dissolve_conduit, flip_link_direction, move_flows, rename_link, rename_node,
                    rename_subcatchment, rename_timeseries, split_conduit, remove_quality_model, delete_pollutant)
-from .filter import (filter_tags, filter_nodes, filter_links_within_nodes, filter_links, filter_subcatchments,
+from .filter import (filter_nodes, filter_links_within_nodes, filter_links, filter_subcatchments,
                      create_sub_inp, )
 from .geo import (transform_coordinates, complete_vertices, reduce_vertices, complete_link_vertices,
                   simplify_link_vertices, simplify_vertices, )

@@ -6,12 +6,13 @@ from pandas import MultiIndex
 from tqdm.auto import tqdm
 
 from .geo import complete_vertices, simplify_vertices, reduce_vertices
-from .tags import get_node_tags, get_link_tags, get_subcatchment_tags
+from .tags import get_node_tags, get_link_tags, get_subcatchment_tags, TAG_COL_NAME
 from ..inp import SwmmInput
 from ..section_labels import *
 from ..section_lists import LINK_SECTIONS, NODE_SECTIONS
 from ..section_types import SECTION_TYPES
 from ..sections import Tag
+from ..sections._identifiers import IDENTIFIERS
 
 """
 {'AeronavFAA': 'r',
@@ -39,6 +40,14 @@ from ..sections import Tag
 # end = '.shp'
 # end = '.gpkg'
 """
+
+
+LIST_SECTIONS_NO_GIS = [TITLE, OPTIONS, REPORT, FILES, RAINGAGES, EVAPORATION, TEMPERATURE, ADJUSTMENTS,
+                        LID_CONTROLS, LID_USAGE, AQUIFERS, GROUNDWATER, GWF, SNOWPACKS,DIVIDERS, CONTROLS, POLLUTANTS, LANDUSES, COVERAGES, LOADINGS, BUILDUP, WASHOFF,
+                        TREATMENT, RDII,  # kann den Knoten noch zugeordnet werden
+                        HYDROGRAPHS, CURVES, TIMESERIES, PATTERNS, STREET, INLETS,
+                        INLET_USAGE, MAP, LABELS, SYMBOLS, BACKDROP, PROFILES,
+                        ]
 
 
 def set_crs(inp, crs="EPSG:32633"):
@@ -288,7 +297,7 @@ def nodes_geo_data_frame(inp, label_sep='.'):
     return GeoDataFrame(res)
 
 
-def gpkg_to_swmm(fn, label_sep='.'):
+def gpkg_to_swmm(fn, label_sep='.', infiltration_class=None, custom_section_handler=None, simplify=False):
     """
     import inp data from GIS gpkg file created from the swmm_api.input_file.macro_snippets.gis_export.convert_inp_to_geo_package function
 
@@ -303,59 +312,68 @@ def gpkg_to_swmm(fn, label_sep='.'):
     import fiona
     from geopandas import read_file
 
-    inp = SwmmInput()
+    inp = SwmmInput(custom_section_handler=custom_section_handler)
+
+    if infiltration_class is not None:
+        inp.set_infiltration_method(infiltration_class)
+
+    section_dict = inp._converter
 
     for sec in NODE_SECTIONS:
         if sec not in fiona.listlayers(fn):
             continue
-        gdf = read_file(fn, layer=sec).set_index('name')
+        gdf = read_file(fn, layer=sec).set_index(IDENTIFIERS.name).fillna(NaN)
 
         cols = gdf.columns[gdf.columns.str.startswith(sec)]
-        inp[sec] = SECTION_TYPES[sec].create_section(gdf[cols].reset_index().fillna(NaN).values)
+        inp[sec] = section_dict[sec].create_section(gdf[cols].reset_index().fillna(NaN).values)
 
         for sub_sec in [DWF, INFLOWS]:
             cols = gdf.columns[gdf.columns.str.startswith(sub_sec)]
-            gdf_sub = gdf[cols].copy()
-            gdf_sub.columns = MultiIndex.from_tuples([col.split(label_sep) for col in gdf_sub.columns])
-            cols_order = gdf_sub.columns.droplevel(1)
-            gdf_sub = gdf_sub.stack(1)[cols_order]
-            inp[sub_sec].update(SECTION_TYPES[sub_sec].create_section(gdf_sub.reset_index().values))
+            if not cols.empty:
+                gdf_sub = gdf[cols].copy()
+                gdf_sub.columns = MultiIndex.from_tuples([col.split(label_sep) for col in gdf_sub.columns])
+                cols_order = gdf_sub.columns.droplevel(1)
+                gdf_sub = gdf_sub.stack(1)[cols_order]
+                inp[sub_sec].update(section_dict[sub_sec].create_section(gdf_sub.reset_index().values))
 
-        inp[COORDINATES].update(SECTION_TYPES[COORDINATES].create_section_from_geoseries(gdf.geometry))
+        inp[COORDINATES].update(section_dict[COORDINATES].create_section_from_geoseries(gdf.geometry))
 
-        tags = gdf[['tag']].copy()
-        tags['type'] = Tag.TYPES.Node
-        inp[TAGS].update(SECTION_TYPES[TAGS].create_section(tags[['type', 'tag']].reset_index().values))
+        tags = gdf[[TAG_COL_NAME]].copy().dropna()
+        if not tags.empty:
+            tags['type'] = Tag.TYPES.Node
+            inp[TAGS].update(section_dict[TAGS].create_section(tags.reset_index()[['type', IDENTIFIERS.name, TAG_COL_NAME]].values))
 
-    for i in inp[STORAGE]:
-        c = inp[STORAGE][i].curve
-        if isinstance(c, list):
-            inp[STORAGE][i].curve = [float(j) for j in c[0][1:-1].split(',')]
+    if STORAGE in inp:
+        for i in inp[STORAGE]:
+            c = inp.STORAGE[i].data
+            if isinstance(c, list):
+                inp.STORAGE[i].data = [float(j) for j in c[0][1:-1].split(',')]
 
     # ---------------------------------
     for sec in LINK_SECTIONS:
         if sec not in fiona.listlayers(fn):
             continue
-        gdf = read_file(fn, layer=sec).set_index('Name')
+        gdf = read_file(fn, layer=sec).set_index(IDENTIFIERS.name).fillna(NaN)
 
         cols = gdf.columns[gdf.columns.str.startswith(sec)]
-        inp[sec] = SECTION_TYPES[sec].create_section(gdf[cols].reset_index().fillna(NaN).values)
+        inp[sec] = section_dict[sec].create_section(gdf[cols].reset_index().fillna(NaN).values)
 
         for sub_sec in [XSECTIONS, LOSSES]:
             cols = gdf.columns[gdf.columns.str.startswith(sub_sec)].to_list()
             if cols:
                 if sub_sec == XSECTIONS:
-                    cols = [f'{sub_sec}{label_sep}{i}' for i in inspect.getargspec(SECTION_TYPES[sub_sec]).args[2:]]
+                    cols = [f'{sub_sec}{label_sep}{i}' for i in inspect.getargspec(section_dict[sub_sec]).args[2:]]
                 gdf_sub = gdf[cols].copy().dropna(how='all')
                 if sub_sec == LOSSES:
                     gdf_sub[f'{LOSSES}{label_sep}has_flap_gate'] = gdf_sub[f'{LOSSES}{label_sep}has_flap_gate'] == 1
-                inp[sub_sec].update(SECTION_TYPES[sub_sec].create_section(gdf_sub.reset_index().values))
+                inp[sub_sec].update(section_dict[sub_sec].create_section(gdf_sub.reset_index().values))
 
-        inp[VERTICES].update(SECTION_TYPES[VERTICES].create_section_from_geoseries(gdf.geometry))
+        inp[VERTICES].update(section_dict[VERTICES].create_section_from_geoseries(gdf.geometry))
 
-        tags = gdf[['tag']].copy()
-        tags['type'] = Tag.TYPES.Link
-        inp[TAGS].update(SECTION_TYPES[TAGS].create_section(tags[['type', 'tag']].reset_index().values))
+        tags = gdf[[TAG_COL_NAME]].copy().dropna()
+        if not tags.empty:
+            tags['type'] = Tag.TYPES.Link
+            inp[TAGS].update(section_dict[TAGS].create_section(tags.reset_index()[['type', IDENTIFIERS.name, TAG_COL_NAME]].values))
 
     if OUTLETS in inp:
         for i in inp[OUTLETS]:
@@ -363,18 +381,24 @@ def gpkg_to_swmm(fn, label_sep='.'):
             if isinstance(c, list):
                 inp[OUTLETS][i].curve_description = [float(j) for j in c[0][1:-1].split(',')]
 
-    simplify_vertices(inp)
+    if simplify:
+        simplify_vertices(inp)
     reduce_vertices(inp)
 
     # ---------------------------------
     if SUBCATCHMENTS in fiona.listlayers(fn):
-        gdf = read_file(fn, layer=SUBCATCHMENTS).set_index('name')
+        gdf = read_file(fn, layer=SUBCATCHMENTS).set_index(IDENTIFIERS.name).fillna(NaN)
 
         for sec in [SUBCATCHMENTS, SUBAREAS, INFILTRATION]:
             cols = gdf.columns[gdf.columns.str.startswith(sec)]
-            inp[sec] = SECTION_TYPES[sec].create_section(gdf[cols].reset_index().fillna(NaN).values)
+            inp[sec] = section_dict[sec].create_section(gdf[cols].reset_index().fillna(NaN).values)
 
-        inp[POLYGONS] = SECTION_TYPES[POLYGONS].create_section_from_geoseries(gdf.geometry)
+        inp[POLYGONS] = section_dict[POLYGONS].create_section_from_geoseries(gdf.geometry)
+
+        tags = gdf[[TAG_COL_NAME]].copy().dropna()
+        if not tags.empty:
+            tags['type'] = Tag.TYPES.Subcatch
+            inp[TAGS].update(section_dict[TAGS].create_section(tags.reset_index()[['type', IDENTIFIERS.name, TAG_COL_NAME]].values))
 
     return inp
 

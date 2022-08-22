@@ -37,16 +37,18 @@ Sponsors and Partners
 
 .. figure:: images/TU_Graz_Logo.gif
     :align: center
-    :alt: TU Graz Logo
+    :alt: Logo - Graz University of Technology
     :figclass: align-center
     :width: 250
+    :target: https://www.tugraz.at/en/home/
 
-    TU Graz
+    Graz University of Technology
 
 .. figure:: images/logo_sww.png
     :align: center
-    :alt: SWW Logo
+    :alt: Logo - Institute of Urban Water Management and Landscape Water Engineering
     :figclass: align-center
     :height: 100
+    :target: https://www.tugraz.at/en/institutes/sww/home/
 
-    Institut für Siedlungswasserwirtschaft der TU Graz
+     Institute of Urban Water Management and Landscape Water Engineering
