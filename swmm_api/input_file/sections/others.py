@@ -1578,6 +1578,17 @@ class TimeseriesData(Timeseries):
         Returns:
             pandas.Series: Timeseries
         """
+        warnings.warn('Using "TimeseriesData.frame" is deprecated, use "TimeseriesData.pandas" instead.', DeprecationWarning)
+        return self.pandas
+
+    @property
+    def pandas(self):
+        """
+        convert object to pandas Series
+
+        Returns:
+            pandas.Series: Timeseries
+        """
         date_time, values = zip(*self.data)
         return pd.Series(index=date_time, data=values, name=self.name)
 

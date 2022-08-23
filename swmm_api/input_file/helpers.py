@@ -8,6 +8,7 @@ import warnings
 from numpy import isnan
 from pandas import DataFrame, Series
 from tqdm.auto import tqdm
+from pprint import pformat
 
 from ._type_converter import type2str, is_equal, txt_to_lines
 from .section_labels import *
@@ -64,7 +65,8 @@ class CustomDict:
         return self._data.__contains__(key)
 
     def __repr__(self):
-        return self._data.__repr__()
+        return pformat(self._data, indent=4, sort_dicts=False)
+        # return self._data.__repr__()
 
     def __str__(self):
         return self._data.__str__()

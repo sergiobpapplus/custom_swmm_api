@@ -102,20 +102,22 @@ kathea_converter = {
 }
 
 if __name__ == '__main__':
-    inp_kathea = read_inp_file('KATHEA_ms_Andritz_Kathea.inp', custom_converter=kathea_converter)
-    inp = read_inp_file('KATHEA_GRAZ.inp')
+    inp = read_inp_file('basic_model.inp')
 
     # -----------------------------------------------------
+    # converting the conduits and extend the parameters
     for label, obj in inp[CONDUITS].items():
         inp[CONDUITS][label] = ConduitKathea(Thickness=0.18, k_Pipe=1.15, k_Soil=1.5, specHcSoil=1500, densitySoil=2000,
                                              AirPattern="A_GN", SoilPattern="S_GN_3.0", **obj.to_dict_())
 
     # -----------------------------------------------------
+    # converting the storages and extend the parameters
     for label, obj in inp[STORAGE].items():
         inp[STORAGE][label] = StorageKathea(Thickness=0.18, k_Pipe=1.15, k_Soil=1.5, specHcSoil=1500, densitySoil=2000,
                                             AirPattern="A_GN", SoilPattern="S_GN_3.0", **obj.to_dict_())
 
     # -----------------------------------------------------
+    # add temperature as a new pollutant
     if POLLUTANTS not in inp:
         inp[POLLUTANTS] = Pollutant.create_section()
 
@@ -123,6 +125,7 @@ if __name__ == '__main__':
     inp[POLLUTANTS].add_obj(temperature)
 
     # -----------------------------------------------------
+    # add temperature patterns
     if PATTERNS not in inp:
         inp[PATTERNS] = Pattern.create_section()
 
@@ -135,6 +138,7 @@ if __name__ == '__main__':
     inp[PATTERNS].add_obj(T_Monthly)
 
     # -----------------------------------------------------
+    # add temperature dry weather inflow
     old_dwf = inp[DWF].copy()
     for (node, type_), obj in old_dwf.items():
         new_dwf = DryWeatherFlow(node=node, constituent=temperature.name, base_value=18.95,
@@ -142,5 +146,8 @@ if __name__ == '__main__':
         inp[DWF].add_obj(new_dwf)
 
     # -----------------------------------------------------
+    # save the new model
+    inp.write_file('extended_model.inp', fast=False)
 
-    inp.write_file('KATHEA_GRAZ_NEW.inp', fast=False)
+    # -----------------------------------------------------
+    inp_kathea = read_inp_file('extended_model.inp', custom_converter=kathea_converter)

@@ -55,6 +55,9 @@ class TitleSection(InpSectionGeneric):
     def __bool__(self):
         return bool(self.txt)
 
+    def __repr__(self):
+        return self.txt
+
 
 class OptionSection(InpSectionGeneric):
     """
