@@ -9,12 +9,7 @@ from swmm_api.input_file.macros.gis import write_geo_package, gpkg_to_swmm
 if __name__ == '__main__':
     inp1 = SwmmInput('Example6-Final.inp')
 
-    from swmm_api.input_file.macros import to_cross_section_maker
-
-    cs = to_cross_section_maker(inp1.XSECTIONS['C3'], inp1)
-    _ = cs.profile_figure()
-    exit()
-    # write_geo_package(inp1, gpkg_fn='Example6-Final.gpkg', driver='GPKG', label_sep='.', crs="EPSG:32633")
+    write_geo_package(inp1, gpkg_fn='Example6-Final.gpkg', driver='GPKG', label_sep='.', crs="EPSG:32633")
 
     inp2 = gpkg_to_swmm('Example6-Final.gpkg', infiltration_class=inp1._converter[SEC.INFILTRATION])
 
