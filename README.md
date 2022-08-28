@@ -42,7 +42,11 @@ python:
 - **SWMMOutputAPI** / [github](https://github.com/bemcdonnell/SWMMOutputAPI) / read the output file (see `swmm_api.output_file.out`) / (OpenWaterAnalytics)
 - **swmm-pandas** / [pypi](https://pypi.org/project/swmm-pandas/) / equal functionalities to this package, but not feature complete
 - **swmmout** / [pypi](https://pypi.org/project/swmmout/) / [docs](https://swmmout.readthedocs.io/en/latest/) / simular to `swmmtoolbox` and `SWMMOutputAPI`
-- **swmmtonetcdf** / [pypi](https://pypi.org/project/swmmtonetcdf/) / [github](https://github.com/cbuahin/swmmtonetcdf) 
+- **swmmtonetcdf** / [pypi](https://pypi.org/project/swmmtonetcdf/) / [github](https://github.com/cbuahin/swmmtonetcdf)
+- **hymo** / [github](https://github.com/lucashtnguyen/hymo) Input and Report Reader (Lucas Nguyen)
+- **shmm** / [github](https://github.com/lucashtnguyen/shmm) Input Reader (Lucas Nguyen)
+- **swmmreport** / [github](https://github.com/lucashtnguyen/swmmreport) Report Reader (Lucas Nguyen)
+- **swmmdoodler** / [github](https://github.com/Geosyntec/swmmdoodler)
 
 ## Other SWMM-related packages
 
