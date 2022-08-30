@@ -19,7 +19,7 @@ With this package you can read INP-files, manipulate them and write new ones.
 You can run swmm within the python api.
 And you can read the RPT- and OUT-files as a pandas DataFrame for further analysis.
 
-This package is based on the command line SWMM syntax. ([see Appendix D in the SWMM User Manual 5.1](https://www.epa.gov/water-research/storm-water-management-model-swmm-version-51-users-manual))
+This package is based on the command line SWMM syntax. ([see Appendix D in the SWMM User Manual 5.2](https://www.epa.gov/system/files/documents/2022-04/swmm-users-manual-version-5.2.pdf))
 
 ## Install the package
 ```bash
@@ -32,28 +32,31 @@ pip install swmm-api
 ## Alternative packages
 
 R-language:
-- **swmmr** / [github](https://github.com/dleutnant/swmmr) / [cran](https://cran.r-project.org/web/packages/swmmr/index.html)
 
-python: 
-- **swmmio** / [docs](https://swmmio.readthedocs.io/en/latest/) / [pypi](https://pypi.org/project/swmmio/) / [github](https://github.com/aerispaha/swmmio) / 
-- **GisToSWMM5** / [github](https://github.com/AaltoUrbanWater/GisToSWMM5) / converting gis data to swmm model (also possible with swmm_api: `swmm_api.input_file.macro_snippets.gis_standard_import` and `swmm_api.input_file.macro_snippets.gis_export`)
-- **swmmtoolbox** / [github](https://github.com/timcera/swmmtoolbox) / Thanks to _Tim Cera_ for this package! I used his package to understand the .out-files but completely rewrote the reading process in this package.
-- **swmmnetwork** / [github](https://github.com/austinorr/swmmnetwork) / create graph network from swmm model (see `swmm_api.input_file.macros.inp_to_graph`)
-- **SWMMOutputAPI** / [github](https://github.com/bemcdonnell/SWMMOutputAPI) / read the output file (see `swmm_api.output_file.out`) / (OpenWaterAnalytics)
+- **swmmr** / [GitHub](https://github.com/dleutnant/swmmr) / [cran](https://cran.r-project.org/web/packages/swmmr/index.html)
+
+python:
+
+- **swmmio** / [docs](https://swmmio.readthedocs.io/en/latest/) / [pypi](https://pypi.org/project/swmmio/) / [GitHub](https://github.com/aerispaha/swmmio)
+- **GisToSWMM5** / [GitHub](https://github.com/AaltoUrbanWater/GisToSWMM5) / converting gis data to swmm model (also possible with swmm_api: `swmm_api.input_file.macro_snippets.gis_standard_import` and `swmm_api.input_file.macro_snippets.gis_export`)
+- **swmmtoolbox** / [GitHub](https://github.com/timcera/swmmtoolbox) / Thanks to _Tim Cera_ for this package! I used his package to understand the .out-files but completely rewrote the reading process in this package.
+- **swmmnetwork** / [GitHub](https://github.com/austinorr/swmmnetwork) / create graph network from swmm model (see `swmm_api.input_file.macros.inp_to_graph`)
+- **SWMMOutputAPI** / [GitHub](https://github.com/bemcdonnell/SWMMOutputAPI) / read the output file (see `swmm_api.output_file.out`) / (OpenWaterAnalytics)
 - **swmm-pandas** / [pypi](https://pypi.org/project/swmm-pandas/) / equal functionalities to this package, but not feature complete
 - **swmmout** / [pypi](https://pypi.org/project/swmmout/) / [docs](https://swmmout.readthedocs.io/en/latest/) / simular to `swmmtoolbox` and `SWMMOutputAPI`
-- **swmmtonetcdf** / [pypi](https://pypi.org/project/swmmtonetcdf/) / [github](https://github.com/cbuahin/swmmtonetcdf)
-- **hymo** / [github](https://github.com/lucashtnguyen/hymo) Input and Report Reader (Lucas Nguyen)
-- **shmm** / [github](https://github.com/lucashtnguyen/shmm) Input Reader (Lucas Nguyen)
-- **swmmreport** / [github](https://github.com/lucashtnguyen/swmmreport) Report Reader (Lucas Nguyen)
-- **swmmdoodler** / [github](https://github.com/Geosyntec/swmmdoodler)
+- **swmmtonetcdf** / [pypi](https://pypi.org/project/swmmtonetcdf/) / [GitHub](https://github.com/cbuahin/swmmtonetcdf)
+- **hymo** / [GitHub](https://github.com/lucashtnguyen/hymo) Input and Report Reader (Lucas Nguyen)
+- **shmm** / [GitHub](https://github.com/lucashtnguyen/shmm) Input Reader (Lucas Nguyen)
+- **swmmreport** / [GitHub](https://github.com/lucashtnguyen/swmmreport) Report Reader (Lucas Nguyen)
+- **swmmdoodler** / [GitHub](https://github.com/Geosyntec/swmmdoodler)
 
 ## Other SWMM-related packages
 
 python:
-- **pyswmm** / [pypi](https://pypi.org/project/pyswmm/) / [github](https://github.com/OpenWaterAnalytics/pyswmm) / RTC, etc. / based on swmm-toolkit (OpenWaterAnalytics)
-- **swmm-toolkit** / [pypi](https://pypi.org/project/swmm-toolkit/) / [github](https://github.com/OpenWaterAnalytics/swmm-python) / by Michael Tryby (OpenWaterAnalytics)
-- **SWMM5** / [pypi](https://pypi.org/project/SWMM5/) / [github](https://github.com/asselapathirana/swmm5-python) / simular approach to swmm-toolkit (by Assela Pathirana)
+
+- **pyswmm** / [pypi](https://pypi.org/project/pyswmm/) / [GitHub](https://github.com/OpenWaterAnalytics/pyswmm) / RTC, etc. / based on swmm-toolkit (OpenWaterAnalytics)
+- **swmm-toolkit** / [pypi](https://pypi.org/project/swmm-toolkit/) / [GitHub](https://github.com/OpenWaterAnalytics/swmm-python) / by Michael Tryby (OpenWaterAnalytics)
+- **SWMM5** / [pypi](https://pypi.org/project/SWMM5/) / [GitHub](https://github.com/asselapathirana/swmm5-python) / simular approach to swmm-toolkit (by Assela Pathirana)
 - **SWMM-xsections-shape-generator** / [pypi](https://pypi.org/project/SWMM-xsections-shape-generator/) / tool to generate custom shapes (by me)
 - **SWMM_EA** / [pypi](https://pypi.org/project/SWMM5_EA/) / usage of genetic algorithms with SWMM (by Assela Pathirana)
 

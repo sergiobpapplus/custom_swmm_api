@@ -21,7 +21,7 @@ class SwmmInput(CustomDict):
     just used for the copy function and to identify ``.inp``-file data
     """
 
-    def __init__(self, *args, custom_section_handler=None, **kwargs):
+    def __init__(self, *args, custom_section_handler=None, encoding=None, **kwargs):
         filename = None
         if len(args) == 1 and isinstance(args[0], str) and os.path.isfile(args[0]):
             # argument is an inp-file.
@@ -31,7 +31,7 @@ class SwmmInput(CustomDict):
             super().__init__(*args, **kwargs)
         self._converter = SECTION_TYPES.copy()
 
-        self._default_encoding = None
+        self._default_encoding = encoding
 
         if custom_section_handler is not None:
             self._converter.update(custom_section_handler)
@@ -40,7 +40,7 @@ class SwmmInput(CustomDict):
         self._original_section_order = SECTIONS_ORDER_MP
 
         if filename is not None:
-            self._init_from_file(filename, force_ignore_case=False)
+            self._init_from_file(filename, force_ignore_case=False, encoding=encoding)
 
     def copy(self):
         new = type(self)()

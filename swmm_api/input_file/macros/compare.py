@@ -133,10 +133,11 @@ def compare_inp_files(fn1, fn2, precision=2, skip_section=None, sep='\n' + '#' *
     Returns:
         str: differences of the files
     """
-    s = f'Comparing \n' \
-        f'   "{fn1}" (=inp1)\n' \
-        f'   to\n' \
-        f'   "{fn2}" (=inp2)\n'
+    s = (f'Comparing \n'
+         f'   "{fn1}" (=inp1)\n'
+         f'   to\n'
+         f'   "{fn2}" (=inp2)\n'
+         f'Ignoring Sections: {skip_section}\n')
     inp1 = SwmmInput.read_file(fn1)
     inp2 = SwmmInput.read_file(fn2)
     return s + compare_inp_objects(inp1, inp2, precision=precision, skip_section=skip_section, sep=sep)
