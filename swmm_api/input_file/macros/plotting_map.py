@@ -5,6 +5,7 @@ from matplotlib.colors import Normalize, BoundaryNorm, LinearSegmentedColormap
 from matplotlib.lines import Line2D
 
 from swmm_api import SwmmInput
+from swmm_api.input_file import SEC
 from swmm_api.input_file.macros import complete_vertices
 from swmm_api.input_file.section_labels import (MAP, VERTICES, POLYGONS, COORDINATES, SUBCATCHMENTS, JUNCTIONS, STORAGE,
                                                 OUTFALLS, )
@@ -329,3 +330,22 @@ def add_custom_legend(ax, lines_dict, **kwargs):
         else:
             lines.append(Line2D([0], [0], **line))
     return ax.legend(lines, labels, **kwargs)
+
+
+def add_backdrop(ax, inp):
+    """
+    Add the backdrop image to the plot
+
+    Args:
+        ax (plt.Axes):
+        inp (SwmmInput):
+    """
+    if SEC.BACKDROP in inp:
+        from swmm_api.input_file.sections import BackdropSection
+        k = BackdropSection.KEYS
+        fn = inp.BACKDROP[k.FILE]
+        x0, y0, x1, y1 = inp.BACKDROP[k.DIMENSIONS]
+        im = plt.imread(fn)
+        ax.imshow(im, extent=[x0, x1, y0, y1])
+
+    pass

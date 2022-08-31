@@ -21,7 +21,7 @@ class SwmmInput(CustomDict):
     just used for the copy function and to identify ``.inp``-file data
     """
 
-    def __init__(self, *args, custom_section_handler=None, encoding=None, **kwargs):
+    def __init__(self, *args, custom_section_handler=None, encoding='utf-8', **kwargs):
         filename = None
         if len(args) == 1 and isinstance(args[0], str) and os.path.isfile(args[0]):
             # argument is an inp-file.

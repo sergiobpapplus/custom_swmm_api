@@ -32,7 +32,7 @@ from .macros import (find_node, find_link, calc_slope, conduit_slopes, conduits_
                      set_absolute_file_paths)
 from .plotting_longitudinal import plot_longitudinal
 from .plotting_map import (plot_map, init_empty_map_plot, add_node_map, add_link_map, add_subcatchment_map,
-                           add_node_labels, set_inp_dimensions)
+                           add_node_labels, set_inp_dimensions, add_backdrop)
 from .reduce_unneeded import (reduce_curves, reduce_controls, simplify_curves, reduce_raingages,
                               remove_empty_sections, reduce_timeseries, reduce_pattern)
 from .split_inp_file import split_inp_to_files, read_split_inp_file
