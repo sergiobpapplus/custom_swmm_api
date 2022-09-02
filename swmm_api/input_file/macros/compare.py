@@ -1,3 +1,5 @@
+from tqdm.auto import tqdm
+
 from .collection import nodes_dict, links_dict
 from .graph import inp_to_graph, next_nodes, previous_links, next_links
 from ..inp import SwmmInput
@@ -147,7 +149,14 @@ def compare_inp_objects(inp1, inp2, precision=2, skip_section=None, sep='\n' + '
     s = ''
     sections = set(inp1.keys()) | set(inp2.keys())
 
-    for section in sections:  # sorted(sections, key=_sort_by):
+    def _sort_by(key):
+        if key in inp2._original_section_order:
+            return inp2._original_section_order.index(key)
+        else:
+            return len(inp2._original_section_order)
+
+    for section in (progress := tqdm(sorted(sections, key=_sort_by), desc='compare_inp_objects')):
+        progress.set_postfix_str(section)
         if skip_section is not None and section in skip_section:
             continue
         if section in [TITLE]:
