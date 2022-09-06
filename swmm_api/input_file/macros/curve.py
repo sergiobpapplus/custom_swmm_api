@@ -21,10 +21,10 @@ def curve_figure(curve):
     xlim_left = -xlim
 
     # -------------------------
-    y_label, x_label = curve._get_names(curve.Type)
+    y_label, x_label = curve._get_names(curve.kind)
     ax.set_ylabel(y_label)
     ax.set_xlabel(x_label)
-    ax.set_title('{}: {}'.format(curve.name, curve.Type))
+    ax.set_title('{}: {}'.format(curve.name, curve.kind))
 
     # -------------------------
     y, x = list(zip(*curve.points))

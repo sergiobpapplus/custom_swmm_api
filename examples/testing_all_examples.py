@@ -123,8 +123,8 @@ with tqdm(example_files, desc='TESTING_ALL_EXAMPLES') as example_files:
             if 'RainGage' in inp.RAINGAGES:
                 # if isinstance(inp.RAINGAGES['RainGage'].Filename, str):
                 #     print()
-                if inp.RAINGAGES['RainGage'].Filename == 'Record.dat':
-                    inp.RAINGAGES['RainGage'].Filename = os.path.join(os.path.dirname(__file__), 'epaswmm5_apps_manual', inp.RAINGAGES['RainGage'].Filename)
+                if inp.RAINGAGES['RainGage'].filename == 'Record.dat':
+                    inp.RAINGAGES['RainGage'].filename = os.path.join(os.path.dirname(__file__), 'epaswmm5_apps_manual', inp.RAINGAGES['RainGage'].filename)
                     pass # C:\Users\mp\PycharmProjects\swmm_api\examples\epaswmm5_apps_manual\
 
 

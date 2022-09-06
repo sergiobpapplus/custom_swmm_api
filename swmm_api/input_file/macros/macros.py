@@ -243,7 +243,7 @@ def nodes_data_frame(inp, label_sep='.'):
         df = inp[s].frame.rename(columns=lambda c: f'{label_sep}{c}')
 
         if s == STORAGE:
-            df[f'{STORAGE}{label_sep}Curve'] = df[f'{STORAGE}{label_sep}Curve'].astype(str)
+            df[f'{STORAGE}{label_sep}data'] = df[f'{STORAGE}{label_sep}data'].astype(str)
 
         for sub_sec in [DWF, INFLOWS]:
             if sub_sec in inp:
@@ -287,8 +287,8 @@ def set_absolute_file_paths(inp, path_data_base):
 
     if RAINGAGES in inp:
         for rg in inp.RAINGAGES.values():
-            if isinstance(rg.Filename, str):
-                rg.Filename = os.path.join(path_data_base, rg.Filename)
+            if isinstance(rg.filename, str):
+                rg.filename = os.path.join(path_data_base, rg.filename)
 
     if TEMPERATURE in inp:
         if 'FILE' in inp.TEMPERATURE:

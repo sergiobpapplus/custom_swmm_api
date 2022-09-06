@@ -736,9 +736,9 @@ class BaseSectionObject(ABC):
     @classmethod
     def from_inp_line(cls, *line_args):
         """
-        convert line in the ``.inp``-file to the object
+        Convert line in the ``.inp``-file to the object.
 
-        needed if multiple sub-classes of an object are available (i.e. Infiltration)
+        Needed if multiple subclasses of an object are available (i.e. Infiltration).
 
         Args:
             *line_args (list[str]): arguments in the line

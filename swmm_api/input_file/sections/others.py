@@ -12,7 +12,10 @@ from ..section_labels import *
 
 class RainGage(BaseSectionObject):
     """
-    Section: [**RAINGAGES**]
+    Rain gage information.
+
+    Section:
+        [RAINGAGES]
 
     Purpose:
         Identifies each rain gage that provides rainfall data for the study area.
@@ -23,22 +26,20 @@ class RainGage(BaseSectionObject):
             Name Form Intvl SCF TIMESERIES Tseries
             Name Form Intvl SCF FILE       Fname   Sta Units
 
-    Format-PCSWMM:
-        ``Name Format Interval SCF Source``
-
-
     Attributes:
-        name (str): name assigned to rain gage.
-        Format (str): form of recorded rainfall, either INTENSITY, VOLUME or CUMULATIVE.
-        Interval (str, Timedelta): time interval between gage readings in decimal hours or hours:minutes format
-                                    (e.g., 0:15 for 15-minute readings). ``Intvl``
-        SCF (float): snow catch deficiency correction factor (use 1.0 for no adjustment).
-        Source (str): one of ``'TIMESERIES'`` ``'FILE'``
-        Timeseries (str): name of time series in [TIMESERIES] section with rainfall data. ``Tseries``
-        Filename (str): name of external file with rainfall data.
-                        Rainfall files are discussed in Section 11.3 Rainfall Files. ``Fname``
-        Station (str): name of recording station used in the rain file. ``Sta``
-        Units (str): rain depth units used in the rain file, either IN (inches) or MM (millimeters).
+        name (str): Name assigned to rain gage.
+        form (str): Form of recorded rainfall, either ``INTENSITY``, ``VOLUME`` or ``CUMULATIVE`` (:attr:`RainGage.FORMATS`).
+        interval (str, Timedelta): time interval between gage readings in decimal hours or hours:minutes format (e.g., 0:15 for 15-minute readings).
+        SCF (float): Snow catch deficiency correction factor (use 1.0 for no adjustment).
+        source (str): One of ``'TIMESERIES'`` ``'FILE'`` (:attr:`RainGage.SOURCES`).
+        timeseries (str): Name of time series in [``TIMESERIES``] section (:class:`TimeSeries`) with rainfall data.
+        filename (str): Name of external file with rainfall data. Rainfall files are discussed in Section 11.3 Rainfall Files.
+        station (str): Name of recording station used in the rain file.
+        units (str): Rain depth units used in the rain file, either IN (inches) or MM (millimeters) (:attr:`RainGage.UNITS`).
+
+        FORMATS: Enum-like for the attribute :attr:`RainGage.form` with following members -> {``INTENSITY`` | ``VOLUME`` | ``CUMULATIVE``}
+        SOURCES: Enum-like for the attribute :attr:`RainGage.source` with following members -> {``TIMESERIES`` | ``FILE``}
+        UNITS: Enum-like for the attribute :attr:`RainGage.units` with following members -> {``IN`` | ``MM``}
     """
     _identifier = IDENTIFIERS.name
     _section_label = RAINGAGES
@@ -56,48 +57,42 @@ class RainGage(BaseSectionObject):
         IN = 'IN'
         MM = 'MM'
 
-    def __init__(self, name, Format, Interval, SCF, Source, *args,
-                 Timeseries=NaN,
-                 Filename=NaN, Station=NaN, Units=NaN):
+    def __init__(self, name, form, interval, SCF, source, *args, timeseries=NaN, filename=NaN, station=NaN, units=NaN):
         """
-        Object for section RAINGAGES
+        Rain gage information.
 
         Args:
             name (str): Name assigned to rain gage.
-            Format (str): form of recorded rainfall, either INTENSITY, VOLUME or CUMULATIVE.
-            Interval (str, Timedelta): time interval between gage readings in decimal hours or hours:minutes format
-                                        (e.g., 0:15 for 15-minute readings). ``Intvl``
-            SCF (float): snow catch deficiency correction factor (use 1.0 for no adjustment).
-            Source (str): one of ``'TIMESERIES'`` ``'FILE'``
-            *args: -Arguments below- (for automatic input file reader.)
-            Timeseries (:obj:`str`, optional): name of time series in [TIMESERIES] section with rainfall data.
-            ``Tseries``
-            Filename (str): name of external file with rainfall data.
-                            Rainfall files are discussed in Section 11.3 Rainfall Files. ``Fname``
-            Station (str): name of recording station used in the rain file. ``Sta``
-            Units (str): rain depth units used in the rain file, either IN (inches) or MM (millimeters).
+            form (str): Form of recorded rainfall, either ``INTENSITY``, ``VOLUME`` or ``CUMULATIVE`` (:attr:`RainGage.FORMATS`).
+            interval (str, Timedelta): time interval between gage readings in decimal hours or hours:minutes format (e.g., 0:15 for 15-minute readings).
+            SCF (float): Snow catch deficiency correction factor (use 1.0 for no adjustment).
+            source (str): One of ``'TIMESERIES'`` ``'FILE'`` (:attr:`RainGage.SOURCES`).
+            timeseries (str): Name of time series in [``TIMESERIES``] section (:class:`TimeSeries`) with rainfall data.
+            filename (str): Name of external file with rainfall data. Rainfall files are discussed in Section 11.3 Rainfall Files.
+            station (str): Name of recording station used in the rain file.
+            units (str): Rain depth units used in the rain file, either IN (inches) or MM (millimeters) (:attr:`RainGage.UNITS`).
         """
         self.name = str(name)
-        self.Format = Format
-        self.Interval = Interval
+        self.form = form
+        self.interval = interval
         self.SCF = float(SCF)
-        self.Source = Source
+        self.source = source
 
-        self.Timeseries = Timeseries
-        self.Filename = Filename
-        self.Station = Station
-        self.Units = Units
+        self.timeseries = timeseries
+        self.filename = filename
+        self.station = station
+        self.units = units
 
         if args:
-            if Source == RainGage.SOURCES.TIMESERIES:
-                self.Timeseries = args[0]
+            if source == RainGage.SOURCES.TIMESERIES:
+                self.timeseries = args[0]
                 if len(args) != 1:
                     pass
 
-            elif Source == RainGage.SOURCES.FILE:
-                self.Filename = args[0].strip('"')
-                self.Station = args[1]
-                self.Units = args[2]
+            elif source == RainGage.SOURCES.FILE:
+                self.filename = args[0].strip('"')
+                self.station = args[1]
+                self.units = args[2]
 
             else:
                 raise NotImplementedError()
@@ -105,30 +100,32 @@ class RainGage(BaseSectionObject):
 
 class Symbol(BaseSectionObject):
     """
-    Section: [**SYMBOLS**]
+    X,Y coordinates for rain gages.
+
+    Section:
+        [SYMBOLS]
 
     Purpose:
         Assigns X,Y coordinates to rain gage symbols.
 
-    Format:
-        ::
-
-            Gage Xcoord Ycoord
-
-    Args:
-        gage (str): name of gage.
-        x (float): horizontal coordinate relative to origin in lower left of map. ``Xcoord``
-        y (float): vertical coordinate relative to origin in lower left of map. ``Ycoord``
 
     Attributes:
         gage (str): name of gage.
-        x (float): horizontal coordinate relative to origin in lower left of map. ``Xcoord``
-        y (float): vertical coordinate relative to origin in lower left of map. ``Ycoord``
+        x (float): horizontal coordinate relative to origin in lower left of map.
+        y (float): vertical coordinate relative to origin in lower left of map.
     """
     _identifier = IDENTIFIERS.gage
     _section_label = SYMBOLS
 
     def __init__(self, gage, x, y):
+        """
+        X,Y coordinates for rain gages.
+
+        Args:
+            gage (str): name of gage.
+            x (float): horizontal coordinate relative to origin in lower left of map.
+            y (float): vertical coordinate relative to origin in lower left of map.
+        """
         self.gage = str(gage)
         self.x = float(x)
         self.y = float(y)
@@ -185,10 +182,10 @@ class Pattern(BaseSectionObject):
 
     Attributes:
         name (str): Name used to identify the pattern.
-        cycle (str): One of ``MONTHLY``, ``DAILY``, ``HOURLY``, ``WEEKEND``.
+        cycle (str): One of ``MONTHLY``, ``DAILY``, ``HOURLY``, ``WEEKEND`` (:attr:`Pattern.CYCLES`.).
         factors (list): Multiplier values.
 
-        CYCLES: Predefined names for: ``MONTHLY``, ``DAILY``, ``HOURLY``, ``WEEKEND``.
+        CYCLES: Enum-like for the attribute :attr:`Pattern.cycle` with following members -> {``MONTHLY`` | ``DAILY`` | ``HOURLY`` | ``WEEKEND``}
 
     Usage:
         - :attr:`Inflow.pattern`
@@ -212,7 +209,7 @@ class Pattern(BaseSectionObject):
 
         Args:
             name (str): Name used to identify the pattern.
-            cycle (str): One of ``MONTHLY``, ``DAILY``, ``HOURLY``, ``WEEKEND``.
+            cycle (str): One of ``MONTHLY``, ``DAILY``, ``HOURLY``, ``WEEKEND`` (:attr:`Pattern.CYCLES`.).
             factors (list): Multiplier values.
             *_factors: for automatic inp file reading
         """
@@ -283,7 +280,7 @@ class Pollutant(BaseSectionObject):
 
     Attributes:
         name (str): name assigned to pollutant.
-        unit (str): concentration units
+        unit (str): concentration units (:attr:`Pollutant.UNITS`)
 
                 - ``MG/L`` for milligrams per liter
                 - ``UG/L`` for micrograms per liter
@@ -298,6 +295,8 @@ class Pollutant(BaseSectionObject):
         co_fraction (float): fraction of co-pollutant concentration (default is 0).
         c_dwf (float): pollutant concentration in dry weather flow (default is 0).
         c_init (float): pollutant concentration throughout the conveyance system at the start of the simulation (default is 0).
+
+        UNITS: Enum-like for the attribute :attr:`Pollutant.unit` with following members -> {``MG_PER_L`` | ``UG_PER_L`` | ``COUNT_PER_L``}
     """
     _identifier = IDENTIFIERS.name
     _section_label = POLLUTANTS
@@ -313,8 +312,8 @@ class Pollutant(BaseSectionObject):
         Pollutant information.
 
         Args:
-            name (str): name assigned to pollutant.
-            unit (str): concentration units
+            name (str): Name assigned to pollutant.
+            unit (str): Concentration units (:attr:`Pollutant.UNITS`).
 
                     - ``MG/L`` for milligrams per liter
                     - ``UG/L`` for micrograms per liter
@@ -409,6 +408,7 @@ class Transect(BaseSectionObject):
     _section_label = TRANSECTS
 
     class KEYS:
+        """KEYS: Enum-like for the attribute :attr:`Inflow.kind` with following members -> {``NC`` | ``X1`` | ``GR``}"""
         NC = 'NC'
         X1 = 'X1'
         GR = 'GR'
@@ -510,10 +510,10 @@ class Transect(BaseSectionObject):
         Args:
             break_every: break every x-th GR station, default: after every station
         """
-        s = f'{self.KEYS.NC} {self.roughness_left} {self.roughness_right} {self.roughness_channel}\n' \
-            f'{self.KEYS.X1} {self.name} {self.get_number_stations()} {self.bank_station_left} ' \
-            f'{ self.bank_station_right} 0 0 0 {self.modifier_meander} {self.modifier_stations} ' \
-            f'{self.modifier_elevations}\n'
+        s = (f'{self.KEYS.NC} {self.roughness_left} {self.roughness_right} {self.roughness_channel}\n'
+             f'{self.KEYS.X1} {self.name} {self.get_number_stations()} {self.bank_station_left} '
+             f'{self.bank_station_right} 0 0 0 {self.modifier_meander} {self.modifier_stations} '
+             f'{self.modifier_elevations}\n')
         if break_every == 1:
             for x, y in self.station_elevations:
                 s += f'{self.KEYS.GR} {x} {y}\n'
@@ -535,7 +535,10 @@ class Transect(BaseSectionObject):
 
 class Control(BaseSectionObject):
     """
-    Section: [**CONTROLS**]
+    Rules that control pump and regulator operation.
+
+    Section:
+        [CONTROLS]
 
     Purpose:
         Determines how pumps and regulators will be adjusted
@@ -820,6 +823,7 @@ class Control(BaseSectionObject):
             LINK  P45  TIMEOPEN >= 6:30
             SIMULATION CLOCKTIME = 22:45:00
         """
+
         def __init__(self, logic, kind, *args):
             self.logic = logic.upper()  # if and or
             self.kind = kind.upper()  # Control.OBJECTS
@@ -855,6 +859,7 @@ class Control(BaseSectionObject):
             WEIR W25 SETTING = CURVE C25
             ORIFICE ORI_23 SETTING = PID 0.1 0.1 0.0
         """
+
         def __init__(self, logic, kind, label, action, relation, *value):
             self.logic = logic.upper()  # THEN, AND
             self.kind = kind.upper()  # Control.OBJECTS
@@ -925,7 +930,10 @@ class Control(BaseSectionObject):
 
 class Curve(BaseSectionObject):
     """
-    Section: [**CURVES**]
+    X-Y tabular data referenced in other sections.
+
+    Section:
+        [CURVES]
 
     Purpose:
         Describes a relationship between two variables in tabular format.
@@ -935,47 +943,24 @@ class Curve(BaseSectionObject):
 
             Name Type X-value Y-value ...
 
-    Format-PCSWMM:
-            ``Name Type X-Value Y-Value``
-
     Remarks:
-        Name
-            name assigned to table
-        Type
-            ``STORAGE`` / ``SHAPE`` / ``DIVERSION`` / ``TIDAL`` / ``PUMP1`` / ``PUMP2`` / ``PUMP3`` / ``PUMP4`` /
-            ``RATING`` / ``CONTROL``
-        X-value
-            an x (independent variable) value
-        Y-value
-            the y (dependent variable) value corresponding to x
-
         Multiple pairs of x-y values can appear on a line. If more than one line is needed,
         repeat the curve's name (but not the type) on subsequent lines. The x-values must
         be entered in increasing order.
 
         Choices for curve type have the following meanings (flows are expressed in the
-        user’s choice of flow units set in the [``OPTIONS``] section):
+        user’s choice of flow units set in the [``OPTIONS``] section (:class:`OptionSection`)):
 
-            ``STORAGE``
-                surface area in ft2 (m2) v. depth in ft (m) for a storage unit node
-            ``SHAPE``
-                width v. depth for a custom closed cross-section, both normalized with respect to full depth
-            ``DIVERSION``
-                diverted outflow v. total inflow for a flow divider node
-            ``TIDAL``
-                water surface elevation in ft (m) v. hour of the day for an outfall node
-            ``PUMP1``
-                pump outflow v. increment of inlet node volume in ft3 (m3)
-            ``PUMP2``
-                pump outflow v. increment of inlet node depth in ft (m)
-            ``PUMP3``
-                pump outflow v. head difference between outlet and inlet nodes in ft (m)
-            ``PUMP4``
-                pump outflow v. continuous depth in ft (m)
-            ``RATING``
-                outlet flow v. head in ft (m)
-            ``CONTROL``
-                control setting v. controller variable
+            - ``STORAGE``: surface area in ft2 (m2) v. depth in ft (m) for a storage unit node
+            - ``SHAPE``: width v. depth for a custom closed cross-section, both normalized with respect to full depth
+            - ``DIVERSION``: diverted outflow v. total inflow for a flow divider node
+            - ``TIDAL``: water surface elevation in ft (m) v. hour of the day for an outfall node
+            - ``PUMP1``: pump outflow v. increment of inlet node volume in ft3 (m3)
+            - ``PUMP2``: pump outflow v. increment of inlet node depth in ft (m)
+            - ``PUMP3``: pump outflow v. head difference between outlet and inlet nodes in ft (m)
+            - ``PUMP4``: pump outflow v. continuous depth in ft (m)
+            - ``RATING``: outlet flow v. head in ft (m)
+            - ``CONTROL``: control setting v. controller variable
 
     Examples:
         ::
@@ -986,19 +971,12 @@ class Curve(BaseSectionObject):
             PC1 PUMP1
             PC1 100 5 300 10 500 20
 
-    Args:
-        name (str): name assigned to table
-        Type (str): one of ``STORAGE`` / ``SHAPE`` / ``DIVERSION`` / ``TIDAL`` / ``PUMP1`` / ``PUMP2`` / ``PUMP3`` /
-        ``PUMP4`` / ``RATING`` / ``CONTROL``
-        points (list[list[float, float]]): tuple of X-value (an independent variable) and  Y-value (an dependent
-        variable)
-
     Attributes:
-        name (str): name assigned to table
-        Type (str): one of ``STORAGE`` / ``SHAPE`` / ``DIVERSION`` / ``TIDAL`` / ``PUMP1`` / ``PUMP2`` / ``PUMP3`` /
-        ``PUMP4`` / ``RATING`` / ``CONTROL``
-        points (list[list[float, float]]): tuple of X-value (an independent variable) and  Y-value (an dependent
-        variable)
+        name (str): Name assigned to table.
+        kind (str): One of ``STORAGE`` / ``SHAPE`` / ``DIVERSION`` / ``TIDAL`` / ``PUMP1`` / ``PUMP2`` / ``PUMP3`` / ``PUMP4`` / ``RATING`` / ``CONTROL`` (:attr:`Curve.TYPES`).
+        points (list[list[float, float]]): tuple of X-value (an independent variable) and the corresponding Y-value (a dependent variable)
+
+        TYPES: Enum-like for the attribute :attr:`Inflow.kind` with following members -> {`STORAGE`` | ``SHAPE`` | ``DIVERSION`` | ``TIDAL`` | ``PUMP1`` | ``PUMP2`` | ``PUMP3`` | ``PUMP4`` | ``RATING`` | ``CONTROL``}
     """
     _identifier = IDENTIFIERS.name
     _table_inp_export = False
@@ -1040,9 +1018,17 @@ class Curve(BaseSectionObject):
         elif Type == TYPES.CONTROL:
             return ['variable', 'setting']
 
-    def __init__(self, name, Type, points):
+    def __init__(self, name, kind, points):
+        """
+        X-Y tabular data referenced in other sections.
+
+        Args:
+            name (str): Name assigned to table.
+            kind (str): One of ``STORAGE`` / ``SHAPE`` / ``DIVERSION`` / ``TIDAL`` / ``PUMP1`` / ``PUMP2`` / ``PUMP3`` / `PUMP4`` / ``RATING`` / ``CONTROL`` (:attr:`Curve.TYPES`).
+            points (list[list[float, float]]): tuple of X-value (an independent variable) and the corresponding Y-value (a dependent variable)
+        """
         self.name = str(name)
-        self.Type = Type.upper()
+        self.kind = kind.upper()
         self.points = points
 
     @classmethod
@@ -1074,13 +1060,13 @@ class Curve(BaseSectionObject):
 
     @property
     def frame(self):
-        return pd.DataFrame.from_records(self.points, columns=self._get_names(self.Type))
+        return pd.DataFrame.from_records(self.points, columns=self._get_names(self.kind))
 
     def to_inp_line(self):
         points = iter(self.points)
         x, y = next(points)
-        f = '{}  {} {:7.4f} {:7.4f}\n'.format(self.name, self.Type, x, y)
-        Type = ' ' * len(self.Type)
+        f = '{}  {} {:7.4f} {:7.4f}\n'.format(self.name, self.kind, x, y)
+        Type = ' ' * len(self.kind)
         for x, y in points:  # [(x,y), (x,y), ...]
             f += '{}  {} {:7.4f} {:7.4f}\n'.format(self.name, Type, x, y)
         return f
@@ -1088,27 +1074,26 @@ class Curve(BaseSectionObject):
 
 class Street(BaseSectionObject):
     """
-    Section: [**STREETS**]
+    Cross-section geometry for street conduits.
+
+    Section:
+        [STREETS]
 
     Purpose:
         Describes the cross-section geometry of conduits that represent streets.
 
-    Format:
-        ::
-            Name Tcrown Hcurb Sx nRoad (a W)(Sides Tback Sback nBack)
-
     Attributes:
-        name(str): name assigned to the street cross-section
-        width_crown (float): distance from street’s curb to its crown (ft or m) [Tcrown]
-        height_curb (float): curb height (ft or m) [Hcurb]
-        slope (float): street cross slope (%) [Sx]
-        n_road (float): Manning’s roughness coefficient (n) of the road surface [nRoad]
-        depth_gutter (float | optional): gutter depression height (in or mm) (default = 0) [a]
-        width_gutter (float | optional): depressed gutter width (ft or m) (default = 0) [W]
-        sides (int | optional): 1 for single sided street or 2 for two-sided street (default = 2) [Sides]
-        width_backing (float | optional): street backing width (ft or m) (default = 0) [Tback]
-        slope_backing (float | optional): street backing slope (%) (default = 0) [Sback]
-        n_backing (float | optional): street backing Manning’s roughness coefficient (n) (default = 0) [nBack]
+        name(str): Name assigned to the street cross-section.
+        width_crown (float): Distance from street’s curb to its crown (ft or m).
+        height_curb (float): Curb height (ft or m).
+        slope (float): Street cross slope (%).
+        n_road (float): Manning’s roughness coefficient (n) of the road surface.
+        depth_gutter (float | optional): Gutter depression height (in or mm) (default = 0).
+        width_gutter (float | optional): Depressed gutter width (ft or m) (default = 0).
+        sides (int | optional): 1 for single sided street or 2 for two-sided street (default = 2).
+        width_backing (float | optional): Street backing width (ft or m) (default = 0).
+        slope_backing (float | optional): Street backing slope (%) (default = 0).
+        n_backing (float | optional): Street backing Manning’s roughness coefficient (n) (default = 0).
 
     Remarks:
         If the street has no depressed gutter (a = 0) then the gutter width entry is ignored. If the
@@ -1121,20 +1106,20 @@ class Street(BaseSectionObject):
     def __init__(self, name, width_crown, height_curb, slope, n_road, depth_gutter=0, width_gutter=0, sides=2,
                  width_backing=0, slope_backing=0, n_backing=0):
         """
-        Street object.
+        Cross-section geometry for street conduits.
 
         Args:
-            name(str): name assigned to the street cross-section
-            width_crown (float): distance from street’s curb to its crown (ft or m) [Tcrown]
-            height_curb (float): curb height (ft or m) [Hcurb]
-            slope (float): street cross slope (%) [Sx]
-            n_road (float): Manning’s roughness coefficient (n) of the road surface [nRoad]
-            depth_gutter (float | optional): gutter depression height (in or mm) (default = 0) [a]
-            width_gutter (float | optional): depressed gutter width (ft or m) (default = 0) [W]
-            sides (int | optional): 1 for single sided street or 2 for two-sided street (default = 2) [Sides]
-            width_backing (float | optional): street backing width (ft or m) (default = 0) [Tback]
-            slope_backing (float | optional): street backing slope (%) (default = 0) [Sback]
-            n_backing (float | optional): street backing Manning’s roughness coefficient (n) (default = 0) [nBack]
+            name(str): Name assigned to the street cross-section.
+            width_crown (float): Distance from street’s curb to its crown (ft or m).
+            height_curb (float): Curb height (ft or m).
+            slope (float): Street cross slope (%).
+            n_road (float): Manning’s roughness coefficient (n) of the road surface.
+            depth_gutter (float | optional): Gutter depression height (in or mm) (default = 0).
+            width_gutter (float | optional): Depressed gutter width (ft or m) (default = 0).
+            sides (int | optional): 1 for single sided street or 2 for two-sided street (default = 2).
+            width_backing (float | optional): Street backing width (ft or m) (default = 0).
+            slope_backing (float | optional): Street backing slope (%) (default = 0).
+            n_backing (float | optional): Street backing Manning’s roughness coefficient (n) (default = 0).
         """
         self.name = str(name)
         self.width_crown = float(width_crown)
@@ -1151,7 +1136,10 @@ class Street(BaseSectionObject):
 
 class Inlet(BaseSectionObject):
     """
-    Section: [INLETS]
+    Design data for storm drain inlets.
+
+    Section:
+        [INLETS]
 
     Purpose:
         Defines inlet structure designs used to capture street and channel flow that are sent to below
@@ -1166,17 +1154,17 @@ class Inlet(BaseSectionObject):
             Name CUSTOM Dcurve/Rcurve
 
     Parameters:
-        name (str): name assigned to the inlet structure. [Name]
-        length (float): length of the inlet parallel to the street curb (ft or m). [Length]
-        width (float): width of a GRATE or SLOTTED inlet (ft or m). [Width]
-        height (float): height of a CURB opening inlet (ft or m). [Height]
-        grate_type (str): type of GRATE used (see below). [Type]
-        area_open (float): fraction of a GENERIC grate’s area that is open. [Aopen]
-        velocity_splash (float): splash over velocity for a GENERIC grate (ft/s or m/s). [Vsplash]
-        throat_angle (str): the throat angle of a CURB opening inlet (HORIZONTAL, INCLINED or VERTICAL). [Throat]
+        name (str): name assigned to the inlet structure.
+        length (float): length of the inlet parallel to the street curb (ft or m).
+        width (float): width of a GRATE or SLOTTED inlet (ft or m).
+        height (float): height of a CURB opening inlet (ft or m).
+        grate_type (str): type of GRATE used (see below).
+        area_open (float): fraction of a GENERIC grate’s area that is open.
+        velocity_splash (float): splash over velocity for a GENERIC grate (ft/s or m/s).
+        throat_angle (str): the throat angle of a CURB opening inlet (HORIZONTAL, INCLINED or VERTICAL).
         curve (str): one of:
-            - name of a Diversion-type curve (captured flow v. approach flow) for a CUSTOM inlet. [Dcurve]
-            - name of a Rating-type curve (captured flow v. water depth) for a CUSTOM inlet. [Rcurve]
+            - name of a Diversion-type curve (captured flow v. approach flow) for a CUSTOM inlet.
+            - name of a Rating-type curve (captured flow v. water depth) for a CUSTOM inlet.
 
     Remarks:
         See Section 3.3.7 for a description of the different types of inlets that SWMM can model.
@@ -1243,7 +1231,7 @@ class Inlet(BaseSectionObject):
     def __init__(self, name, kind,
                  # length, width, height, grate_type, area_open, velocity_splash, throat_angle
                  ):
-        """Inlet object."""
+        """Design data for storm drain inlets."""
         self.name = name
         self.kind = kind
         # self.length = length
@@ -1254,8 +1242,8 @@ class Inlet(BaseSectionObject):
         # self.velocity_splash = velocity_splash
         # self.throat_angle = throat_angle
 
-    def __new__(cls, *args, **kwargs):
-        pass
+    # def __new__(cls, *args, **kwargs):
+    #     pass
 
 
 class InletGrate(Inlet):
@@ -1291,39 +1279,39 @@ class InletCustom(Inlet):
 
 class InletUsage(BaseSectionObject):
     """
-    Section: [**INLET_USAGE**]
+    Assignment of inlets to street and channel conduits.
+
+    Section:
+        [INLET_USAGE]
 
     Purpose:
         Assigns inlet structures to specific street and open channel conduits.
 
-    Format:
-        ::
-
-            Conduit Inlet Node (Number %Clogged Qmax aLocal wLocal Placement)
-
     Attributes:
-        conduit (str): name of a street or open channel conduit containing the inlet. [Conduit]
-        inlet (str): name of an inlet structure (from the [INLETS] section) to use. [Inlet]
-        node (str): name of the sewer node receiving flow captured by the inlet. [Node]
-        num (int | optional): number of replicate inlets placed on each side of the street. [Number]
-        clogged_pct (float | optional): degree to which inlet capacity is reduced due to clogging (%). [%]
-        flow_max (float | optional): maximum flow that the inlet can capture (flow units). [Qmax]
-        height_gutter (float | optional): height of local gutter depression (in or mm). [aLocal]
-        width_gutter (float | optional): width of local gutter depression (ft or m). [wLocal]
-        placement (str | optional): AUTOMATIC, ON_GRADE, or ON_SAG. [Placement]
+        conduit (str): name of a street or open channel conduit containing the inlet.
+        inlet (str): name of an inlet structure (from the [``INLETS``] section (:class:`Inlet`)) to use.
+        node (str): name of the sewer node receiving flow captured by the inlet.
+        num (int | optional): number of replicate inlets placed on each side of the street.
+        clogged_pct (float | optional): degree to which inlet capacity is reduced due to clogging (%).
+        flow_max (float | optional): maximum flow that the inlet can capture (flow units).
+        height_gutter (float | optional): height of local gutter depression (in or mm).
+        width_gutter (float | optional): width of local gutter depression (ft or m).
+        placement (str | optional): One of ``AUTOMATIC``, ``ON_GRADE``, or ``ON_SAG`` (:attr:`InletUsage.PLACEMENTS`).
+
+        PLACEMENTS: Enum-like for the attribute :attr:`InletUsage.placement` with following members -> {``AUTOMATIC`` | ``ON_GRADE`` | ``ON_SAG``}
 
     Remarks:
-        Only conduits with a STREET cross section can be assigned a curb and gutter inlet while
-        drop inlets can only be assigned to conduits with a RECT_OPEN or TRAPEZOIDAL cross
+        Only conduits with a ``STREET`` cross section can be assigned a curb and gutter inlet while
+        drop inlets can only be assigned to conduits with a ``RECT_OPEN`` or ``TRAPEZOIDAL`` cross
         section.
 
         Only the first three parameters are required. The default number of inlets is 1 (for each side
         of a two-sided street) while the remaining parameters have default values of 0.
 
-        A Qmax value of 0 indicates that the inlet has no flow restriction.
+        A :attr:`InletUsage.flow_max` value of 0 indicates that the inlet has no flow restriction.
 
         The local gutter depression applies only over the length of the inlet unlike the continuous
-        depression for a STREET cross section which exists over the full curb length.
+        depression for a ``STREET`` cross section which exists over the full curb length.
 
         The default inlet placement is AUTOMATIC, meaning that the program uses the network
         topography to determine whether an inlet operates on-grade or on-sag. On-grade means the
@@ -1335,21 +1323,26 @@ class InletUsage(BaseSectionObject):
     _table_inp_export = True
     _section_label = INLET_USAGE
 
+    class PLACEMENTS:
+        AUTOMATIC = 'AUTOMATIC'
+        ON_GRADE = 'ON_GRADE'
+        ON_SAG = 'ON_SAG'
+
     def __init__(self, conduit, inlet, node, num=NaN, clogged_pct=NaN, flow_max=NaN, height_gutter=NaN,
                  width_gutter=NaN, placement=NaN):
         """
-        InletUsage object.
+        Assignment of inlets to street and channel conduits.
 
         Args:
-            conduit (str): name of a street or open channel conduit containing the inlet. [Conduit]
-            inlet (str): name of an inlet structure (from the [INLETS] section) to use. [Inlet]
-            node (str): name of the sewer node receiving flow captured by the inlet. [Node]
-            num (int | optional): number of replicate inlets placed on each side of the street. [Number]
-            clogged_pct (float | optional): degree to which inlet capacity is reduced due to clogging (%). [%]
-            flow_max (float | optional): maximum flow that the inlet can capture (flow units). [Qmax]
-            height_gutter (float | optional): height of local gutter depression (in or mm). [aLocal]
-            width_gutter (float | optional): width of local gutter depression (ft or m). [wLocal]
-            placement (str | optional): AUTOMATIC, ON_GRADE, or ON_SAG. [Placement]
+            conduit (str): name of a street or open channel conduit containing the inlet.
+            inlet (str): name of an inlet structure (from the [INLETS] section (:class:`Inlet`)) to use.
+            node (str): name of the sewer node receiving flow captured by the inlet.
+            num (int | optional): number of replicate inlets placed on each side of the street.
+            clogged_pct (float | optional): degree to which inlet capacity is reduced due to clogging (%).
+            flow_max (float | optional): maximum flow that the inlet can capture (flow units).
+            height_gutter (float | optional): height of local gutter depression (in or mm).
+            width_gutter (float | optional): width of local gutter depression (ft or m).
+            placement (str | optional):  One of ``AUTOMATIC``, ``ON_GRADE``, or ``ON_SAG`` (:attr:`InletUsage.PLACEMENTS`).
         """
         self.conduit = str(conduit)
         self.inlet = str(inlet)
@@ -1364,7 +1357,10 @@ class InletUsage(BaseSectionObject):
 
 class Timeseries(BaseSectionObject):
     """
-    Section: [**TIMESERIES**]
+    Time series data referenced in other sections.
+
+    Section:
+        [TIMESERIES]
 
     Purpose:
         Describes how a quantity varies over time.
@@ -1408,8 +1404,10 @@ class Timeseries(BaseSectionObject):
             HY1 0 0 1.25 100 2:30 150 3.0 120 4.5 0
             HY1 32:10 0 34.0 57 35.33 85 48.67 24 50 0
 
-    Args:
+    Attributes:
         name (str): name assigned to time series.
+
+        TYPES: Enum-like for the attribute :attr:`TimeseriesFile.kind` with following members -> {``FILE``}
     """
     _identifier = IDENTIFIERS.name
     _table_inp_export = False
@@ -1470,7 +1468,10 @@ class Timeseries(BaseSectionObject):
 
 class TimeseriesFile(Timeseries):
     """
-    Section: [**TIMESERIES**]
+    Time series data referenced in other sections.
+
+    Section:
+        [TIMESERIES]
 
     Purpose:
         Describes how a quantity varies over time.
@@ -1480,12 +1481,20 @@ class TimeseriesFile(Timeseries):
 
             Name FILE Fname
 
-    Args:
+    Attributes:
         name (str): name assigned to time series.
-        filename (str): name of a file in which the time series data are stored ``Fname``
+        filename (str): name of a file in which the time series data are stored.
     """
 
     def __init__(self, name, filename, kind=Timeseries.TYPES.FILE):
+        """
+        Time series data referenced in other sections.
+
+        Args:
+            name (str): Name assigned to time series.
+            filename (str): Name of a file in which the time series data are stored.
+            kind: always ``FILE`` (:attr:`Timeseries.TYPES`.FILE)
+        """
         Timeseries.__init__(self, name)
         self.kind = self.TYPES.FILE
         self.filename = filename.strip('"')
@@ -1496,7 +1505,10 @@ class TimeseriesFile(Timeseries):
 
 class TimeseriesData(Timeseries):
     """
-    Section: [**TIMESERIES**]
+    Time series data referenced in other sections.
+
+    Section:
+        [TIMESERIES]
 
     Purpose:
         Describes how a quantity varies over time.
@@ -1507,7 +1519,7 @@ class TimeseriesData(Timeseries):
             Name ( Date ) Hour Value ...
             Name Time Value ...
 
-    Args:
+    Attributes:
         name (str): name assigned to time series.
         data (list[tuple]): list of index/value tuple with:
 
@@ -1519,6 +1531,19 @@ class TimeseriesData(Timeseries):
     """
 
     def __init__(self, name, data):
+        """
+        Time series data referenced in other sections.
+
+        Args:
+            name (str): Name assigned to time series.
+            data (list[tuple]): List of index/value tuple with:
+
+                - Date: date in Month/Day/Year format (e.g., June 15, 2001 would be 6/15/2001).
+                - Hour: 24-hour military time (e.g., 8:40 pm would be 20:40) relative to the last date specified
+                       (or to midnight of the starting date of the simulation if no previous date was specified).
+                - Time: hours since the start of the simulation, expressed as a decimal number or as hours:minutes.
+                - Value: value corresponding to given date and time.
+        """
         Timeseries.__init__(self, name)
         self.data = data
         self._fix_index()
@@ -1563,7 +1588,7 @@ class TimeseriesData(Timeseries):
 
                     date_time_new.append(str_to_datetime(last_date, time, str_only=str_only))
             if str_only:
-                    date_time_new = pd.to_datetime(date_time_new, format='%m/%d/%Y %H:%M:%S')
+                date_time_new = pd.to_datetime(date_time_new, format='%m/%d/%Y %H:%M:%S')
 
             self.data = list(zip(date_time_new, values))
         except:
@@ -1624,7 +1649,22 @@ class TimeseriesData(Timeseries):
 
 
 class Tag(BaseSectionObject):
-    """Section: [**TAGS**]"""
+    """
+    Tags for node, link and subcatchment objects.
+
+    Section:
+        [TAGS]
+
+    Purpose:
+        Not for computation. Only for labeling or selection of objects.
+
+    Attributes:
+        kind (str): Type of object. One of :attr:`Tag.TYPES`.
+        name (str): label of the object.
+        tag (str): tag.
+
+        TYPES: Enum-like for the attribute :attr:`Tag.kind` with following members -> {``Node`` | ``Subcatch`` | ``Link``}
+    """
     _identifier = ('kind', IDENTIFIERS.name)
     _section_label = TAGS
 
@@ -1635,13 +1675,13 @@ class Tag(BaseSectionObject):
 
     def __init__(self, kind, name, tag, *tags):
         """
-        Tag object.
+        Tags for node, link and subcatchment objects.
 
         Args:
-            kind (str): Type of object
-            name (str): label of the object
-            tag (str): tag
-            *tags (str): only for .inp-file reading, if whitespaces are in the tag
+            kind (str): Type of object. One of :attr:`Tag.TYPES`.
+            name (str): label of the object.
+            tag (str): tag.
+            *tags (str): Only for .inp-file reading, if whitespaces are in the tag.
         """
         self.kind = kind.lower().capitalize()
         self.name = name
@@ -1652,39 +1692,41 @@ class Tag(BaseSectionObject):
 
 class Label(BaseSectionObject):
     """
-    Section: [**LABELS**]
+    X,Y coordinates and text of labels.
+
+    Section:
+        [LABELS]
 
     Purpose:
         Assigns X,Y coordinates to user-defined map labels.
 
-    Format:
-        ::
-
-            Xcoord Ycoord Label (Anchor Font Size Bold Italic)
-
     Args:
-        x (float):
-            horizontal coordinate relative to origin in lower left of map.
-        y (float):
-            vertical coordinate relative to origin in lower left of map.
-        label (str):
-            text of label surrounded by double quotes.
-        anchor (str):
-            name of node or subcatchment that anchors the label on zoom-ins (use an empty pair of double quotes if
-            there is no anchor).
-        font (str):
-            name of label’s font (surround by double quotes if the font name includes spaces).
-        size (float):
-            font size in points.
-        bold (bool):
-            YES for bold font, NO otherwise.
-        italic (bool):
-            YES for italic font, NO otherwise.
+        x (float): Horizontal coordinate relative to origin in lower left of map.
+        y (float): Vertical coordinate relative to origin in lower left of map.
+        label (str): Text of label surrounded by double quotes.
+        anchor (str): Name of node or subcatchment that anchors the label on zoom-ins (use an empty pair of double quotes if there is no anchor).
+        font (str): Name of label’s font (surround by double quotes if the font name includes spaces).
+        size (float): Font size in points.
+        bold (bool): ``YES`` (:obj:`True`) for bold font, `NO`` (:obj:`False`)  otherwise.
+        italic (bool): ``YES`` (:obj:`True`) for italic font, `NO`` (:obj:`False`)  otherwise.
     """
     _identifier = ('x', 'y', 'label')
     _section_label = LABELS
 
     def __init__(self, x, y, label, anchor=NaN, font=NaN, size=NaN, bold=NaN, italic=NaN):
+        """
+        X,Y coordinates and text of labels.
+
+        Args:
+            x (float): Horizontal coordinate relative to origin in lower left of map.
+            y (float): Vertical coordinate relative to origin in lower left of map.
+            label (str): Text of label surrounded by double quotes.
+            anchor (str): Name of node or subcatchment that anchors the label on zoom-ins (use an empty pair of double quotes if there is no anchor).
+            font (str): Name of label’s font (surround by double quotes if the font name includes spaces).
+            size (float): Font size in points.
+            bold (bool): ``YES`` (:obj:`True`) for bold font, `NO`` (:obj:`False`)  otherwise.
+            italic (bool): ``YES`` (:obj:`True`) for italic font, `NO`` (:obj:`False`)  otherwise.
+        """
         self.x = float(x)
         self.y = float(y)
         self.label = label
@@ -1701,7 +1743,10 @@ class Label(BaseSectionObject):
 
 class Hydrograph(BaseSectionObject):
     """
-    Section: [**HYDROGRAPHS**]
+    Unit hydrograph data used to construct RDII inflows.
+
+    Section:
+        [HYDROGRAPHS]
 
     Purpose:
         Specifies the shapes of the triangular unit hydrographs that determine the amount of
@@ -1714,36 +1759,17 @@ class Hydrograph(BaseSectionObject):
             Name Month SHORT/MEDIUM/LONG R T K (Dmax Drec D0)
 
     Remarks:
-        Name
-            name assigned to a unit hydrograph group.
-        Raingage
-            name of the rain gage used by the unit hydrograph group.
-        Month
-            month of the year (e.g., JAN, FEB, etc. or ALL for all months).
-        R
-            response ratio for the unit hydrograph.
-        T
-            time to peak (hours) for the unit hydrograph.
-        K
-            recession limb ratio for the unit hydrograph.
-        Dmax
-            maximum initial abstraction depth available (in rain depth units).
-        Drec
-            initial abstraction recovery rate (in rain depth units per day)
-        D0
-            initial abstraction depth already filled at the start of the simulation (in rain depth units).
-
         For each group of unit hydrographs, use one line to specify its rain gage followed by
         as many lines as are needed to define each unit hydrograph used by the group
         throughout the year. Three separate unit hydrographs, that represent the short-term,
         medium-term, and long-term RDII responses, can be defined for each month (or all
         months taken together). Months not listed are assumed to have no RDII.
 
-        The response ratio (R) is the fraction of a unit of rainfall depth that becomes RDII.
+        The response ratio (:attr:`Hydrograph.Parameters.response_ratio`, R) is the fraction of a unit of rainfall depth that becomes RDII.
         The sum of the ratios for a set of three hydrographs does not have to equal 1.0.
 
-        The recession limb ratio (K) is the ratio of the duration of the hydrograph’s recession
-        limb to the time to peak (T) making the hydrograph time base equal to T*(1+K) hours.
+        The recession limb ratio (:attr:`Hydrograph.Parameters.recession_limb_ratio`,K) is the ratio of the duration of the hydrograph’s recession
+        limb to the time to peak (:attr:`Hydrograph.Parameters.time_to_peak`,T) making the hydrograph time base equal to T*(1+K) hours.
         The area under each unit hydrograph is 1 inch (or mm).
 
         The optional initial abstraction parameters determine how much rainfall is lost at the
@@ -1762,21 +1788,34 @@ class Hydrograph(BaseSectionObject):
             UH101 JUL SHORT 0.033 0.5 2.0
             UH101 JUL MEDIUM 0.011 2.0 2.0
 
-    Args:
-        name (str): name assigned to time series.
+    Attributes:
+        name (str): Name assigned to a unit hydrograph group.
+        rain_gage (str): Name of the rain gage used by the unit hydrograph group.
+        monthly_parameters (list[Hydrograph.Parameters]): List of response types per month.
+
+        RESPONSE: Enum-like for the attribute :attr:`Hydrograph.Parameters.response` with following members -> {``SHORT`` | ``MEDIUM`` | ``LONG``}
+        MONTHS: Enum-like for the attribute :attr:`Hydrograph.Parameters.month` with following members -> {JAN, FEB, MAR, APR, MAI, JUN, JUL, AUG, SEP, OCT, NOV, DEC, ALL}
     """
     _identifier = IDENTIFIERS.name
     _table_inp_export = False
     _section_label = HYDROGRAPHS
 
-    class TYPES:
+    class RESPONSE:
         SHORT = 'SHORT'
         MEDIUM = 'MEDIUM'
         LONG = 'LONG'
 
     def __init__(self, name, rain_gage, monthly_parameters=None):
+        """
+        Unit hydrograph data used to construct RDII inflows.
+
+        Args:
+            name (str): Name assigned to a unit hydrograph group.
+            rain_gage (str): Name of the rain gage used by the unit hydrograph group.
+            monthly_parameters (list[Hydrograph.Parameters]): List of response types per month.
+        """
         self.name = str(name)
-        self.rain_gage = rain_gage
+        self.rain_gage = str(rain_gage)
 
         if monthly_parameters is None:
             self.monthly_parameters = []
@@ -1816,26 +1855,27 @@ class Hydrograph(BaseSectionObject):
         _possible = [JAN, FEB, MAR, APR, MAI, JUN, JUL, AUG, SEP, OCT, NOV, DEC, ALL]
 
         class Parameters(BaseSectionObject):
-            _identifier = IDENTIFIERS.name
+            _identifier = (IDENTIFIERS.name, 'month', 'response')
 
             def __init__(self, name, month, response, response_ratio, time_to_peak, recession_limb_ratio,
                          depth_max=NaN, depth_recovery=NaN, depth_init=NaN):
                 """
+                Unit hydrograph parameters.
 
                 Args:
                     name (str): name assigned to a unit hydrograph group.
-                    month (str):
-                    response (str):
-                    response_ratio (float):
-                    time_to_peak (float):
-                    recession_limb_ratio (float):
-                    depth_max (str):
-                    depth_recovery (str):
-                    depth_init (str):
+                    month (str): month of the year (e.g., JAN, FEB, etc. or ALL for all months) (One of :attr:`Hydrograph.MONTHS`).
+                    response (str): One of :attr:`Hydrograph.RESPONSE`.
+                    response_ratio (float): response ratio for the unit hydrograph.
+                    time_to_peak (float):  time to peak (hours) for the unit hydrograph.
+                    recession_limb_ratio (float):  recession limb ratio for the unit hydrograph.
+                    depth_max (str): maximum initial abstraction depth available (in rain depth units).
+                    depth_recovery (str): initial abstraction recovery rate (in rain depth units per day)
+                    depth_init (str): initial abstraction depth already filled at the start of the simulation (in rain depth units).
                 """
                 self.name = str(name)
-                self.month = month
-                self.response = response
+                self.month = str(month)
+                self.response = str(response)
                 self.response_ratio = float(response_ratio)
                 self.time_to_peak = float(time_to_peak)
                 self.recession_limb_ratio = float(recession_limb_ratio)
@@ -1852,32 +1892,35 @@ class Hydrograph(BaseSectionObject):
 
 class LandUse(BaseSectionObject):
     """
-    Section: [**LANDUSES**]
+    Land use categories.
+
+    Section:
+        [LANDUSES]
 
     Purpose:
         Identifies the various categories of land uses within the drainage area. Each
         subcatchment area can be assigned a different mix of land uses. Each land use can
         be subjected to a different street sweeping schedule.
 
-    Formats:
-        ::
-
-            Name (SweepInterval Availability LastSweep)
-
-    Args:
-        name:
-            land use name.
-        sweep_interval:
-            days between street sweeping.
-        availability:
-            fraction of pollutant buildup available for removal by street sweeping.
-        last_sweep:
-            days since last sweeping at start of the simulation.
+    Attributes:
+        name (str): Land use name.
+        sweep_interval (float): Days between street sweeping.
+        availability (float): Fraction of pollutant buildup available for removal by street sweeping.
+        last_sweep (float): Days since last sweeping at start of the simulation.
     """
     _identifier = IDENTIFIERS.name
     _section_label = LANDUSES
 
     def __init__(self, name, sweep_interval=NaN, availability=NaN, last_sweep=NaN):
+        """
+        Land use categories.
+
+        Args:
+            name (str): Land use name.
+            sweep_interval (float): Days between street sweeping.
+            availability (float): Fraction of pollutant buildup available for removal by street sweeping.
+            last_sweep (float): Days since last sweeping at start of the simulation.
+        """
         self.name = str(name)
         self.sweep_interval = float(sweep_interval)
         self.availability = float(availability)
@@ -1886,34 +1929,16 @@ class LandUse(BaseSectionObject):
 
 class WashOff(BaseSectionObject):
     """
-    Section: [**WASHOFF**]
+    Washoff functions for pollutants and land uses.
+
+    Section:
+        [WASHOFF]
 
     Purpose:
         Specifies the rate at which pollutants are washed off from different land uses during rain events.
 
-    Formats:
-        ::
-
-            Landuse Pollutant FuncType C1 C2 SweepRmvl BmpRmvl
-
-    Attributes:
-        land_use:
-            land use name.
-        pollutant:
-            pollutant name.
-        func_type:
-            washoff function type: ``EXP`` / ``RC`` / ``EMC``.
-        C1 (float):
-            washoff function coefficients(see Table D-3).
-        C2 (float):
-            washoff function coefficients(see Table D-3).
-        sweeping_removal (float):
-            street sweeping removal efficiency (percent) .
-        BMP_removal (float):
-            BMP removal efficiency (percent).
-
     Remarks:
-        Table D-3 Pollutant wash off functions
+        Table: Pollutant wash off functions
 
         +------+--------------------------+--------------------------------------+------------+
         | Name | Function                 | Equation                             | Units      |
@@ -1929,7 +1954,7 @@ class WashOff(BaseSectionObject):
 
         For the Exponential function the runoff variable is expressed in catchment depth
         per unit of time (inches per hour or millimeters per hour), while for the Rating Curve
-        function it is in whatever flow units were specified in the [``OPTIONS``] section of the
+        function it is in whatever flow units were specified in the [``OPTIONS``] section (:class:`OptionSection`) of the
         input file (e.g., ``CFS``, ``CMS``, etc.).
 
         The buildup parameter in the Exponential function is the current total buildup over
@@ -1939,9 +1964,19 @@ class WashOff(BaseSectionObject):
         function, the units of ``C1`` depend on the flow units employed. For the EMC (event
         mean concentration) function, ``C1`` is always in concentration units.
 
+    Attributes:
+        land_use (str): Land use name.
+        pollutant (str): Pollutant name.
+        func_type: One of  ``EXP`` / ``RC`` / ``EMC`` (:attr:`WashOff.FUNCTIONS`).
+        C1 (float): Washoff function coefficients (see Table).
+        C2 (float): Washoff function coefficients (see Table).
+        sweeping_removal (float): Street sweeping removal efficiency (percent) .
+        BMP_removal (float): BMP removal efficiency (percent).
+
+        FUNCTIONS: Enum-like for the attribute :attr:`WashOff.func_type` with following members -> {``EXP`` | ``RC`` | ``EMC``}
+
     See Also:
-        `:class:swmm_api.input_file.helpers.BaseSectionObject` : Parent class of this one.
-        BaseSectionObject : Parent class of this one.
+        :class:`~swmm_api.input_file.helpers.BaseSectionObject` : Abstract parent class of this one.
     """
     _identifier = (IDENTIFIERS.land_use, IDENTIFIERS.pollutant)
     _section_label = WASHOFF
@@ -1953,27 +1988,20 @@ class WashOff(BaseSectionObject):
 
     def __init__(self, land_use, pollutant, func_type, C1, C2, sweeping_removal, BMP_removal):
         """
-        WashOff object.
+        Washoff functions for pollutants and land uses.
 
         Args:
-            land_use:
-                land use name.
-            pollutant:
-                pollutant name.
-            func_type:
-                washoff function type: ``EXP`` / ``RC`` / ``EMC``.
-            C1 (float):
-                washoff function coefficients(see Table D-3).
-            C2 (float):
-                washoff function coefficients(see Table D-3).
-            sweeping_removal (float):
-                street sweeping removal efficiency (percent) .
-            BMP_removal (float):
-                BMP removal efficiency (percent).
+            land_use (str): Land use name.
+            pollutant (str): Pollutant name.
+            func_type: One of  ``EXP`` / ``RC`` / ``EMC`` (:attr:`WashOff.FUNCTIONS`).
+            C1 (float): Washoff function coefficients (see Table D-3).
+            C2 (float): Washoff function coefficients (see Table D-3).
+            sweeping_removal (float): Street sweeping removal efficiency (percent) .
+            BMP_removal (float): BMP removal efficiency (percent).
         """
-        self.land_use = land_use
-        self.pollutant = pollutant
-        self.func_type = func_type
+        self.land_use = str(land_use)
+        self.pollutant = str(pollutant)
+        self.func_type = str(func_type)
         self.C1 = float(C1)
         self.C2 = float(C2)
         self.sweeping_removal = float(sweeping_removal)
@@ -1982,31 +2010,13 @@ class WashOff(BaseSectionObject):
 
 class BuildUp(BaseSectionObject):
     r"""
-    Section: [**BUILDUP**]
+    Buildup functions for pollutants and land uses.
+
+    Section:
+        [BUILDUP]
 
     Purpose:
         Specifies the rate at which pollutants build up over different land uses between rain events.
-
-    Formats:
-        ::
-
-            Landuse Pollutant FuncType C1 C2 C3 PerUnit
-
-    Attributes:
-        land_use:
-            land use name.
-        pollutant:
-            pollutant name.
-        func_type:
-            buildup function type: ( ``POW`` / ``EXP`` / ``SAT`` / ``EXT`` ).
-        C1 (float):
-            buildup function parameters (see Table).
-        C2 (float):
-            buildup function parameters (see Table).
-        C3 (float):
-            buildup function parameters (see Table).
-        per_unit (str):
-            ``AREA`` if buildup is per unit area, ``CURBLENGTH`` if per length of curb.
 
     Remarks:
         Buildup is measured in pounds (kilograms) per unit of area (or curb length) for
@@ -2032,43 +2042,49 @@ class BuildUp(BaseSectionObject):
         curb length), ``C2`` is a scaling factor, and ``C3`` is the name of a Time Series that
         contains buildup rates (as mass per area or curb length per day) as a function of
         time.
+
+    Attributes:
+        land_use (str): Land use name.
+        pollutant (str): Pollutant name.
+        func_type: One of ``POW`` / ``EXP`` / ``SAT`` / ``EXT`` (:attr:`BuildUp.FUNCTIONS`).
+        C1 (float): buildup function parameters (see Table).
+        C2 (float): buildup function parameters (see Table).
+        C3 (float): buildup function parameters (see Table).
+        per_unit (str): ``AREA`` if buildup is per unit area, ``CURBLENGTH`` if per length of curb  (:attr:`BuildUp.UNIT`).
+
+        FUNCTIONS: Enum-like for the attribute :attr:`BuildUp.func_type` with following members -> {``POW`` | ``EXP`` | ``SAT`` | ``EXT``}
+        UNIT: Enum-like for the attribute :attr:`BuildUp.per_unit` with following members -> {``AREA`` | ``CURBLENGTH``}
     """
     _identifier = (IDENTIFIERS.land_use, IDENTIFIERS.pollutant)
     _section_label = BUILDUP
 
     class FUNCTIONS:
+        POW = 'POW'
         EXP = 'EXP'
-        RC = 'RC'
-        EMC = 'EMC'
+        SAT = 'SAT'
+        EXT = 'EXT'
 
     class UNIT:
         AREA = 'AREA'
         CURBLENGTH = 'CURBLENGTH'
-        CURB = 'CURB'
+        # CURB = 'CURB'
 
     def __init__(self, land_use, pollutant, func_type, C1, C2, C3, per_unit):
         """
-        BuildUp object.
+        Buildup functions for pollutants and land uses.
 
         Args:
-            land_use:
-                land use name.
-            pollutant:
-                pollutant name.
-            func_type:
-                buildup function type: ( ``POW`` / ``EXP`` / ``SAT`` / ``EXT`` ).
-            C1 (float):
-                buildup function parameters (see Table).
-            C2 (float):
-                buildup function parameters (see Table).
-            C3 (float):
-                buildup function parameters (see Table).
-            per_unit (str):
-                ``AREA`` if buildup is per unit area, ``CURBLENGTH`` if per length of curb.
+            land_use (str): Land use name.
+            pollutant (str): Pollutant name.
+            func_type: One of ``POW`` / ``EXP`` / ``SAT`` / ``EXT`` (:attr:`BuildUp.FUNCTIONS`).
+            C1 (float): buildup function parameters (see Table).
+            C2 (float): buildup function parameters (see Table).
+            C3 (float): buildup function parameters (see Table).
+            per_unit (str): ``AREA`` if buildup is per unit area, ``CURBLENGTH`` if per length of curb  (:attr:`BuildUp.UNIT`).
         """
-        self.land_use = land_use
-        self.pollutant = pollutant
-        self.func_type = func_type
+        self.land_use = str(land_use)
+        self.pollutant = str(pollutant)
+        self.func_type = str(func_type)
         self.C1 = float(C1)
         self.C2 = float(C2)
         self.C3 = float(C3)
@@ -2077,7 +2093,10 @@ class BuildUp(BaseSectionObject):
 
 class SnowPack(BaseSectionObject):
     """
-    Section: [**SNOWPACKS**]
+    Subcatchment snow pack parameters.
+
+    Section:
+        [SNOWPACKS]
 
     Purpose:
         Specifies parameters that govern how snowfall accumulates and melts on the
@@ -2091,55 +2110,25 @@ class SnowPack(BaseSectionObject):
             Name PERVIOUS Cmin Cmax Tbase FWF SD0 FW0 SD100
             Name REMOVAL Dplow Fout Fimp Fperv Fimelt (Fsub Scatch)
 
-    Args:
-        name (str):
-            name assigned to snowpack parameter set.
-        Cmin (float):
-            minimum melt coefficient (in/hr-deg F or mm/hr-deg C).
-        Cmax (float):
-            maximum melt coefficient (in/hr-deg F or mm/hr-deg C).
-        Tbase (float):
-            snow melt base temperature (deg F or deg C).
-        FWF (float):
-            ratio of free water holding capacity to snow depth (fraction).
-        SD0 (float):
-            initial snow depth (in or mm water equivalent).
-        FW0 (float):
-            initial free water in pack (in or mm).
-        SNN0 (float):
-            fraction of impervious area that can be plowed.
-        SD100 (float):
-            snow depth above which there is 100% cover (in or mm water equivalent).
-        Dplow (float):
-            depth of snow on plowable areas at which snow removal begins (in or mm).
-        Fout (float):
-            fraction of snow on plowable area transferred out of watershed.
-        Fimp (float):
-            fraction of snow on plowable area transferred to impervious area by plowing.
-        Fperv (float):
-            fraction of snow on plowable area transferred to pervious area by plowing.
-        Fimelt (float):
-            fraction of snow on plowable area converted into immediate melt.
-        Fsub (float):
-            fraction of snow on plowable area transferred to pervious area in another subcatchment.
-        Scatch (str):
-            name of subcatchment receiving the Fsub fraction of transferred snow.
-
     Remarks:
-        Use one set of PLOWABLE, IMPERVIOUS, and PERVIOUS lines for each snow pack
+        Use one set of ``PLOWABLE``, ``IMPERVIOUS``, and ``PERVIOUS`` lines for each snow pack
         parameter set created. Snow pack parameter sets are associated with specific
-        subcatchments in the [SUBCATCHMENTS] section. Multiple subcatchments can share
+        subcatchments in the [``SUBCATCHMENTS``] section (:class:`SubCatchment`). Multiple subcatchments can share
         the same set of snow pack parameters.
 
-        The PLOWABLE line contains parameters for the impervious area of a subcatchment
+        The ``PLOWABLE`` line contains parameters for the impervious area of a subcatchment
         that is subject to snow removal by plowing but not to areal depletion. This area is the
-        fraction SNN0 of the total impervious area. The IMPERVIOUS line contains parameter
-        values for the remaining impervious area and the PERVIOUS line does the same for
+        fraction SNN0 of the total impervious area. The ``IMPERVIOUS`` line contains parameter
+        values for the remaining impervious area and the ``PERVIOUS`` line does the same for
         the entire pervious area. Both of the latter two areas are subject to areal depletion.
 
-        The REMOVAL line describes how snow removed from the plowable area is
+        The ``REMOVAL`` line describes how snow removed from the plowable area is
         transferred onto other areas. The various transfer fractions should sum to no more
         than 1.0. If the line is omitted then no snow removal takes place.
+
+    Attributes:
+        name (str): Name assigned to snowpack parameter set.
+        parts (dict): key = one of [``PLOWABLE``, ``IMPERVIOUS``, ``PERVIOUS``, ``REMOVAL``] and value = corresponding [``SnowPack.PARTS.Plowable``, ``SnowPack.PARTS.Pervious``, ``SnowPack.PARTS.Impervious``, ``SnowPack.PARTS.Removal``]
     """
     _identifier = IDENTIFIERS.name
     _section_label = SNOWPACKS
@@ -2187,6 +2176,16 @@ class SnowPack(BaseSectionObject):
             _section_label = SNOWPACKS
 
             def __init__(self, Cmin, Cmax, Tbase, FWF, SD0, FW0):
+                """
+
+                Args:
+                    Cmin (float): Minimum melt coefficient (in/hr-deg F or mm/hr-deg C).
+                    Cmax (float): Maximum melt coefficient (in/hr-deg F or mm/hr-deg C).
+                    Tbase (float): Snow melt base temperature (deg F or deg C).
+                    FWF (float): Ratio of free water holding capacity to snow depth (fraction).
+                    SD0 (float): Initial snow depth (in or mm water equivalent).
+                    FW0 (float): Initial free water in pack (in or mm).
+                """
                 self.Cmin = float(Cmin)
                 self.Cmax = float(Cmax)
                 self.Tbase = float(Tbase)
@@ -2205,6 +2204,18 @@ class SnowPack(BaseSectionObject):
             _LABEL = 'PERVIOUS'
 
             def __init__(self, Cmin, Cmax, Tbase, FWF, SD0, FW0, SD100):
+                """
+                ``PERVIOUS`` line.
+
+                Args:
+                    Cmin (float): Minimum melt coefficient (in/hr-deg F or mm/hr-deg C).
+                    Cmax (float): Maximum melt coefficient (in/hr-deg F or mm/hr-deg C).
+                    Tbase (float): Snow melt base temperature (deg F or deg C).
+                    FWF (float): Ratio of free water holding capacity to snow depth (fraction).
+                    SD0 (float): Initial snow depth (in or mm water equivalent).
+                    FW0 (float): Initial free water in pack (in or mm).
+                    SD100 (float): Snow depth above which there is 100% cover (in or mm water equivalent).
+                """
                 SnowPack.PARTS._Base.__init__(self, Cmin, Cmax, Tbase, FWF, SD0, FW0)
                 self.SD100 = float(SD100)
 
@@ -2215,6 +2226,20 @@ class SnowPack(BaseSectionObject):
             _LABEL = 'REMOVAL'
 
             def __init__(self, Dplow, Fout, Fimp, Fperv, Fimelt, Fsub=NaN, Scatch=NaN):
+                """
+                The ``REMOVAL`` line describes how snow removed from the plowable area is
+                transferred onto other areas. The various transfer fractions should sum to no more
+                than 1.0. If the line is omitted then no snow removal takes place.
+
+                Args:
+                    Dplow (float): Depth of snow on plowable areas at which snow removal begins (in or mm).
+                    Fout (float): Fraction of snow on plowable area transferred out of watershed.
+                    Fimp (float): Fraction of snow on plowable area transferred to impervious area by plowing.
+                    Fperv (float): Fraction of snow on plowable area transferred to pervious area by plowing.
+                    Fimelt (float): Fraction of snow on plowable area converted into immediate melt.
+                    Fsub (float): Fraction of snow on plowable area transferred to pervious area in another subcatchment.
+                    Scatch (str): Name of subcatchment receiving the Fsub fraction of transferred snow.
+                """
                 self.Dplow = float(Dplow)
                 self.Fout = float(Fout)
                 self.Fimp = float(Fimp)
@@ -2270,7 +2295,7 @@ class Aquifer(BaseSectionObject):
         zone with a moving boundary between the two.
 
     Remarks:
-        Local values for ``Ebot``, ``Egw``, and ``Umc`` can be assigned to specific subcatchments in
+        Local values for :attr:`Aquifer.Ebot`, :attr:`Aquifer.Egw`, and :attr:`Aquifer.Umc` can be assigned to specific subcatchments in
         the [``GROUNDWATER``] section (:class:`Groundwater`) described below.
 
     Attributes:

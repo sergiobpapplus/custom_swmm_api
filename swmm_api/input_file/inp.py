@@ -12,16 +12,27 @@ from .sections import *
 from .sections.subcatch import INFILTRATION_DICT
 
 
+DEFAULT_ENCODING = 'utf-8'
+
+
 class SwmmInput(CustomDict):
     """
-    overall class for an input file
+    Overall class for an input file.
 
-    child class of dict
+    Child class of dict.
 
-    just used for the copy function and to identify ``.inp``-file data
+    Just used for the copy function and to identify ``.inp``-file data.
     """
 
-    def __init__(self, *args, custom_section_handler=None, encoding='utf-8', **kwargs):
+    def __init__(self, *args, custom_section_handler=None, encoding=DEFAULT_ENCODING, force_ignore_case=False, **kwargs):
+        """
+
+        Args:
+            *args: only for creating the inp-object as a dict.
+            custom_section_handler:
+            encoding (str): encoding of the .inp-text-file (None -> auto-detect encoding ... takes a few seconds)
+            **kwargs: only for creating the inp-object as a dict.
+        """
         filename = None
         if len(args) == 1 and isinstance(args[0], str) and os.path.isfile(args[0]):
             # argument is an inp-file.
@@ -40,9 +51,10 @@ class SwmmInput(CustomDict):
         self._original_section_order = SECTIONS_ORDER_MP
 
         if filename is not None:
-            self._init_from_file(filename, force_ignore_case=False, encoding=encoding)
+            self._init_from_file(filename, force_ignore_case=force_ignore_case, encoding=encoding)
 
     def copy(self):
+        """Copy inp-data."""
         new = type(self)()
         for key in self:
             if hasattr(self._data[key], 'copy'):
@@ -52,6 +64,7 @@ class SwmmInput(CustomDict):
         return new
 
     def update(self, d=None, **kwargs):
+        """Update inp-data with another inp-data-object."""
         for sec in d:
             if sec not in self:
                 self._data[sec] = d._data[sec]
@@ -90,7 +103,18 @@ class SwmmInput(CustomDict):
 
         self.set_default_infiltration_from_options()
 
-    def _init_from_file(self, filename, force_ignore_case=False, encoding=None):
+    def _init_from_file(self, filename, force_ignore_case=False, encoding=DEFAULT_ENCODING):
+        """
+        Read ``.inp``-file and convert the sections in pythonic objects.
+
+        The sections will be converted when used.
+
+        Args:
+            filename (str): path/filename to .inp file
+            force_ignore_case (bool): SWMM is case-insensitive but python is case-sensitive -> set True to ignore case
+                                        all text/labels will be set to uppercase
+            encoding (str): encoding of the .inp-text-file (None -> auto-detect encoding ... takes a few seconds)
+        """
         if encoding is None:
             encoding = detect_encoding(filename)
 
@@ -106,7 +130,7 @@ class SwmmInput(CustomDict):
         self._init_from_str(txt, force_ignore_case=force_ignore_case)
 
     @classmethod
-    def read_file(cls, filename, custom_converter=None, force_ignore_case=False, encoding=None):
+    def read_file(cls, filename, custom_converter=None, force_ignore_case=False, encoding=DEFAULT_ENCODING):
         """
         Read ``.inp``-file and convert the sections in pythonic objects.
 
@@ -117,7 +141,7 @@ class SwmmInput(CustomDict):
             custom_converter (dict): dictionary of {section: converter/section_type} Default: :py:const:`SECTION_TYPES`
             force_ignore_case (bool): SWMM is case-insensitive but python is case-sensitive -> set True to ignore case
                                         all text/labels will be set to uppercase
-            encoding (str): encoding of the inp text file
+            encoding (str): encoding of the .inp-text-file (None -> auto-detect encoding ... takes a few seconds)
 
         Returns:
             SwmmInput: dict-like data of the sections in the ``.inp``-file
@@ -146,6 +170,13 @@ class SwmmInput(CustomDict):
         inp._init_from_str(txt, force_ignore_case=force_ignore_case)
 
     def force_convert_all(self):
+        """
+        Convert all sections to pythonic objects.
+
+        By default, unused sections will be stored as string.
+
+        Necessary to reduce final file-size with keyword (fast=True).
+        """
         for key in self:
             self._convert_section(key)
 
@@ -262,7 +293,7 @@ class SwmmInput(CustomDict):
             encoding = self._default_encoding
 
         if encoding is None:
-            encoding = 'utf-8'
+            encoding = DEFAULT_ENCODING
 
         with open(filename, 'w', encoding=encoding) as f:
             for head in self._get_section_headers(custom_sections_order):
@@ -279,6 +310,13 @@ class SwmmInput(CustomDict):
         return filename
 
     def print_string(self, custom_sections_order=None):
+        """
+        Print the string of the inp-data (to the stdout).
+
+        Args:
+            custom_sections_order (list[str]): list of section names to preset the order of the section in the created
+                inp-file | default: order of the read inp-file + default order of the SWMM GUI
+        """
         for head in self._get_section_headers(custom_sections_order):
             print(head_to_str(head))
             for line in iter_section_lines(self._data[head], sort_objects_alphabetical=False):
@@ -904,7 +942,7 @@ class SwmmInput(CustomDict):
             return self[LID_USAGE]
 
 
-def read_inp_file(filename, custom_converter=None, force_ignore_case=False, encoding='iso-8859-1'):
+def read_inp_file(filename, custom_converter=None, force_ignore_case=False, encoding=DEFAULT_ENCODING):
     """
     Read ``.inp``-file and convert the sections in pythonic objects.
 
@@ -914,7 +952,8 @@ def read_inp_file(filename, custom_converter=None, force_ignore_case=False, enco
         filename (str): path/filename to .inp file
         custom_converter (dict): dictionary of {section: converter/section_type} Default: :py:const:`SECTION_TYPES`
         force_ignore_case (bool): SWMM is case-insensitive but python is case-sensitive -> set True to ignore case
-        encoding (str): encoding of the inp text file
+                                    all text/labels will be set to uppercase
+        encoding (str): encoding of the .inp-text-file (None -> auto-detect encoding ... takes a few seconds)
 
     Returns:
         SwmmInput: dict-like data of the sections in the ``.inp``-file

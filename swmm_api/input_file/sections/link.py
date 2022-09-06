@@ -93,7 +93,7 @@ class Orifice(_Link):
         name (str): Name assigned to orifice link.
         from_node (str): Name of node on inlet end of orifice.
         to_node (str): Name of node on outlet end of orifice.
-        orientation (str): Orientation of orifice: either SIDE or BOTTOM.
+        orientation (str): Orientation of orifice: either ``SIDE`` or ``BOTTOM``.
         offset (float): Amount that a Side Orifice’s bottom or the position of a Bottom Orifice is offset above
                         the invert of inlet node (ft or m, expressed as either a depth or as an elevation,
                         depending on the LINK_OFFSETS option setting).
@@ -388,7 +388,6 @@ class Weir(_Link):
 
     def __init__(self, name, from_node, to_node, form, height_crest, discharge_coefficient, has_flap_gate=False,
                  n_end_contractions=0, discharge_coefficient_end=NaN, can_surcharge=True, road_width=NaN, road_surface=NaN):
-
         """
         Weir link information.
 

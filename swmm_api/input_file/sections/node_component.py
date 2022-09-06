@@ -156,26 +156,24 @@ class Coordinate(BaseSectionObject):
     Purpose:
         Assigns X,Y coordinates to drainage system nodes.
 
-    Format:
-        ::
-
-            Node Xcoord Ycoord
-
-    Args:
-        node (str): name of node.
-        x (float): horizontal coordinate relative to origin in lower left of map. ``Xcoord``
-        y (float): vertical coordinate relative to origin in lower left of map. ``Ycoord``
-
     Attributes:
         node (str): name of node.
-        x (float): horizontal coordinate relative to origin in lower left of map. ``Xcoord``
-        y (float): vertical coordinate relative to origin in lower left of map. ``Ycoord``
+        x (float): horizontal coordinate relative to origin in lower left of map.
+        y (float): vertical coordinate relative to origin in lower left of map.
     """
     _identifier = IDENTIFIERS.node
     _section_label = COORDINATES
     _section_class = InpSectionGeo
 
     def __init__(self, node, x, y):
+        """
+        X,Y coordinates for nodes.
+
+        Args:
+            node (str): name of node.
+            x (float): horizontal coordinate relative to origin in lower left of map.
+            y (float): vertical coordinate relative to origin in lower left of map.
+        """
         self.node = str(node)
         self.x = float(x)
         self.y = float(y)
@@ -230,21 +228,14 @@ class Coordinate(BaseSectionObject):
 
 class RainfallDependentInfiltrationInflow(BaseSectionObject):
     """
-    Section: [**RDII**]
+    Rainfall-dependent I/I information at nodes.
+
+    Section:
+        [RDII]
 
     Purpose:
         Specifies the parameters that describe rainfall-dependent infiltration/inflow (RDII)
         entering the drainage system at specific nodes.
-
-    Format:
-        ::
-
-            Node UHgroup SewerArea
-
-    Args:
-        node (str): name of node.
-        hydrograph (str): name of an RDII unit hydrograph group specified in the [``HYDROGRAPHS``] section.
-        sewer_area (float): area of the sewershed which contributes RDII to the node (acres or hectares).
 
     Attributes:
         node (str): name of node.
@@ -255,6 +246,14 @@ class RainfallDependentInfiltrationInflow(BaseSectionObject):
     _section_label = RDII
 
     def __init__(self, node, hydrograph, sewer_area):
+        """
+        Rainfall-dependent I/I information at nodes.
+
+        Args:
+            node (str): name of node.
+            hydrograph (str): name of an RDII unit hydrograph group specified in the [``HYDROGRAPHS``] section.
+            sewer_area (float): area of the sewershed which contributes RDII to the node (acres or hectares).
+        """
         self.node = str(node)
         self.hydrograph = str(hydrograph)
         self.sewer_area = float(sewer_area)
@@ -262,7 +261,10 @@ class RainfallDependentInfiltrationInflow(BaseSectionObject):
 
 class Treatment(BaseSectionObject):
     """
-    Section: [**TREATMENT**]
+    Pollutant removal functions at conveyance system nodes.
+
+    Section:
+        [TREATMENT]
 
     Purpose:
         Specifies the degree of treatment received by pollutants at specific nodes of the drainage system.
@@ -272,21 +274,14 @@ class Treatment(BaseSectionObject):
 
             Node Pollut Result = Func
 
-    Args:
-        node (str): Name of node where treatment occurs.
-        pollutant (str): Name of pollutant receiving treatment.
-        result (str): Result computed by treatment function. Choices are C (function computes effluent concentration)
-        R (function computes fractional removal).
-        function (str): mathematical function expressing treatment result in terms of pollutant concentrations,
-        pollutant removals, and other standard variables (see below).
 
     Attributes:
         node (str): Name of node where treatment occurs.
         pollutant (str): Name of pollutant receiving treatment.
         result (str): Result computed by treatment function. Choices are C (function computes effluent concentration)
-        R (function computes fractional removal).
+            R (function computes fractional removal).
         function (str): mathematical function expressing treatment result in terms of pollutant concentrations,
-        pollutant removals, and other standard variables (see below).
+            pollutant removals, and other standard variables (see below).
 
     Remarks:
         Treatment functions can be any well-formed mathematical expression involving:
@@ -325,6 +320,17 @@ class Treatment(BaseSectionObject):
     _section_label = TREATMENT
 
     def __init__(self, node, pollutant, result, function):
+        """
+        Pollutant removal functions at conveyance system nodes.
+
+        Args:
+            node (str): Name of node where treatment occurs.
+            pollutant (str): Name of pollutant receiving treatment.
+            result (str): Result computed by treatment function. Choices are C (function computes effluent concentration)
+                R (function computes fractional removal).
+            function (str): mathematical function expressing treatment result in terms of pollutant concentrations,
+                pollutant removals, and other standard variables (see below).
+        """
         self.node = str(node)
         self.pollutant = str(pollutant)
         self.result = str(result)

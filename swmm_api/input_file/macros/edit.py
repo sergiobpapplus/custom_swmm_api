@@ -507,7 +507,7 @@ def rename_subcatchment(inp: SwmmInput, old_label: str, new_label: str):
     for section in SUBCATCHMENT_SECTIONS + [LOADINGS, COVERAGES, GWF, GROUNDWATER]:
         if (section in inp) and (old_label in inp[section]):
             inp[section][new_label] = inp[section].pop(old_label)
-            if hasattr(inp[section][new_label], 'Name'):
+            if hasattr(inp[section][new_label], 'name'):
                 inp[section][new_label].name = new_label
             else:
                 inp[section][new_label].subcatchment = new_label
@@ -529,7 +529,7 @@ def rename_timeseries(inp, old_label, new_label):
         works inplace
     """
     if old_label in inp[TIMESERIES]:
-        obj = inp[TIMESERIES].pop(old_label)  # type: swmm_api.input_file.sections.Timeseries
+        obj = inp[TIMESERIES].pop(old_label)  # type: swmm_api.input_file.sections.timeseries
         obj.name = new_label
         inp[TIMESERIES].add_obj(obj)
 
@@ -537,10 +537,10 @@ def rename_timeseries(inp, old_label, new_label):
 
     if RAINGAGES in inp:
         f = inp[RAINGAGES].frame
-        filtered_table = f[(f['Source'] == key) & (f['Timeseries'] == old_label)]
+        filtered_table = f[(f['source'] == key) & (f['timeseries'] == old_label)]
         if not filtered_table.empty:
             for i in filtered_table.index:
-                inp[RAINGAGES][i].Timeseries = new_label
+                inp[RAINGAGES][i].timeseries = new_label
 
     if EVAPORATION in inp:
         if key in inp[EVAPORATION]:

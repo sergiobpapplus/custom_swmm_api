@@ -8,7 +8,10 @@ from ..section_labels import LID_USAGE, LID_CONTROLS
 
 class LIDControl(BaseSectionObject):
     """
-    Section: [**LID_CONTROLS**]
+    Low impact development control information.
+
+    Section:
+        [LID_CONTROLS]
 
     Purpose:
         Defines scale-independent LID controls that can be deployed within subcatchments.
@@ -22,17 +25,6 @@ class LIDControl(BaseSectionObject):
             Name STORAGE Height Vratio Seepage Vclog
             Name DRAIN Coeff Expon Offset Delay
             Name DRAINMAT Thick Vratio Rough
-
-    Attributes:
-        Name (str):
-            name assigned to LID process.
-        lid_kind (str): - BC for bio-retention cell
-                        - RG for rain garden; GR for green roof
-                        - IT for infiltration trench
-                        - PP for permeable pavement
-                        - RB for rain barrel
-                        - RD for rooftop disconnection
-                        - VS for vegetative swale.
 
     Examples:
         ::
@@ -90,6 +82,22 @@ class LIDControl(BaseSectionObject):
 
         The actual dimensions of an LID control are provided in the [LID_USAGE] section when it is
         placed in a particular subcatchment.
+
+    Attributes:
+        name (str): name assigned to LID process.
+        lid_kind (str): One of :attr:`LIDControl.LID_TYPES`.
+
+            - ``BC`` for bio-retention cell
+            - ``RG`` for rain garden; GR for green roof
+            - ``IT`` for infiltration trench
+            - ``PP`` for permeable pavement
+            - ``RB`` for rain barrel
+            - ``RD`` for rooftop disconnection
+            - ``VS`` for vegetative swale.
+
+        layer_dict (dict[str, LIDControl.LAYER_TYPES.Surface | LIDControl.LAYER_TYPES.Soil]): Sict of used layers in control.
+
+        LID_TYPES: Enum-like for the attribute :attr:`LIDControl.lid_kind` with following members -> {``BC`` | ``RG`` | ``IT`` | ``PP`` | ``RB`` | ``RD`` | ``VS``}
     """
     _identifier = (IDENTIFIERS.name, 'lid_kind')
     _section_label = LID_CONTROLS
@@ -109,19 +117,21 @@ class LIDControl(BaseSectionObject):
 
     def __init__(self, name, lid_kind, layer_dict=None):
         """
-        Create LID_CONTROLS object
+        Low impact development control information.
 
         Args:
-            Name (str):
-            name assigned to LID process.
-        lid_kind (str): - BC for bio-retention cell
-                        - RG for rain garden; GR for green roof
-                        - IT for infiltration trench
-                        - PP for permeable pavement
-                        - RB for rain barrel
-                        - RD for rooftop disconnection
-                        - VS for vegetative swale.
-            layer_dict (dict[str, LIDControl.LAYER_TYPES.Surface]): dict of used layers in control
+            name (str): Name assigned to LID process.
+            lid_kind (str): One of :attr:`LIDControl.LID_TYPES`.
+
+                - ``BC`` for bio-retention cell
+                - ``RG`` for rain garden; GR for green roof
+                - ``IT`` for infiltration trench
+                - ``PP`` for permeable pavement
+                - ``RB`` for rain barrel
+                - ``RD`` for rooftop disconnection
+                - ``VS`` for vegetative swale.
+
+            layer_dict (dict[str, LIDControl.LAYER_TYPES.Surface]): dict of used layers in control.
         """
         self.name = str(name)
         self.lid_kind = lid_kind.upper()  # one of LID_TYPES

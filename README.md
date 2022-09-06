@@ -71,7 +71,7 @@ from swmm_api import read_inp_file
 inp = read_inp_file('inputfile.inp')  # type: swmm_api.SwmmInput
 
 sec_timeseries = inp[TIMESERIES]  # type: swmm_api.input_file.helpers.InpSection
-ts = inp[TIMESERIES]['regenseries'].frame  # type: pandas.Series
+ts = inp[TIMESERIES]['regenseries'].pandas  # type: pandas.Series
 ```
 
 ### Manipulate the INP-File

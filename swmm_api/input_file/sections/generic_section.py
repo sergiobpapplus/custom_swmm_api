@@ -18,7 +18,10 @@ def line_iter(lines):
 
 class TitleSection(InpSectionGeneric):
     """
-    Section: [**TITLE**]
+    Project title.
+
+    Section:
+        [TITLE]
 
     Purpose:
         Attaches a descriptive title to the project being analyzed.
@@ -44,6 +47,15 @@ class TitleSection(InpSectionGeneric):
 
     @classmethod
     def from_inp_lines(cls, lines):
+        """
+        Read ``.inp``-file lines and create a new section.
+
+        Args:
+            lines (str | list[list[str]]): Lines in the section of the ``.inp``-file
+        
+        Returns:
+            TitleSection: string-like
+        """
         return cls(lines.replace(SEP_INP, '').strip())
 
     def to_inp_lines(self, fast=False, sort_objects_alphabetical=False):
@@ -61,7 +73,10 @@ class TitleSection(InpSectionGeneric):
 
 class OptionSection(InpSectionGeneric):
     """
-    Section: [**OPTIONS**]
+    Analysis options.
+
+    Section:
+        [OPTIONS]
 
     Purpose:
         Provides values for various analysis options.
@@ -266,17 +281,20 @@ class OptionSection(InpSectionGeneric):
         temporary files. If the directory name contains spaces then it should be placed within
         double quotes. If no directory is specified, then the temporary files are written to the
         current directory that the user is working in.
-
-    Args:
-        lines (list): section lines from input file
-
-    Returns:
-        dict: options
     """
     _label = OPTIONS
 
     @classmethod
     def from_inp_lines(cls, lines):
+        """
+        Read ``.inp``-file lines and create a new section.
+
+        Args:
+            lines (str | list[list[str]]): Lines in the section of the ``.inp``-file
+
+        Returns:
+            OptionSection: Options as a dict like object.
+        """
         data = cls()
         for key, *line in line_iter(lines):
             key = key.upper()
@@ -287,7 +305,10 @@ class OptionSection(InpSectionGeneric):
 
 class ReportSection(InpSectionGeneric):
     """
-    Section: [**REPORT**]
+    Output reporting instructions.
+
+    Section:
+        [REPORT]
 
     Purpose:
         Describes the contents of the report file that is produced.
@@ -327,6 +348,9 @@ class ReportSection(InpSectionGeneric):
             detailed performance report for it written to file Fname.
 
         The SUBCATCHMENTS, NODES, LINKS, and LID lines can be repeated multiple times.
+
+    Attributes:
+        KEYS: Enum-like for the key values with following members -> {``INPUT`` | ``CONTINUITY`` | ``FLOWSTATS`` | ``CONTROLS`` | ``SUBCATCHMENTS`` | ``NODES`` | ``LINKS`` | ``LID``}
     """
     _label = REPORT
 
@@ -342,6 +366,15 @@ class ReportSection(InpSectionGeneric):
 
     @classmethod
     def from_inp_lines(cls, lines):
+        """
+        Read ``.inp``-file lines and create a new section.
+
+        Args:
+            lines (str | list[list[str]]): Lines in the section of the ``.inp``-file
+
+        Returns:
+            ReportSection: New section. Dict-like-object.
+        """
         data = cls()
         for key, *line in line_iter(lines):
             key = key.upper()
@@ -402,7 +435,10 @@ class ReportSection(InpSectionGeneric):
 
 class EvaporationSection(InpSectionGeneric):
     """
-    Section: [**EVAPORATION**]
+    Evaporation data.
+
+    Section:
+        [EVAPORATION]
 
     Purpose:
         Specifies how daily evaporation rates vary with time for the study area.
@@ -459,6 +495,9 @@ class EvaporationSection(InpSectionGeneric):
 
         DRY_ONLY determines if evaporation only occurs during periods with no precipitation.
         The default is NO.
+
+    Attributes:
+        KEYS: Enum-like for the key values with following members -> {``CONSTANT`` | ``MONTHLY`` | ``TIMESERIES`` | ``TEMPERATURE`` | ``FILE`` | ``RECOVERY`` | ``DRY_ONLY``}
     """
     _label = EVAPORATION
 
@@ -476,13 +515,13 @@ class EvaporationSection(InpSectionGeneric):
     @classmethod
     def from_inp_lines(cls, lines):
         """
-        read ``.inp``-file lines and create an section object
+        Read ``.inp``-file lines and create a new section.
 
         Args:
-            lines (str | list[list[str]]): lines in the section of the ``.inp``-file
+            lines (str | list[list[str]]): Lines in the section of the ``.inp``-file
 
         Returns:
-            InpSectionGeneric: object of the Evaporation-section
+            EvaporationSection: New section. Dict-like-object.
         """
         data = cls()
         for key, *line in line_iter(lines):
@@ -525,7 +564,10 @@ class EvaporationSection(InpSectionGeneric):
 
 class TemperatureSection(InpSectionGeneric):
     """
-    Section: [**TEMPERATURE**]
+    Air temperature and snow melt data.
+    
+    Section:
+        [TEMPERATURE]
 
     Purpose:
         Specifies daily air temperatures, monthly wind speed, and various snowmelt
@@ -588,6 +630,9 @@ class TemperatureSection(InpSectionGeneric):
     Separate Areal Depletion Curves (ADC) can be defined for impervious and pervious
     sub-areas. The ADC parameters will default to 1.0 (meaning no depletion) if no data
     are supplied for a particular type of sub-area.
+
+    Attributes:
+        KEYS: Enum-like for the key values with following members -> {``TIMESERIES`` | ``FILE`` | ``WINDSPEED_MONTHLY`` | ``WINDSPEED_FILE`` | ``SNOWMELT`` | ``ADC_IMPERVIOUS`` | ``ADC_PERVIOUS``}
     """
     _label = TEMPERATURE
 
@@ -608,13 +653,13 @@ class TemperatureSection(InpSectionGeneric):
     @classmethod
     def from_inp_lines(cls, lines):
         """
-        read ``.inp``-file lines and create an section object
+        Read ``.inp``-file lines and create a new section.
 
         Args:
-            lines (str | list[list[str]]): lines in the section of the ``.inp``-file
+            lines (str | list[list[str]]): Lines in the section of the ``.inp``-file
 
         Returns:
-            InpSectionGeneric: object of the Temperature-section
+            TemperatureSection: New Temperature-section. Dict-like-object.
         """
         data = cls()
         for key, *line in line_iter(lines):
@@ -663,7 +708,10 @@ class TemperatureSection(InpSectionGeneric):
 
 class MapSection(InpSectionGeneric):
     """
-    Section: [**MAP**]
+    X,Y coordinates of the map’s bounding rectangle.
+
+    Section:
+        [MAP]
 
     Purpose:
         Provides dimensions and distance units for the map.
@@ -674,21 +722,18 @@ class MapSection(InpSectionGeneric):
             DIMENSIONS X1 Y1 X2 Y2
             UNITS FEET / METERS / DEGREES / NONE
 
-    Args:
+    Parameters:
         dimensions (list[float, float, float, float]): lower-left and upper-right coordinates of the full map extent
 
-            - lower_left_x (:obj:`float`): lower-left X coordinate ``X1``
-            - lower_left_y (:obj:`float`): lower-left Y coordinate ``Y1``
-            - upper_right_x (:obj:`float`): upper-right X coordinate ``X2``
-            - upper_right_y (:obj:`float`): upper-right Y coordinate ``Y2``
+            - lower_left_x (:obj:`float`): lower-left X coordinate (``X1``)
+            - lower_left_y (:obj:`float`): lower-left Y coordinate (``Y1``)
+            - upper_right_x (:obj:`float`): upper-right X coordinate (``X2``)
+            - upper_right_y (:obj:`float`): upper-right Y coordinate (``Y2``)
         units (str): one of FEET / METERS / DEGREES / NONE see :py:attr:`~MapSection.UNITS`
 
-    Attributes:
-        lower_left_x (float): lower-left X coordinate ``X1``
-        lower_left_y (float): lower-left Y coordinate ``Y1``
-        upper_right_x (float): upper-right X coordinate ``X2``
-        upper_right_y (float): upper-right Y coordinate ``Y2``
-        units (str): one of FEET / METERS / DEGREES / NONE see :py:attr:`~MapSection.UNITS`
+     Attributes:
+        KEYS: Enum-like for the key values with following members -> {``DIMENSIONS`` | ``UNITS``}
+        UNIT_OPTIONS: Enum-like for the key values with following members -> {``FEET`` | ``METERS`` | ``DEGREES`` | ``NONE``}
     """
     _label = MAP
 
@@ -705,13 +750,13 @@ class MapSection(InpSectionGeneric):
     @classmethod
     def from_inp_lines(cls, lines):
         """
-        read ``.inp``-file lines and create an section object
+        Read ``.inp``-file lines and create a new section.
 
         Args:
-            lines (str | list[list[str]]): lines in the section of the ``.inp``-file
+            lines (str | list[list[str]]): Lines in the section of the ``.inp``-file
 
         Returns:
-            InpSectionGeneric: object of the Map-section
+            MapSection: New Map-section. Dict-like-object.
         """
         data = cls()
         for key, *line in line_iter(lines):
@@ -728,7 +773,10 @@ class MapSection(InpSectionGeneric):
 
 class FilesSection(InpSectionGeneric):
     """
-    Section: [**FILES**]
+    Interface file options.
+
+    Section:
+        [FILES]
 
     Purpose:
         Identifies optional interface files used or saved by a run.
@@ -750,6 +798,9 @@ class FilesSection(InpSectionGeneric):
         Refer to Section 11.7 Interface Files for a description of interface files. Rainfall, Runoff, and
         RDII files can either be used or saved in a run, but not both. A run can both use and save a Hot
         Start file (with different names).
+
+    Attributes:
+        KEYS: Enum-like for the key values with following members -> {``USE`` | ``SAVE`` | ``RAINFALL`` |``RUNOFF`` |``HOTSTART`` |``RDII`` |``INFLOWS`` |``OUTFLOWS``}
     """
     _label = FILES
 
@@ -777,13 +828,13 @@ class FilesSection(InpSectionGeneric):
     @classmethod
     def from_inp_lines(cls, lines):
         """
-        read ``.inp``-file lines and create an section object
+        Read ``.inp``-file lines and create a new section.
 
         Args:
             lines (str | list[list[str]]): lines in the section of the ``.inp``-file
 
         Returns:
-            InpSectionGeneric: object of the Files-section
+            FilesSection: object of the Files-section. Dict-like-object.
         """
         data = cls()
         for use_save, kind, *fn in line_iter(lines):
@@ -803,7 +854,10 @@ class FilesSection(InpSectionGeneric):
 
 class AdjustmentsSection(InpSectionGeneric):
     """
-    Section: [**ADJUSTMENTS**]
+    Monthly adjustments applied to climate variables.
+
+    Section:
+        [ADJUSTMENTS]
 
     Purpose:
         Specifies optional monthly adjustments to be made to temperature, evaporation rate,
@@ -832,21 +886,23 @@ class AdjustmentsSection(InpSectionGeneric):
         month in each subsequent year being simulated.
 
 
-    Climate Adjustments are optional modifications applied to the temperature, evaporation rate,
-    and rainfall intensity that SWMM would otherwise use at each time step of a simulation. Separate
-    sets of adjustments that vary periodically by month of the year can be assigned to these variables.
-    They provide a simple way to examine the effects of future climate change without having to
-    modify the original climatic time series.
+        Climate Adjustments are optional modifications applied to the temperature, evaporation rate,
+        and rainfall intensity that SWMM would otherwise use at each time step of a simulation. Separate
+        sets of adjustments that vary periodically by month of the year can be assigned to these variables.
+        They provide a simple way to examine the effects of future climate change without having to
+        modify the original climatic time series.
 
-    A set of monthly adjustments can also be applied to the hydraulic conductivity used in computing
-    rainfall infiltration on all pervious land surfaces, including those in all LID units, and for exfiltration
-    from all storage nodes and conduits. These can reflect the increase of hydraulic conductivity with
-    increasing temperature or the effect that seasonal changes in land surface conditions, such as
-    frozen ground, can have on infiltration capacity. They can be overridden for individual
-    subcatchments (and their LID units) by assigning a monthly infiltration adjustment Time Pattern
-    to a subcatchment. Monthly adjustment time patterns for depression storage and pervious
-    surface roughness coefficient (Mannings n) can also be specified for individual subcatchments
+        A set of monthly adjustments can also be applied to the hydraulic conductivity used in computing
+        rainfall infiltration on all pervious land surfaces, including those in all LID units, and for exfiltration
+        from all storage nodes and conduits. These can reflect the increase of hydraulic conductivity with
+        increasing temperature or the effect that seasonal changes in land surface conditions, such as
+        frozen ground, can have on infiltration capacity. They can be overridden for individual
+        subcatchments (and their LID units) by assigning a monthly infiltration adjustment Time Pattern
+        to a subcatchment. Monthly adjustment time patterns for depression storage and pervious
+        surface roughness coefficient (Mannings n) can also be specified for individual subcatchments
 
+    Attributes:
+        KEYS: Enum-like for the key values with following members -> {``TEMPERATURE`` | ``EVAPORATION`` | ``RAINFALL`` |``CONDUCTIVITY`` |``N_PERV`` |``DSTORE`` |``INFIL``}
     """
     _label = ADJUSTMENTS
 
@@ -872,7 +928,7 @@ class AdjustmentsSection(InpSectionGeneric):
             lines (str | list[list[str]]): lines in the section of the ``.inp``-file
 
         Returns:
-            InpSectionGeneric: object of the Adjustments-section
+            AdjustmentsSection: object of the Adjustments-section
         """
         data = cls()
         for key, *factors in line_iter(lines):
@@ -893,7 +949,10 @@ class AdjustmentsSection(InpSectionGeneric):
 
 class BackdropSection(InpSectionGeneric):
     """
-    Section: [**BACKDROP**]
+    X,Y coordinates of the bounding rectangle and file name of the backdrop image.
+
+    Section:
+        [BACKDROP]
 
     Purpose:
         Specifies file name and coordinates of map’s backdrop image.
@@ -915,6 +974,9 @@ class BackdropSection(InpSectionGeneric):
             upper-right X coordinate of backdrop image
         Y2
             upper-right Y coordinate of backdrop image
+
+    Attributes:
+        KEYS: Enum-like for the key values with following members -> {``FILE`` | ``DIMENSIONS`` | ``UNITS`` |``OFFSET`` |``SCALING``}
     """
     _label = BACKDROP
 
@@ -928,13 +990,13 @@ class BackdropSection(InpSectionGeneric):
     @classmethod
     def from_inp_lines(cls, lines):
         """
-        read ``.inp``-file lines and create an section object
+        Read ``.inp``-file lines and create a new section.
 
         Args:
             lines (str | list[list[str]]): lines in the section of the ``.inp``-file
 
         Returns:
-            InpSectionGeneric: object of the Backdrop-section
+            BackdropSection: object of the Backdrop-section. Dict-like-object.
         """
         data = cls()
         for key, *line in line_iter(lines):

@@ -228,6 +228,7 @@ class SwmmOutput(SwmmOutExtract):
         Returns:
             list: filtered list of tuple(kind, label, variable)
         """
+
         def _filter(i, possibilities):
             if i is None:
                 return possibilities
@@ -289,6 +290,42 @@ class SwmmOutput(SwmmOutExtract):
         Read parquet files with :func:`swmm_api.output_file.parquet.read` to get the original column-name-structure.
         """
         parquet.write(self.to_frame(), self.filename.replace('.out', '.parquet'))
+
+    # def to_netcdf(self, fn_nc):
+    #     import xarray as xr
+    #     df = self.to_frame()
+    #     ds = df.to_xarray()
+    #     ds.to_netcdf("example.nc")
+    #
+    #     reopened = xr.open_dataset('Example6-Final.nc')
+    #
+    #     print()
+    #
+    #     # ---------------------
+    #     import netCDF4 as nc
+    #     import numpy as np
+    #
+    #     netcdf_output = nc.Dataset(fn_nc, mode='w', format="NETCDF4")
+    #
+    #     # -----
+    #     # Timestamps
+    #     netcdf_output.createDimension(dimname='datetime', size=None)
+    #     nc_time_variable = netcdf_output.createVariable(
+    #         varname="datetime",
+    #         datatype=datetime.datetime,
+    #         dimensions=("datetime",),
+    #     )
+    #
+    #     nc_time_variable[:] = self.index
+    #
+    #     nc_time_variable.units = "hours since 0001-01-01 00:00:00.0"
+    #     nc_time_variable.calendar = "gregorian"
+    #
+    #     nc_time_variable[:] = cftime.date2num(
+    #         [datetime.datetime.fromtimestamp(t) for t in swmm_output_timestamps],
+    #         units=nc_time_variable.units,
+    #         calendar=nc_time_variable.calendar
+    #     )
 
 
 def read_out_file(filename):

@@ -19,9 +19,9 @@ inp = read_inp_file('/home/markus/PycharmProjects/swmm_api/examples/internal/201
 
 # inp.RAINGAGES
 
-inp[SEC.RAINGAGES]['RainGage'].Interval = '0:01'
-inp[SEC.RAINGAGES]['RainGage'].set('Interval', '0:01')
-inp[SEC.RAINGAGES]['RainGage']['Interval'] = '0:01'
+inp[SEC.RAINGAGES]['RainGage'].interval = '0:01'
+inp[SEC.RAINGAGES]['RainGage'].set('interval', '0:01')
+inp[SEC.RAINGAGES]['RainGage']['interval'] = '0:01'
 
 print(inp[SEC.RAINGAGES]['RainGage'].to_inp_line())
 exit()

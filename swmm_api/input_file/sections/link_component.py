@@ -22,8 +22,8 @@ class CrossSection(BaseSectionObject):
     Formats:
         ::
 
-            Link Shape      Geom1 Geom2             Geom3 Geom4 (Barrels Culvert)
-            Link CUSTOM     Geom1       Curve                   (Barrels)
+            Link Shape      Geom1 Geom2                   Geom3 Geom4 (Barrels Culvert)
+            Link CUSTOM     Geom1       Curve                         (Barrels)
             Link IRREGULAR                    Tsect
             Link STREET                            Street
 
@@ -46,16 +46,16 @@ class CrossSection(BaseSectionObject):
         link (str): name of the conduit, orifice, or weir.
         shape (str): cross-section shape (see Tables D-1 below or 3-1 for available shapes).
         height (float): full height of the cross-section (ft or m).
-        Geom2-4: auxiliary parameters (width, side slopes, etc.) as listed in Table D-1.
+        parameter_2-4: auxiliary parameters (width, side slopes, etc.) as listed in Table D-1.
         n_barrels (int): number of barrels (i.e., number of parallel pipes of equal size, slope, and roughness)
                        associated with a conduit (default is 1).
         culvert (int): code number from Table A.10 for the conduit’s inlet geometry if it is a culvert subject to
                        possible inlet flow control (leave blank otherwise).
-        curve_name (str): name of a Shape Curve in the [``CURVES``] section that defines how width varies with depth.
         transect (str): name of an entry in the [``TRANSECTS``] section that describes the crosssection geometry of an
                      irregular channel.
+        curve_name (str): name of a Shape Curve in the [``CURVES``] section that defines how width varies with depth.
     """
-    _identifier =IDENTIFIERS.link
+    _identifier = IDENTIFIERS.link
     _section_label = XSECTIONS
 
     class SHAPES:
@@ -88,6 +88,22 @@ class CrossSection(BaseSectionObject):
 
     def __init__(self, link, shape, height=0, parameter_2=0, parameter_3=0, parameter_4=0, n_barrels=1, culvert=NaN,
                  transect=None, curve_name=None, street=None):
+        """
+        Conduit, orifice, and weir cross-section geometry.
+
+        Args:
+            link (str): name of the conduit, orifice, or weir.
+            shape (str): cross-section shape (see Tables D-1 below or 3-1 for available shapes).
+            height (float): full height of the cross-section (ft or m).
+            parameter_2-4: auxiliary parameters (width, side slopes, etc.) as listed in Table D-1.
+            n_barrels (int): number of barrels (i.e., number of parallel pipes of equal size, slope, and roughness)
+                           associated with a conduit (default is 1).
+            culvert (int): code number from Table A.10 for the conduit’s inlet geometry if it is a culvert subject to
+                           possible inlet flow control (leave blank otherwise).
+            transect (str): name of an entry in the [``TRANSECTS``] section that describes the crosssection geometry of an
+                         irregular channel.
+            curve_name (str): name of a Shape Curve in the [``CURVES``] section that defines how width varies with depth.
+        """
         # in SWMM C-code function "link_readXsectParams"
         self.link = str(link)
         self.shape = shape
@@ -152,21 +168,11 @@ class Loss(BaseSectionObject):
     """
     Conduit entrance/exit losses and flap valves.
     
-    Section: [**LOSSES**]
+    Section:
+        [LOSSES]
 
     Purpose:
         Specifies minor head loss coefficients, flap gates, and seepage rates for conduits.
-
-    Formats:
-        ::
-
-            Conduit Kentry Kexit Kavg (Flap Seepage)
-
-    Format-PCSWMM:
-        ``Link Inlet Outlet Average FlapGate SeepageRate``
-
-    Formats-SWMM-GUI:
-        ``Link  Kentry  Kexit  Kavg  FlapGate  Seepage``
 
     Remarks:
         Minor losses are only computed for the Dynamic Wave flow routing option (see
@@ -179,15 +185,15 @@ class Loss(BaseSectionObject):
         losses.
 
     Attributes:
-        link (str): name of conduit ``Conduit``
-        entrance (float): entrance minor head loss coefficient. ``Kentry``
-        exit (float): exit minor head loss coefficient. ``Kexit``
-        average (float): average minor head loss coefficient across length of conduit. ``Kavg``
-        has_flap_gate (bool): YES if conduit has a flap valve that prevents back flow, NO otherwise. (Default is NO).
-        ``Flap``
-        seepage_rate (float): Rate of seepage loss into surrounding soil (in/hr or mm/hr). (Default is 0.) ``Seepage``
+        link (str): Name of conduit.
+        entrance (float): Entrance (inlet) minor head loss coefficient.
+        exit (float): Exit (outlet) minor head loss coefficient.
+        average (float): Average minor head loss coefficient across length of conduit.
+        has_flap_gate (bool): ``YES`` (:obj:`True`) if flap gate present to prevent reverse flow,
+                              ``NO`` (:obj:`False`) if not (default is ``NO``).
+        seepage_rate (float): Rate of seepage loss into surrounding soil (in/hr or mm/hr). (Default is 0.)
     """
-    _identifier =IDENTIFIERS.link
+    _identifier = IDENTIFIERS.link
     _section_label = LOSSES
 
     class TYPES:
@@ -200,7 +206,7 @@ class Loss(BaseSectionObject):
         Conduit entrance/exit losses and flap valves.
 
         Args:
-            link (str): name of conduit
+            link (str): Name of conduit.
             entrance (float): Entrance minor head loss coefficient.
             exit (float): Exit minor head loss coefficient.
             average (float): Average minor head loss coefficient across length of conduit.
@@ -239,7 +245,7 @@ class Vertices(BaseSectionObject):
             - x_coord: horizontal (x-)coordinate
             - y_coord: vertical (y-)coordinate
     """
-    _identifier =IDENTIFIERS.link
+    _identifier = IDENTIFIERS.link
     _table_inp_export = False
     _section_label = VERTICES
     _section_class = InpSectionGeo

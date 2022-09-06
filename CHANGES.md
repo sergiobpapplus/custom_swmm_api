@@ -1,12 +1,45 @@
-# Changelog  
+# Changelog
 
-## 0.3 (Jun ??, 2022)
+## 0.3 (Sep ??, 2022)
 
 removed:
+
 - CoordinatesGeo (functionality included in Coordinate)
 - VerticesGeo (functionality included in Vertices)
 - PolygonGeo (functionality included in Polygon)
 - SwmmInputGeo (functionality included in SwmmInput)
+
+changed:
+
+- SwmmInput init is equal to SwmmInput.read_file
+- better repr for SwmmInput and InpSections
+- map plot function is separated in several function for better customization
+
+new:
+
+- swmm_api.input_file.macros.compare_inp_objects()
+- add_backdrop to map plot
+- Astlingen model in examples
+- Examples for SNP10 conference
+- get_used_curves
+- check_outfall_connections
+- detect_encoding for reading the inp-file and the rpt-file (default=utf-8)
+- SwmmInput.read_text
+- read out file as buffer
+- input_file.macros.update_area
+- error message when swmm is not found
+
+fixed:
+
+- inp update error
+- minor issues with GIS import end export
+- sort warnings in report by natural order
+- minor issues with SwmmReport
+- issue with networkx with parallel links
+- possibility to have multiple times the same section in the inp-file
+- swmm error when inline timeseries is on the end of the file
+- error in controls
+- error in timerseries, for specific orders
 
 An error will be raised when calling a geo-function and the proper packages are not installed.
 

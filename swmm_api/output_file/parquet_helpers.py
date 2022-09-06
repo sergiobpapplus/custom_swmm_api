@@ -21,7 +21,8 @@ index.freq & index/column name are not implemented by parquet
 
 def _check_name(filename):
     """
-    check if name has a common parquet file-extension
+    Check if name has a common parquet file-extension.
+
     Args:
         filename (str): old filename with or without extension
 
@@ -56,7 +57,7 @@ def write(data, filename, compression='brotli', sep='/'):
     Based on :meth:`pandas.DataFrame.to_parquet` to write the file.
 
     .. Important::
-        To overcome the disability to write multiindices in the parquet file, the multiindices get converted as string
+        To overcome the disability to write multi-indices in the parquet file, the multi-indices get converted as string
         and separated with the character defined by ``sep`` (default: ``'/'``)
 
     Args:
@@ -102,7 +103,7 @@ def read(filename, sep='/'):
     Based on :func:`pandas.read_parquet` to write the file.
 
     .. Important::
-        To overcome the disability to write multiindices in the parquet file, the multiindices get converted as string
+        To overcome the disability to write multi-indices in the parquet file, the multi-indices get converted as string
         and separated with the character defined by ``sep`` (default: ``'/'``)
 
     Args:

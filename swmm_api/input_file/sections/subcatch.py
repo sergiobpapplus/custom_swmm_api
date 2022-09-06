@@ -56,35 +56,30 @@ class SubCatchment(BaseSectionObject):
 
 class SubArea(BaseSectionObject):
     """
-    Section: [**SUBAREAS**]
+    Subcatchment impervious/pervious subarea data.
+
+    Section:
+        [SUBAREAS]
 
     Purpose:
         Supplies information about pervious and impervious areas for each subcatchment.
         Each subcatchment can consist of a pervious sub-area, an impervious sub-area with
         depression storage, and an impervious sub-area without depression storage.
 
-    Format:
-        ::
-
-            Subcat Nimp Nperv Simp Sperv %Zero RouteTo (%Routed)
-
-    Format-PCSWMM:
-        ``Subcatchment N-Imperv N-Perv S-Imperv S-Perv PctZero RouteTo PctRouted``
-
     Attributes:
-        subcatchment (str): subcatchment name. ``Subcat``
-        N_Imperv (float): Manning's n for overland flow over the impervious sub-area. ``Nimp``
-        N_Perv (float): Manning's n for overland flow over the pervious sub-area. ``Nperv``
-        S_Imperv (float): depression storage for impervious sub-area (inches or mm). ``Simp``
-        S_Perv (float): depression storage for pervious sub-area (inches or mm). ``Sperv``
-        pct_zero (float): percent of impervious area with no depression storage. ``%Zero``
+        subcatchment (str): Subcatchment name.
+        n_imperv (float): Manning's n (coefficient) for overland flow over the impervious sub-area (in s*m^(-1/3)).
+        n_perv (float): Manning's n (coefficient) for overland flow over the pervious sub-area (in s*m^(-1/3)).
+        storage_imperv (float): depression storage for impervious sub-area (inches or mm).
+        storage_perv (float): depression storage for pervious sub-area (inches or mm).
+        pct_zero (float): percent of impervious area with no depression storage.
         route_to (str):
 
             - ``IMPERVIOUS`` if pervious area runoff runs onto impervious area,
             - ``PERVIOUS`` if impervious runoff runs onto pervious area,
             - ``OUTLET`` if both areas drain to the subcatchment's outlet (default = ``OUTLET``).
 
-        PctRouted (float): percent of runoff routed from one type of area to another (default = 100). ``%Routed``
+        pct_routed (float): percent of runoff routed from one type of area to another (default = 100).
     """
     _identifier = IDENTIFIERS.subcatchment
     _section_label = SUBAREAS
@@ -95,31 +90,31 @@ class SubArea(BaseSectionObject):
         PERVIOUS = 'PERVIOUS'
         OUTLET = 'OUTLET'
 
-    def __init__(self, subcatchment, N_Imperv, N_Perv, S_Imperv, S_Perv, pct_zero, route_to=RoutToOption.OUTLET,
+    def __init__(self, subcatchment, n_imperv, n_perv, storage_imperv, storage_perv, pct_zero, route_to=RoutToOption.OUTLET,
                  pct_routed=100):
         """
-        SubArea object.
+        Subcatchment impervious/pervious subarea data.
 
         Args:
-            subcatchment (str): subcatchment name. ``Subcat``
-            N_Imperv (float): Manning's n for overland flow over the impervious sub-area. ``Nimp``
-            N_Perv (float): Manning's n for overland flow over the pervious sub-area. ``Nperv``
-            S_Imperv (float): depression storage for impervious sub-area (inches or mm). ``Simp``
-            S_Perv (float): depression storage for pervious sub-area (inches or mm). ``Sperv``
-            pct_zero (float): percent of impervious area with no depression storage. ``%Zero``
+            subcatchment (str): Subcatchment name.
+            n_imperv (float): Manning's n (coefficient) for overland flow over the impervious sub-area (in s*m^(-1/3)).
+            n_perv (float): Manning's n (coefficient) for overland flow over the pervious sub-area (in s*m^(-1/3)).
+            storage_imperv (float): depression storage for impervious sub-area (inches or mm).
+            storage_perv (float): depression storage for pervious sub-area (inches or mm).
+            pct_zero (float): percent of impervious area with no depression storage.
             route_to (str):
 
                 - ``IMPERVIOUS`` if pervious area runoff runs onto impervious area,
                 - ``PERVIOUS`` if impervious runoff runs onto pervious area,
                 - ``OUTLET`` if both areas drain to the subcatchment's outlet (default = ``OUTLET``).
 
-            pct_routed (float): percent of runoff routed from one type of area to another (default = 100). ``%Routed``
+            pct_routed (float): percent of runoff routed from one type of area to another (default = 100).
         """
         self.subcatchment = str(subcatchment)
-        self.N_Imperv = float(N_Imperv)
-        self.N_Perv = float(N_Perv)
-        self.S_Imperv = float(S_Imperv)
-        self.S_Perv = float(S_Perv)
+        self.n_imperv = float(n_imperv)
+        self.n_perv = float(n_perv)
+        self.storage_imperv = float(storage_imperv)
+        self.storage_perv = float(storage_perv)
         self.pct_zero = float(pct_zero)
         self.route_to = str(route_to)
         self.pct_routed = float(pct_routed)
@@ -172,6 +167,17 @@ class Infiltration(BaseSectionObject):
 
     @classmethod
     def from_inp_line(cls, subcatchment, *args, **kwargs):
+        """
+        Convert line in the ``.inp``-file to the respective Infiltration object.
+
+        Args:
+            subcatchment (str): Subcatchment name.
+            *args (list[str]): arguments in the line
+            **kwargs (dict): keyword arguments for the respective init-function of the object.
+
+        Returns:
+            BaseSectionObject: object of the ``.inp``-file section
+        """
         subcls = cls
 
         # n_args = len(args) + len(kwargs.keys()) + 1
@@ -222,9 +228,9 @@ class InfiltrationHorton(Infiltration):
         kind (str, Optional): Method to use -> ``HORTON`` or ``MODIFIED_HORTON`` (new in 5.1.015).
 
     See Also:
-        - :class:`Infiltration`: abstract parent class of this one.
-        - :class:`InfiltrationGreenAmpt`: child class of this one.
-        - :class:`InfiltrationCurveNumber`: child class of this one.
+        - :class:`Infiltration`: Abstract parent class of this one.
+        - :class:`InfiltrationGreenAmpt`: Child class of this one.
+        - :class:`InfiltrationCurveNumber`: Child class of this one.
     """
 
     def __init__(self, subcatchment, rate_max, rate_min, decay, time_dry, volume_max, kind=None):
@@ -268,9 +274,9 @@ class InfiltrationGreenAmpt(Infiltration):
         kind (str, Optional): Method to use -> ``GREEN_AMPT`` or ``MODIFIED_GREEN_AMPT`` (new in 5.1.015).
 
     See Also:
-        - :class:`Infiltration`: abstract parent class of this one.
-        - :class:`InfiltrationHorton`: child class of this one.
-        - :class:`InfiltrationCurveNumber`: child class of this one.
+        - :class:`Infiltration`: Abstract parent class of this one.
+        - :class:`InfiltrationHorton`: Child class of this one.
+        - :class:`InfiltrationCurveNumber`: Child class of this one.
     """
 
     def __init__(self, subcatchment, suction_head, hydraulic_conductivity, moisture_deficit_init, kind=None):
@@ -311,9 +317,9 @@ class InfiltrationCurveNumber(Infiltration):
         kind (str, Optional): Method to use -> ``CURVE_NUMBER`` (new in 5.1.015).
 
     See Also:
-        - :class:`Infiltration`: abstract parent class of this one.
-        - :class:`InfiltrationHorton`: child class of this one.
-        - :class:`InfiltrationGreenAmpt`: child class of this one.
+        - :class:`Infiltration`: Abstract parent class of this one.
+        - :class:`InfiltrationHorton`: Child class of this one.
+        - :class:`InfiltrationGreenAmpt`: Child class of this one.
     """
 
     def __init__(self, subcatchment, curve_no, hydraulic_conductivity, time_dry, kind=None):
@@ -346,31 +352,21 @@ INFILTRATION_DICT = {
 
 class Polygon(BaseSectionObject):
     """
-    Section: [**POLYGONS**]
+    X,Y coordinates for each vertex of subcatchment polygons.
+
+    Section:
+        [POLYGONS]
 
     Purpose:
         Assigns X,Y coordinates to vertex points of polygons that define a subcatchment boundary.
-
-    Format:
-        ::
-
-            Link Xcoord Ycoord
 
     Remarks:
         Include a separate line for each vertex of the subcatchment polygon, ordered in a
         consistent clockwise or counter-clockwise sequence.
 
-    Args:
-        subcatchment (str): name of subcatchment. ``Subcat``
-        polygon (list[list[float,float]]): coordinate of the polygon relative to origin in lower left of map.
-            - Xcoord: horizontal coordinate of vertex
-            - Ycoord: vertical coordinate of vertex
-
     Attributes:
-        subcatchment (str): name of subcatchment. ``Subcat``
-        polygon (list[list[float,float]]): coordinate of the polygon relative to origin in lower left of map.
-            - Xcoord: horizontal coordinate of vertex
-            - Ycoord: vertical coordinate of vertex
+        subcatchment (str): Name of subcatchment.
+        polygon (list[list[float,float]]): List of the polygon points as coordinate tuple (x, y) relative to origin in lower left of map.
     """
     _identifier = IDENTIFIERS.subcatchment
     _table_inp_export = False
@@ -378,6 +374,13 @@ class Polygon(BaseSectionObject):
     _section_class = InpSectionGeo
 
     def __init__(self, subcatchment, polygon):
+        """
+        X,Y coordinates for each vertex of subcatchment polygons.
+
+        Args:
+            subcatchment (str): Name of subcatchment.
+            polygon (list[list[float,float]]): List of the polygon points as coordinate tuple (x, y) relative to origin in lower left of map.
+        """
         self.subcatchment = str(subcatchment)
         self.polygon = polygon
 
@@ -471,7 +474,10 @@ class Polygon(BaseSectionObject):
 
 class Loading(BaseSectionObject):
     """
-    Section: [**LOADINGS**]
+    Initial pollutant loads on subcatchments.
+
+    Section:
+        [LOADINGS]
 
     Purpose:
         Specifies the pollutant buildup that exists on each subcatchment at the start of a simulation.
@@ -480,9 +486,6 @@ class Loading(BaseSectionObject):
         ::
 
             Subcat Pollut InitBuildup Pollut InitBuildup ...
-
-    Format-PCSWMM:
-        ``Subcatchment Pollutant Buildup``
 
     Remarks:
         More than one pair of pollutant - buildup values can be entered per line. If more than
@@ -493,19 +496,10 @@ class Loading(BaseSectionObject):
         by applying the DRY_DAYS option (specified in the [OPTIONS] section) to the
         pollutant’s buildup function for each land use in the subcatchment.
 
-    Args:
-        subcatchment (str): name of a subcatchment.
-        pollutant_buildup (list[list[str, float]]): tuple of
-
-            - Pollut: name of a pollutant.
-            - InitBuildup: initial buildup of pollutant (lbs/acre or kg/hectare).
 
     Attributes:
         subcatchment (str): name of a subcatchment.
-        pollutant_buildup (list[list[str, float]]): tuple of
-
-            - Pollut: name of a pollutant.
-            - InitBuildup: initial buildup of pollutant (lbs/acre or kg/hectare).
+        pollutant_buildup_dict (dict[str, float]): dict where name of a pollutant (str) is the key and the initial buildup of pollutant (float) (lbs/acre or kg/hectare) is the value.
 
     """
     _identifier = IDENTIFIERS.subcatchment
@@ -513,6 +507,13 @@ class Loading(BaseSectionObject):
     _section_label = LOADINGS
 
     def __init__(self, subcatchment, pollutant_buildup_dict=None):
+        """
+        Initial pollutant loads on subcatchments.
+
+        Args:
+            subcatchment (str): name of a subcatchment.
+            pollutant_buildup_dict (dict[str, float]): dict where name of a pollutant (str) is the key and the initial buildup of pollutant (float) (lbs/acre or kg/hectare) is the value.
+        """
         self.subcatchment = str(subcatchment)
         self.pollutant_buildup_dict = {}
         if pollutant_buildup_dict:
@@ -555,7 +556,10 @@ class Loading(BaseSectionObject):
 
 class Coverage(BaseSectionObject):
     """
-    Section: [**COVERAGES**]
+    Assignment of land uses to subcatchments.
+
+    Section:
+        [COVERAGES]
 
     Purpose:
         Specifies the percentage of a subcatchment’s area that is covered by each category of land use.
@@ -564,14 +568,6 @@ class Coverage(BaseSectionObject):
         ::
 
             Subcat Landuse Percent Landuse Percent . . .
-
-    Args:
-        subcatchment (str):
-            subcatchment name.
-
-        land_use_dict (dict):
-            key: Landuse (str): land use name.
-            value: Percent (float): percent of subcatchment area.
 
     Remarks:
         More than one pair of land use - percentage values can be entered per line. If more
@@ -582,11 +578,22 @@ class Coverage(BaseSectionObject):
 
         If no land uses are associated with a subcatchment then no contaminants will appear
         in the runoff from the subcatchment.
+
+    Attributes:
+        subcatchment (str): Subcatchment name.
+        land_use_dict (dict): dict where land use name (str) is the key and the percent of subcatchment area (float) is the value.
     """
     _identifier = IDENTIFIERS.subcatchment
     _section_label = COVERAGES
 
     def __init__(self, subcatchment, land_use_dict=None):
+        """
+        Assignment of land uses to subcatchments.
+
+        Args:
+            subcatchment (str): Subcatchment name.
+            land_use_dict (dict): dict where land use name (str) is the key and the percent of subcatchment area (float) is the value.
+        """
         self.subcatchment = str(subcatchment)
         self.land_use_dict = {}
         if land_use_dict:
@@ -629,7 +636,10 @@ class Coverage(BaseSectionObject):
 
 class GroundwaterFlow(BaseSectionObject):
     """
-    Section: [**GWF**]
+    Groundwater flow expressions.
+
+    Section:
+        [GWF]
 
     Purpose:
         Defines custom groundwater flow equations for specific subcatchments.
@@ -639,16 +649,17 @@ class GroundwaterFlow(BaseSectionObject):
 
             Subcat LATERAL/DEEP Expr
 
-    Args:
-        subcatchment (str): subcatchment name.
-        expression (str): math formula expressing the rate of groundwater flow (in cfs per acre or cms per hectare
-        for lateral flow or in/hr or mm/hr for deep flow) as a function of the following variables:
+    Attributes:
+        subcatchment (str): Subcatchment name.
+        kind (str): ``GroundwaterFlow.TYPES`` (``LATERAL`` or ``DEEP``)
+        expression (str): Math formula expressing the rate of groundwater flow
+                          (in cfs per acre or cms per hectare for lateral flow or in/hr or mm/hr for deep flow)
+                          as a function of the following variables
 
             - ``Hgw`` (for height of the groundwater table)
             - ``Hsw`` (for height of the surface water)
             - ``Hcb`` (for height of the channel bottom)
-            - ``Hgs`` (for height of ground surface) where all heights are relative to the aquifer bottom and have
-            units of either feet or meters;
+            - ``Hgs`` (for height of ground surface) where all heights are relative to the aquifer bottom and have units of either feet or meters;
             - ``Ks`` (for saturated hydraulic conductivity in in/hr or mm/hr)
             - ``K`` (for unsaturated hydraulic conductivity in in/hr or mm/hr)
             - ``Theta`` (for moisture content of unsaturated zone)
@@ -658,8 +669,8 @@ class GroundwaterFlow(BaseSectionObject):
             - ``A`` (for subcatchment area in acres or hectares)
 
     Remarks:
-        Use ``LATERAL`` to designate an expression for lateral groundwater flow (to a node of
-        the conveyance network) and ``DEEP`` for vertical loss to deep groundwater.
+        Use ``LATERAL`` to designate an expression for lateral groundwater flow
+        (to a node of the conveyance network) and ``DEEP`` for vertical loss to deep groundwater.
 
         See the [``TREATMENT``] section for a list of built-in math functions that can be used in
         ``Expr``. In particular, the ``STEP(x)`` function is 1 when ``x > 0`` and is 0 otherwise.
@@ -681,6 +692,29 @@ class GroundwaterFlow(BaseSectionObject):
         DEEP = 'DEEP'
 
     def __init__(self, subcatchment, kind, expression, *expression_):
+        """
+        Groundwater flow expressions.
+
+        Args:
+            subcatchment (str): Subcatchment name.
+            kind (str): ``GroundwaterFlow.TYPES`` (``LATERAL`` or ``DEEP``)
+            expression (str): Math formula expressing the rate of groundwater flow
+                              (in cfs per acre or cms per hectare for lateral flow or in/hr or mm/hr for deep flow)
+                              as a function of the following variables
+
+                - ``Hgw`` (for height of the groundwater table)
+                - ``Hsw`` (for height of the surface water)
+                - ``Hcb`` (for height of the channel bottom)
+                - ``Hgs`` (for height of ground surface) where all heights are relative to the aquifer bottom and have units of either feet or meters;
+                - ``Ks`` (for saturated hydraulic conductivity in in/hr or mm/hr)
+                - ``K`` (for unsaturated hydraulic conductivity in in/hr or mm/hr)
+                - ``Theta`` (for moisture content of unsaturated zone)
+                - ``Phi`` (for aquifer soil porosity)
+                - ``Fi`` (for infiltration rate from the ground surface in in/hr or mm/hr)
+                - ``Fu`` (for percolation rate from the upper unsaturated zone in in/hr or mm/hr)
+                - ``A`` (for subcatchment area in acres or hectares)
+            *expression_:
+        """
         self.subcatchment = str(subcatchment)
         self.kind = kind
         self.expression = expression + ' '.join(expression_)
@@ -688,34 +722,32 @@ class GroundwaterFlow(BaseSectionObject):
 
 class Groundwater(BaseSectionObject):
     """
-    Section: [**GROUNDWATER**]
+    Subcatchment groundwater parameters.
+
+    Section:
+        [GROUNDWATER]
 
     Purpose:
         Supplies parameters that determine the rate of groundwater flow between the aquifer
         underneath a subcatchment and a node of the conveyance system.
 
-    Format:
-        ::
-
-            Subcat Aquifer Node Esurf A1 B1 A2 B2 A3 Dsw (Egwt Ebot Egw Umc)
-
     Attributes:
-        Subcat (float): subcatchment name.
-        aquifer (float): name of groundwater aquifer underneath the subcatchment.
-        node (float): name of node in conveyance system exchanging groundwater with aquifer.
-        Esurf (float): surface elevation of subcatchment (ft or m).
-        A1 (float): groundwater flow coefficient (see below).
-        B1 (float): groundwater flow exponent (see below).
-        A2 (float): surface water flow coefficient (see below).
-        B2 (float): surface water flow exponent (see below).
-        A3 (float): surface water – groundwater interaction coefficient (see below).
-        Dsw (float): fixed depth of surface water at receiving node (ft or m)
+        subcatchment (float): Subcatchment name.
+        aquifer (float): Name of groundwater aquifer underneath the subcatchment.
+        node (float): Name of node in conveyance system exchanging groundwater with aquifer.
+        Esurf (float): Surface elevation of subcatchment (ft or m).
+        A1 (float): Groundwater flow coefficient (see below).
+        B1 (float): Groundwater flow exponent (see below).
+        A2 (float): Surface water flow coefficient (see below).
+        B2 (float): Surface water flow exponent (see below).
+        A3 (float): Surface water – groundwater interaction coefficient (see below).
+        Dsw (float): Fixed depth of surface water at receiving node (ft or m)
                     (set to zero if surface water depth will vary as computed by flow routing).
-        Egwt (float): threshold groundwater table elevation which must be reached before any flow occurs (ft or m).
+        Egwt (float): Threshold groundwater table elevation which must be reached before any flow occurs (ft or m).
                     Leave blank (or enter \\*) to use the elevation of the receiving node's invert.
-        Ebot (float): elevation of the bottom of the aquifer (ft or m).
-        Egw (float): groundwater table elevation at the start of the simulation (ft or m).
-        Umc (float): unsaturated zone moisture content at start of simulation (volumetric fraction).
+        Ebot (float): Elevation of the bottom of the aquifer (ft or m).
+        Egw (float): Groundwater table elevation at the start of the simulation (ft or m).
+        Umc (float): Unsaturated zone moisture content at start of simulation (volumetric fraction).
 
 
     Remarks:
@@ -740,26 +772,25 @@ class Groundwater(BaseSectionObject):
 
     def __init__(self, subcatchment, aquifer, node, Esurf, A1, B1, A2, B2, A3, Dsw, Egwt=NaN, Ebot=NaN, Egw=NaN, Umc=NaN):
         """
-        Groundwater object.
+        Subcatchment groundwater parameters.
 
         Args:
-            Subcat (float): subcatchment name.
-            aquifer (float): name of groundwater aquifer underneath the subcatchment.
-            node (float): name of node in conveyance system exchanging groundwater with aquifer.
-            Esurf (float): surface elevation of subcatchment (ft or m).
-            A1 (float): groundwater flow coefficient (see below).
-            B1 (float): groundwater flow exponent (see below).
-            A2 (float): surface water flow coefficient (see below).
-            B2 (float): surface water flow exponent (see below).
-            A3 (float): surface water – groundwater interaction coefficient (see below).
-            Dsw (float): fixed depth of surface water at receiving node (ft or m)
+            subcatchment (float): Subcatchment name.
+            aquifer (float): Name of groundwater aquifer underneath the subcatchment.
+            node (float): Name of node in conveyance system exchanging groundwater with aquifer.
+            Esurf (float): Surface elevation of subcatchment (ft or m).
+            A1 (float): Groundwater flow coefficient (see below).
+            B1 (float): Groundwater flow exponent (see below).
+            A2 (float): Surface water flow coefficient (see below).
+            B2 (float): Surface water flow exponent (see below).
+            A3 (float): Surface water – groundwater interaction coefficient (see below).
+            Dsw (float): Fixed depth of surface water at receiving node (ft or m)
                         (set to zero if surface water depth will vary as computed by flow routing).
-            Egwt (float | optional): threshold groundwater table elevation which must be reached before any flow
-            occurs (ft or m).
+            Egwt (float): Threshold groundwater table elevation which must be reached before any flow occurs (ft or m).
                         Leave blank (or enter \\*) to use the elevation of the receiving node's invert.
-            Ebot (float | optional): elevation of the bottom of the aquifer (ft or m).
-            Egw (float | optional): groundwater table elevation at the start of the simulation (ft or m).
-            Umc (float | optional): unsaturated zone moisture content at start of simulation (volumetric fraction).
+            Ebot (float): Elevation of the bottom of the aquifer (ft or m).
+            Egw (float): Groundwater table elevation at the start of the simulation (ft or m).
+            Umc (float): Unsaturated zone moisture content at start of simulation (volumetric fraction).
         """
         self.subcatchment = str(subcatchment)
         self.aquifer = str(aquifer)
