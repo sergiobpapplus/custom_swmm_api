@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3 (Sep ??, 2022)
+## 0.3 (Sep 06, 2022)
 
 removed:
 
