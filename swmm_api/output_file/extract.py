@@ -84,9 +84,11 @@ class SwmmOutExtract(BinaryReader):
         filename (str): Path to the .out-file.
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename, skip_init=False):
         super().__init__(filename)
 
+        if skip_init:
+            return
         # ____
         self.fp.seek(-6 * _RECORDSIZE, SEEK_END)
         (
@@ -231,7 +233,7 @@ class SwmmOutExtract(BinaryReader):
         _bytes_per_period *= _RECORDSIZE
         return _bytes_per_period
 
-    def _get_selective_results(self, columns):
+    def _get_selective_results(self, columns, processes=1):
         """
         get results of selective columns in .out-file
 
@@ -280,14 +282,40 @@ class SwmmOutExtract(BinaryReader):
         # iter_label_offset = tuple(zip(cols_sorted, offset_sorted))
         iter_label_offset = tuple(zip(values.keys(), offset_list))
 
-        for period_offset in tqdm(range(self._pos_start_output,  # start
-                                        self._pos_start_output + self.n_periods * self._bytes_per_period,  # stop
-                                        self._bytes_per_period),
-                                  desc=f'{repr(self)}.get_selective_results(n_cols={len(columns)})'):  # step
-            # period_offset = self.pos_start_output + period * self.bytes_per_period
+        variable = range(self._pos_start_output,  # start
+                         self._pos_start_output + self.n_periods * self._bytes_per_period,  # stop
+                         self._bytes_per_period)
+
+        def func(out, period_offset):
             for label, offset in iter_label_offset:
-                self._set_position(offset + period_offset)
-                values[label].append(self._next_float())
+                out._set_position(offset + period_offset)
+                values[label].append(out._next_float())
+
+        # for period_offset in tqdm(range(self._pos_start_output,  # start
+        #                                 self._pos_start_output + self.n_periods * self._bytes_per_period,  # stop
+        #                                 self._bytes_per_period),
+        #                           desc=f'{repr(self)}.get_selective_results(n_cols={len(columns)})'):  # step
+        #     # period_offset = self.pos_start_output + period * self.bytes_per_period
+        #     for label, offset in iter_label_offset:
+        #         self._set_position(offset + period_offset)
+        #         values[label].append(self._next_float())
+
+        # -------------
+        from functools import partial
+        from itertools import cycle
+
+        if processes == 1:
+            for period_offset in tqdm(variable, desc=f'{repr(self)}.get_selective_results(n_cols={len(columns)})'):
+                func(self, period_offset)
+
+        else:
+            from multiprocessing.dummy import Pool
+
+            files = [self.copy() for _ in range(processes)]
+            pool = Pool(processes)
+            for _ in tqdm(pool.starmap(partial(func), zip(cycle(files), variable)), total=len(variable), desc=f'{repr(self)}.get_selective_results(n_cols={len(columns)}, processes={processes})'):
+                pass
+        # -------------
 
         return values
 
@@ -305,3 +333,8 @@ class SwmmOutExtract(BinaryReader):
                 not_done = False
 
         self.n_periods = period - 1
+
+    def copy(self):
+        new = type(self)(self.filename, skip_init=True)
+        new.__dict__ = vars(self)
+        return new

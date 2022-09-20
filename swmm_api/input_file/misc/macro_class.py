@@ -5,7 +5,7 @@ from pandas import to_datetime
 
 from swmm_api.input_file.macros import (find_node,
                                         find_link, calc_slope, conduit_iter_over_inp, combined_subcatchment_frame, )
-from swmm_api.input_file.macros.convert import junction_to_storage, junction_to_outfall
+from swmm_api.input_file.macros.convert_object import junction_to_storage, junction_to_outfall
 from swmm_api.input_file.macros.reduce_unneeded import reduce_curves, reduce_raingages
 from swmm_api.input_file.macros.edit import delete_node, combine_conduits
 from swmm_api import read_inp_file

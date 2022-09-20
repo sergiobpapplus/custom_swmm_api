@@ -1,5 +1,5 @@
-from ..section_labels import JUNCTIONS, CONDUITS, STORAGE, OUTFALLS, ORIFICES
-from ..sections import Storage, Outfall, Orifice
+from ..section_labels import JUNCTIONS, CONDUITS, STORAGE, OUTFALLS, ORIFICES, DIVIDERS
+from ..sections import Storage, Outfall, Orifice, Divider
 
 
 def junction_to_storage(inp, label, *args, **kwargs):
@@ -39,6 +39,26 @@ def junction_to_outfall(inp, label, *args, **kwargs):
     if OUTFALLS not in inp:
         inp[OUTFALLS] = Outfall.create_section()
     inp[OUTFALLS].add_obj(Outfall(name=label, elevation=j.elevation, *args, **kwargs))
+
+
+def junction_to_divider(inp, label, *args, **kwargs):
+    """
+    convert :class:`~swmm_api.input_file.inp_sections.node.Junction` to
+    :class:`~swmm_api.input_file.inp_sections.node.Divider`
+
+    and add it to the DIVIDERS section
+
+    Args:
+        inp (SwmmInput): inp-file data
+        label (str): label of the junction
+        *args: argument of the :class:`~swmm_api.input_file.inp_sections.node.Storage`-class
+        **kwargs: keyword arguments of the :class:`~swmm_api.input_file.inp_sections.node.Divider`-class
+    """
+    j = inp[JUNCTIONS].pop(label)  # type: Junction
+    if DIVIDERS not in inp:
+        inp[DIVIDERS] = Divider.create_section()
+    inp[DIVIDERS].add_obj(Divider(name=label, elevation=j.elevation, depth_max=j.depth_max,
+                                  depth_init=j.depth_init, area_ponded=j.area_ponded, *args, **kwargs))
 
 
 def conduit_to_orifice(inp, label, orientation, offset, discharge_coefficient, has_flap_gate=False, hours_to_open=0):

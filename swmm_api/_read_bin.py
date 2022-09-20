@@ -23,8 +23,8 @@ class BinaryReader(abc.ABC):
             self.fp = filename
             self.filename = '<stream>'
         else:
-            self.filename = filename
             self.fp = open(filename, "rb")
+            self.filename = filename
 
     @abc.abstractmethod
     def __repr__(self):

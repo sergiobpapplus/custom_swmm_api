@@ -60,17 +60,20 @@ class SwmmOutput(SwmmOutExtract):
 
     .. _swmmtoolbox: https://github.com/timcera/swmmtoolbox
     """
-    def __init__(self, filename):
+    def __init__(self, filename, skip_init=False):
         """
         Read the SWMM Output file (xxx.out).
 
         Args:
             filename(str): Path to the .out-file.
         """
-        SwmmOutExtract.__init__(self, filename)
+        SwmmOutExtract.__init__(self, filename, skip_init=skip_init)
 
         self._frame = None
         self._data = None
+
+        if skip_init:
+            return
 
         # the main datetime index for the results
         try:
@@ -150,7 +153,7 @@ class SwmmOutput(SwmmOutExtract):
             del self._frame['datetime']
         return self._frame
 
-    def get_part(self, kind=None, label=None, variable=None, slim=False):
+    def get_part(self, kind=None, label=None, variable=None, slim=False, processes=1):
         """
         Get specific columns of the data.
 
@@ -210,7 +213,7 @@ class SwmmOutput(SwmmOutExtract):
         """
         columns = self._filter_part_columns(kind, label, variable)
         if slim:
-            values = self._get_selective_results(columns)
+            values = self._get_selective_results(columns, processes=processes)
         else:
             values = self.to_numpy()[list(map('/'.join, columns))]
 

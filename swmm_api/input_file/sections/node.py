@@ -3,7 +3,7 @@ from numpy import NaN
 from ._identifiers import IDENTIFIERS
 from ..helpers import BaseSectionObject
 from .._type_converter import to_bool, infer_type
-from ..section_labels import JUNCTIONS, OUTFALLS, STORAGE
+from ..section_labels import JUNCTIONS, OUTFALLS, STORAGE, DIVIDERS
 
 
 class _Node(BaseSectionObject):
@@ -40,9 +40,9 @@ class Junction(_Node):
         elevation (float): Elevation of junction invert (ft or m).
         depth_max (float): Depth from ground to invert elevation (ft or m) (default is 0).
         depth_init (float): Water depth at start of simulation (ft or m) (default is 0).
-        depth_surcharge (float): Maximum additional head above ground elevation that manhole junction
+        depth_surcharge (float): Maximum additional pressure head above ground elevation that manhole junction
                             can sustain under surcharge conditions (ft or m) (default is 0).
-        area_ponded (float): Area subjected to surface ponding once water depth exceeds :attr:`Junction.depth_max` (ft2 or m2) (default is 0).
+        area_ponded (float): Area subjected to surface ponding once water depth exceeds :attr:`Junction.depth_max` + :attr:`Junction.depth_surcharge` (ft2 or m2) (default is 0).
     """
     _section_label = JUNCTIONS
 
@@ -55,8 +55,8 @@ class Junction(_Node):
             elevation (float): Elevation of junction invert (ft or m).
             depth_max (float): Depth from ground to invert elevation (ft or m) (default is 0).
             depth_init (float): Water depth at start of simulation (ft or m) (default is 0).
-            depth_surcharge (float): Maximum additional head above ground elevation that manhole junction can sustain under surcharge conditions (ft or m) (default is 0).
-            area_ponded (float): Area subjected to surface ponding once water depth exceeds :attr:`Junction.depth_max` (ft2 or m2) (default is 0).
+            depth_surcharge (float): Maximum additional pressure head above ground elevation that manhole junction can sustain under surcharge conditions (ft or m) (default is 0).
+            area_ponded (float): Area subjected to surface ponding once water depth exceeds :attr:`Junction.depth_max` + :attr:`Junction.depth_surcharge` (ft2 or m2) (default is 0).
         """
         _Node.__init__(self, name, elevation)
         self.depth_max = float(depth_max)
@@ -405,5 +405,162 @@ class Storage(_Node):
     @property
     def curve_name(self):
         """Name of the curve if storage-kind is ``TABULAR``"""
+        if self.kind == self.TYPES.TABULAR:
+            return self.data
+
+
+class Divider(_Node):
+    """
+    Flow divider node information.
+
+    Section:
+        [DIVIDERS]
+
+    Purpose:
+        Identifies each flow divider node of the drainage system. Flow dividers are junctions with
+        exactly two outflow conduits where the total outflow is divided between the two in a prescribed manner.
+
+    Formats in .inp-file:
+        ::
+
+            Name Elev DivLink OVERFLOW            (Ymax Y0 Ysur Apond)
+            Name Elev DivLink CUTOFF   Qmin       (Ymax Y0 Ysur Apond)
+            Name Elev DivLink TABULAR  Dcurve     (Ymax Y0 Ysur Apond)
+            Name Elev DivLink WEIR     Qmin Ht Cd (Ymax Y0 Ysur Apond)
+
+    Attributes:
+        name (str): Name assigned to divider node.
+        elevation (float): Node’s invert elevation (ft or m).
+        link (str): name of the link to which flow is diverted.
+        kind (str): one of ``OVERFLOW``, ``CUTOFF``, ``TABULAR``, ``WEIR`` (or use :attr:`Divider.TYPES`).
+        data (float | str | list): one of ...
+
+            - flow_begin (float): flow at which diversion begins for either a CUTOFF or WEIR divider (flow units).
+            - curve (str): name of a curve for a TABULAR divider that relates diverted flow to total flow.
+            - height (float): height of a WEIR divider (ft or m).
+            - discharge_coefficient (float): discharge coefficient for a WEIR divider.
+
+        depth_max (float): Depth from ground to invert elevation (ft or m) (default is 0).
+        depth_init (float): Water depth at start of simulation (ft or m) (default is 0).
+        depth_surcharge (float): Maximum additional head above ground elevation that manhole junction
+                            can sustain under surcharge conditions (ft or m) (default is 0).
+        area_ponded (float): Area subjected to surface ponding once water depth exceeds :attr:`Divider.depth_max` (ft2 or m2) (default is 0).
+
+        TYPES: Enum-like for the attribute :attr:`Divider.kind` with following members -> {``OVERFLOW`` | ``CUTOFF`` | ``TABULAR`` | ``WEIR``}
+
+    Remarks:
+        If :attr:`Divider.depth_max` is 0 then SWMM sets the node’s maximum depth equal to the distance from its invert to the top of the highest connecting link.
+
+        Surface ponding can only occur when :attr:`Divider.area_ponded` is non-zero and the ALLOW_PONDING analysis option is turned on.
+
+        Divider nodes are only active under the Steady Flow or Kinematic Wave analysis options.
+        For Dynamic Wave flow routing they behave the same as Junction nodes.
+
+        .. math::
+
+            discharge\_coefficient * weir\_height ^ {3/2} > flow\_begin
+
+        The value of the discharge coefficient times the weir height raised to the 3/2 power must be greater than the minimum flow parameter
+    """
+    _section_label = DIVIDERS
+
+    class TYPES:
+        OVERFLOW = 'OVERFLOW'
+        CUTOFF = 'CUTOFF'
+        TABULAR = 'TABULAR'
+        WEIR = 'WEIR'
+
+    def __init__(self, name, elevation, link, kind, *args, data=None, depth_max=0, depth_init=0, depth_surcharge=0, area_ponded=0):
+        """
+        Flow divider node information.
+
+        Args:
+            name (str): Name assigned to divider node.
+            elevation (float): Node’s invert elevation (ft or m).
+            link (str): name of the link to which flow is diverted.
+            kind (str): one of ``OVERFLOW``, ``CUTOFF``, ``TABULAR``, ``WEIR`` (or use :attr:`Divider.TYPES`).
+            data (float | str | list): one of ...
+
+                - flow_begin (float): flow at which diversion begins for either a CUTOFF or WEIR divider (flow units).
+                - curve (str): name of a curve for a TABULAR divider that relates diverted flow to total flow.
+                - height (float): height of a WEIR divider (ft or m).
+                - discharge_coefficient (float): discharge coefficient for a WEIR divider.
+
+            depth_max (float): Depth from ground to invert elevation (ft or m) (default is 0).
+            depth_init (float): Water depth at start of simulation (ft or m) (default is 0).
+            depth_surcharge (float): Maximum additional head above ground elevation that manhole junction
+                                can sustain under surcharge conditions (ft or m) (default is 0).
+            area_ponded (float): Area subjected to surface ponding once water depth exceeds :attr:`Junction.depth_max` (ft2 or m2) (default is 0).
+        """
+        _Node.__init__(self, name, elevation)
+        self.link = str(link)
+        self.kind = kind
+
+        if args:
+            if kind == self.TYPES.OVERFLOW:
+                self._optional_args(*args)
+            elif kind == self.TYPES.CUTOFF:
+                self._init_cutoff(*args)
+            elif kind == self.TYPES.TABULAR:
+                self._init_tabular(*args)
+            elif kind == self.TYPES.WEIR:
+                self._init_weir(*args)
+
+            else:
+                raise NotImplementedError()
+        else:
+            self.data = data
+            self._optional_args(depth_max, depth_init, depth_surcharge, area_ponded)
+
+    def _init_cutoff(self, flow_begin, *args, **kwargs):
+        """
+        Init for ``CUTOFF``.
+
+        Args:
+            flow_begin (float): flow at which diversion begins for either a CUTOFF or WEIR divider (flow units).
+        """
+        self.data = float(flow_begin)
+        self._optional_args(*args, **kwargs)
+
+    def _init_tabular(self, curve, *args, **kwargs):
+        """
+        Init for ``CUTOFF``.
+
+        Args:
+            curve (str): name of a curve for a TABULAR divider that relates diverted flow to total flow.
+        """
+        self.data = str(curve)
+        self._optional_args(*args, **kwargs)
+
+    def _init_weir(self, flow_begin, height, discharge_coefficient, *args, **kwargs):
+        """
+        Init for ``CUTOFF``.
+
+        Args:
+            flow_begin (float): flow at which diversion begins for either a CUTOFF or WEIR divider (flow units).
+            height (float): height of a WEIR divider (ft or m).
+            discharge_coefficient (float): discharge coefficient for a WEIR divider.
+        """
+        self.data = [float(flow_begin), float(height), float(discharge_coefficient)]
+        self._optional_args(*args, **kwargs)
+
+    def _optional_args(self, depth_max=0, depth_init=0, depth_surcharge=0, area_ponded=0):
+        """
+        Optional node parameters.
+
+        Args:
+            depth_max (float): Depth from ground to invert elevation (ft or m) (default is 0).
+            depth_init (float): Water depth at start of simulation (ft or m) (default is 0).
+            depth_surcharge (float): Maximum additional pressure head above ground elevation that the node can sustain under surcharge conditions (ft or m) (default is 0).
+            area_ponded (float): Area subjected to surface ponding once water depth exceeds :attr:`Divider.depth_max` + :attr:`Divider.depth_surcharge` (ft2 or m2) (default is 0).
+        """
+        self.depth_max = float(depth_max)
+        self.depth_init = float(depth_init)
+        self.depth_surcharge = float(depth_surcharge)
+        self.area_ponded = float(area_ponded)
+
+    @property
+    def curve_name(self):
+        """Name of the curve if Divider-kind is ``TABULAR``"""
         if self.kind == self.TYPES.TABULAR:
             return self.data

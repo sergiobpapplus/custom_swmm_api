@@ -91,6 +91,9 @@ def reduce_controls(inp):
                     del inp.CONTROLS[label]
                     continue
 
+        if label not in inp.CONTROLS:
+            continue
+
         # if unavailable object in action: remove only this action
         for action in list(control.actions):
             i = control.actions.index(action)
@@ -176,9 +179,9 @@ def reduce_timeseries(inp):
 
     if RAINGAGES in inp:
         f = inp[RAINGAGES].frame
-        # type: Raingage
+        # type: swmm_api.input_file.sections.RainGage
         if not f.empty:
-            needed_timeseries |= set(f.loc[f['Source'].str.upper() == key, 'Timeseries'])
+            needed_timeseries |= set(f.loc[f['source'].str.upper() == key, 'timeseries'])
 
     if EVAPORATION in inp:
         if key in inp[EVAPORATION]:

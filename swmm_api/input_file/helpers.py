@@ -722,6 +722,10 @@ class BaseSectionObject(ABC):
         """
         return f'{self.__class__.__name__}({", ".join([f"{k}={repr(v)}" for k, v in self])})'
 
+    @property
+    def _short_debug_string(self):
+        return f'{self.__class__.__name__}({self[self._identifier]})'
+
     def to_inp_line(self):
         """
         Convert object to one line of the ``.inp``-file.
@@ -956,6 +960,7 @@ SECTION_ORDER_DEFAULT = [TITLE,
                          SNOWPACKS,
                          JUNCTIONS,
                          OUTFALLS,
+                         DIVIDERS,
                          STORAGE,
                          CONDUITS,
                          PUMPS,

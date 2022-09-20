@@ -13,7 +13,7 @@ from .generic_section import (
 from .link import Conduit, Pump, Orifice, Weir, Outlet
 from .link_component import CrossSection, Loss, Vertices
 
-from .node import Junction, Storage, Outfall  # , Divider
+from .node import Junction, Storage, Outfall, Divider
 from .node_component import (
     DryWeatherFlow,
     Inflow,
