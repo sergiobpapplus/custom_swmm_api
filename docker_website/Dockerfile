@@ -23,7 +23,8 @@ RUN pip3 install \
     nbsphinx \
     recommonmark \
     SWMM_xsections_shape_generator \
-    pydata_sphinx_theme
+    pydata_sphinx_theme \
+    pyswmm
 
 
 RUN useradd -ms /bin/bash mp;
