@@ -95,3 +95,6 @@ def delete_tag_group(inp, part):
         for key in list(inp[TAGS].keys()):
             if inp[TAGS][key].kind == part:
                 del inp[TAGS][key]
+
+def _(inp, df):
+    inp[TAGS] = Tag.from_inp_lines(df.assign(kind=Tag.TYPES.Subcatch).reindex(drop=None)[['kind', 'name', 'tag']].values)

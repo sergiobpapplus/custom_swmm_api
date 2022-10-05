@@ -11,7 +11,7 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dw/swmm-api)](https://pypi.python.org/pypi/swmm-api)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/swmm-api)](https://pypi.python.org/pypi/swmm-api)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5862141.svg)](https://doi.org/10.5281/zenodo.5862141)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7054804.svg)](https://doi.org/10.5281/zenodo.7054804)
 [![Gitter](https://badges.gitter.im/MarkusPic/swmm-api.svg)](https://gitter.im/MarkusPic/swmm-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 
@@ -166,4 +166,4 @@ MORE INFORMATION COMING SOON
 
 ## Cite as
 
-> *Pichler, Markus. (2022). swmm_api: API for reading, manipulating and running SWMM-Projects with python (0.2.0.16). Zenodo. https://doi.org/10.5281/zenodo.5862141*
+> *Pichler, Markus. (2022). swmm_api: API for reading, manipulating and running SWMM-Projects with python (0.3). Zenodo. https://doi.org/10.5281/zenodo.7054804*
