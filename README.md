@@ -59,6 +59,7 @@ python:
 - **SWMM5** / [pypi](https://pypi.org/project/SWMM5/) / [GitHub](https://github.com/asselapathirana/swmm5-python) / simular approach to swmm-toolkit (by Assela Pathirana)
 - **SWMM-xsections-shape-generator** / [pypi](https://pypi.org/project/SWMM-xsections-shape-generator/) / tool to generate custom shapes (by me)
 - **SWMM_EA** / [pypi](https://pypi.org/project/SWMM5_EA/) / usage of genetic algorithms with SWMM (by Assela Pathirana)
+- **OSTRICH-SWMM** / [GitHub](https://github.com/ubccr/ostrich-swmm) / OSTRICH optimization software toolkit with the SWMM 
 
 ## Read, manipulate and write the INP-File
 
@@ -102,9 +103,24 @@ see [examples/inp_file_macros.ipynb](https://gitlab.com/markuspichler/swmm_api/-
 
 
 ## Run SWMM
+
+Run SWMM with a specified executable.
+
 ```python
 from swmm_api import swmm5_run
-swmm5_run('new_inputfile.inp')
+swmm5_run('new_inputfile.inp', swmm_path=r'C:\path\to\swmm.exe')
+```
+
+Or run SWMM with pyswmm. This would be platform independent as pyswmm is compiled for all platforms.
+Additionally, you gain the advantage of a progress bar.
+
+```python
+from swmm_api.run_py import run_progress
+run_progress('new_inputfile.inp')
+```
+
+```
+swmm5 C:\path\to\new_inputfile.inp:  77%|███████▋  | 77/100 [00:03<00:01, 22.36it/s, 2007-02-16 08:46:27]
 ```
 
 ## Read the OUT-File
