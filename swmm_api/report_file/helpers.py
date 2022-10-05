@@ -42,7 +42,7 @@ def _get_title_of_part(part, alt):
 
 def _remove_lines(part, title=True, empty=False, sep=False):
     """
-    remove unneeded lines of part string
+    Remove unneeded lines of part string.
 
     Args:
         part (str): part in report file

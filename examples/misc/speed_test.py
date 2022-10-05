@@ -1,7 +1,8 @@
 from mp.helpers.check_time import Timer
-from swmm_api.run import swmm5_run, get_result_filenames, _run_parallel
-from swmm_api.run_py import run_progress, run
-from swmm_api import SwmmOutput, SwmmReport, SwmmInput
+from swmm_api.run_swmm import get_result_filenames
+from swmm_api.run_swmm.run_epaswmm import _run_parallel
+from swmm_api.run_swmm import swmm5_run_progress, swmm5_run_owa
+from swmm_api import SwmmOutput, SwmmReport, SwmmInput, swmm5_run
 import os
 
 
@@ -11,7 +12,7 @@ pth_parent = r'C:\Users\mp\PycharmProjects\swmm_api\examples\epaswmm5_apps_manua
 
 def main():
 
-    # run_progress(fn_inp_new, n_total=1000)
+    # swmm5_run_progress(fn_inp_new, n_total=1000)
     # fn_inp = '/home/markus/Downloads/test//Example9.inp'
     # fn_rpt, fn_out = get_result_filenames(fn_inp)
     # inp = SwmmInput.read_file(fn_inp)
@@ -20,21 +21,21 @@ def main():
     # df = out.to_frame()
 
     swmm5_run(os.path.join(pth_parent, '../epaswmm5_apps_manual/Example9.inp'), init_print=True)  # 42 s
-    run_progress(os.path.join(pth_parent, '../epaswmm5_apps_manual/Example9.inp'))
+    swmm5_run_progress(os.path.join(pth_parent, '../epaswmm5_apps_manual/Example9.inp'))
     exit()
 
     variable = [os.path.join(pth_parent, '../epaswmm5_apps_manual/Example9.inp'),
                 os.path.join(pth_parent, 'Example9a.inp'),
                 os.path.join(pth_parent, 'Example9b.inp'),
                 os.path.join(pth_parent, 'Example9c.inp')]
-    _run_parallel(variable, func=run_progress, processes=1)
+    _run_parallel(variable, func=swmm5_run_progress, processes=1)
     exit()
 
-    run_progress('/home/markus/Documents/SWMM_source/cmake-build-debug/Example9.inp')
+    swmm5_run_progress('/home/markus/Documents/SWMM_source/cmake-build-debug/Example9.inp')
     exit()
 
     with Timer('run'):  # 27 s  | 30s
-        run('/home/markus/Documents/SWMM_source/cmake-build-debug/Example9.inp')
+        swmm5_run_owa('/home/markus/Documents/SWMM_source/cmake-build-debug/Example9.inp')
 
 
     exit()

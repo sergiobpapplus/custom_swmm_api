@@ -17,6 +17,7 @@ class BinaryReader(abc.ABC):
     Args:
         filename (str): Path to the .out-file.
     """
+
     def __init__(self, filename):
         self.fp = None
         if all([hasattr(filename, i) for i in ['tell', 'seek', 'read', 'close']]):

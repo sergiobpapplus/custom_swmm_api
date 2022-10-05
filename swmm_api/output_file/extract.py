@@ -8,16 +8,14 @@
 # Python Version >= 3.7
 
 import copy
-from os import remove
 
 import datetime
-import struct
 from io import SEEK_END, SEEK_SET
 from tqdm.auto import tqdm
 from warnings import warn
 
 from .definitions import OBJECTS, VARIABLES
-from .._read_bin import BinaryReader
+from swmm_api._io_helpers._read_bin import BinaryReader
 
 VARIABLES_DICT = {
     OBJECTS.SUBCATCHMENT: VARIABLES.SUBCATCHMENT.LIST_,

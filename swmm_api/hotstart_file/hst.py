@@ -2,9 +2,9 @@ from io import SEEK_SET
 
 import pandas as pd
 
-from ._read_bin import BinaryReader
-from .input_file import SEC
-from .output_file.extract import _FLOW_UNITS
+from swmm_api._io_helpers._read_bin import BinaryReader
+from swmm_api.input_file import SEC
+from swmm_api.output_file.extract import _FLOW_UNITS
 
 _FILESTAMP = "SWMM5-HOTSTART4"
 
@@ -209,3 +209,20 @@ class SwmmHotstart(BinaryReader):
 
     def __repr__(self):
         return f'SwmmHotstart(file="{self.filename}")'
+
+
+def read_hst_file(filename, inp):
+    """
+    Read a with SWMM created binary hotstart file.
+
+    Args:
+        filename (str): path of the hotstart-file
+        inp (swmm_api.SwmmInput): inp-file-data
+
+    Returns:
+        SwmmHotstart: output file object
+
+    See Also:
+        :meth:`SwmmHotstart.__init__` : Equal functionality.
+    """
+    return SwmmHotstart(filename, inp)

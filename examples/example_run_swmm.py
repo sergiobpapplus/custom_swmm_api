@@ -1,3 +1,3 @@
-from swmm_api.run_py import run_progress
+from swmm_api.run_swmm import swmm5_run_progress
 
-run_progress(r'C:\Users\mp\PycharmProjects\swmm_api\examples\temp1.inp')
+swmm5_run_progress(r'C:\Users\mp\PycharmProjects\swmm_api\examples\temp1.inp')

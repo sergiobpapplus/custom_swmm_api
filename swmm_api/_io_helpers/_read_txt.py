@@ -4,6 +4,9 @@ import os
 import warnings
 
 
+DEFAULT_ENCODING = 'utf-8'
+
+
 def detect_encoding(filename):
     if "linux" in sys.platform:
         shell_output = subprocess.check_output(['file', '-i', filename]).decode().strip()
@@ -30,8 +33,17 @@ def detect_encoding(filename):
     return shell_output.split('charset=')[-1]
 
 
-def read_txt_file(filename, encoding=None):
+def read_txt_file(filename, encoding=DEFAULT_ENCODING):
+    """
+    Read text file. I.e. SWMM inp and rpt file.
 
+    Args:
+        filename (str): Path/filename to text-file.
+        encoding (str): Encoding of the text-file (None -> auto-detect encoding ... takes a few seconds)
+
+    Returns:
+        str: Content of the text-file.
+    """
     # import cchardet as chardet
     # with open(filename, "rb") as f:
     #     binary_txt = f.read()
@@ -47,7 +59,7 @@ def read_txt_file(filename, encoding=None):
         with open(filename, 'r', encoding=encoding) as file:
             txt = file.read()
     except UnicodeDecodeError:
-        warnings.warn(f'Could not find correct encoding (found "{encoding}", but is wrong) for inp-file ("{filename}"). Please set encoding manually.')
+        warnings.warn(f'Could not find correct encoding (found "{encoding}", but is wrong) for file ("{filename}"). Please set encoding manually.')
         with open(filename, 'r') as file:
             txt = file.read()
 

@@ -11,7 +11,7 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dw/swmm-api)](https://pypi.python.org/pypi/swmm-api)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/swmm-api)](https://pypi.python.org/pypi/swmm-api)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5862141.svg)](https://doi.org/10.5281/zenodo.5862141)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7054804.svg)](https://doi.org/10.5281/zenodo.7054804)
 [![Gitter](https://badges.gitter.im/MarkusPic/swmm-api.svg)](https://gitter.im/MarkusPic/swmm-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 
@@ -59,6 +59,7 @@ python:
 - **SWMM5** / [pypi](https://pypi.org/project/SWMM5/) / [GitHub](https://github.com/asselapathirana/swmm5-python) / simular approach to swmm-toolkit (by Assela Pathirana)
 - **SWMM-xsections-shape-generator** / [pypi](https://pypi.org/project/SWMM-xsections-shape-generator/) / tool to generate custom shapes (by me)
 - **SWMM_EA** / [pypi](https://pypi.org/project/SWMM5_EA/) / usage of genetic algorithms with SWMM (by Assela Pathirana)
+- **OSTRICH-SWMM** / [GitHub](https://github.com/ubccr/ostrich-swmm) / OSTRICH optimization software toolkit with the SWMM 
 
 ## Read, manipulate and write the INP-File
 
@@ -71,7 +72,7 @@ from swmm_api import read_inp_file
 inp = read_inp_file('inputfile.inp')  # type: swmm_api.SwmmInput
 
 sec_timeseries = inp[TIMESERIES]  # type: swmm_api.input_file.helpers.InpSection
-ts = inp[TIMESERIES]['regenseries'].frame  # type: pandas.Series
+ts = inp[TIMESERIES]['regenseries'].pandas  # type: pandas.Series
 ```
 
 ### Manipulate the INP-File
@@ -102,9 +103,24 @@ see [examples/inp_file_macros.ipynb](https://gitlab.com/markuspichler/swmm_api/-
 
 
 ## Run SWMM
+
+Run SWMM with a specified executable.
+
 ```python
 from swmm_api import swmm5_run
-swmm5_run('new_inputfile.inp')
+swmm5_run('new_inputfile.inp', swmm_lib_path=r'C:\path\to\runswmm.exe')
+```
+
+Or run SWMM with [pyswmm](https://github.com/OpenWaterAnalytics/pyswmm). This would be platform independent as pyswmm is compiled for all platforms.
+Additionally, you gain the advantage of a progress bar.
+
+```python
+from swmm_api import swmm5_run
+swmm5_run('new_inputfile.inp', progress_size=100)
+```
+
+```
+swmm5 C:\path\to\new_inputfile.inp:  77%|███████▋  | 77/100 [00:03<00:01, 22.36it/s, 2007-02-16 08:46:27]
 ```
 
 ## Read the OUT-File
@@ -150,4 +166,4 @@ MORE INFORMATION COMING SOON
 
 ## Cite as
 
-> *Pichler, Markus. (2022). swmm_api: API for reading, manipulating and running SWMM-Projects with python (0.2.0.16). Zenodo. https://doi.org/10.5281/zenodo.5862141*
+> *Pichler, Markus. (2022). swmm_api: API for reading, manipulating and running SWMM-Projects with python (0.3). Zenodo. https://doi.org/10.5281/zenodo.7054804*

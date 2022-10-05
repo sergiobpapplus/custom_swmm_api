@@ -5,14 +5,11 @@ import warnings
 from .helpers import (section_to_string, CustomDict, convert_section, InpSection,
                       InpSectionGeneric, SECTION_ORDER_DEFAULT, check_order, SECTIONS_ORDER_MP, head_to_str,
                       iter_section_lines, SwmmInputWarning, BaseSectionObject, )
-from .._read_txt import detect_encoding, read_txt_file
+from .._io_helpers._read_txt import detect_encoding, read_txt_file, DEFAULT_ENCODING
 from .section_types import SECTION_TYPES
 from .section_labels import *
 from .sections import *
 from .sections.subcatch import INFILTRATION_DICT
-
-
-DEFAULT_ENCODING = 'utf-8'
 
 
 class SwmmInput(CustomDict):
@@ -113,7 +110,7 @@ class SwmmInput(CustomDict):
             filename (str): path/filename to .inp file
             force_ignore_case (bool): SWMM is case-insensitive but python is case-sensitive -> set True to ignore case
                                         all text/labels will be set to uppercase
-            encoding (str): encoding of the .inp-text-file (None -> auto-detect encoding ... takes a few seconds)
+            encoding (str): Encoding of the .inp-text-file (None -> auto-detect encoding ... takes a few seconds)
         """
         if encoding is None:
             encoding = detect_encoding(filename)

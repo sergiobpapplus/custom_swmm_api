@@ -6,14 +6,14 @@ from tqdm.auto import tqdm
 
 import warnings
 
-from swmm_api import read_inp_file, SwmmReport, SwmmOutput
+from swmm_api import SwmmInput, SwmmReport, SwmmOutput
 from swmm_api.input_file import SEC
 from swmm_api.input_file.helpers import SwmmInputWarning
 from swmm_api.input_file.macros import write_geo_package
 from swmm_api.input_file.sections import Timeseries
-# from swmm_api.run_py import get_swmm_version, run
-from swmm_api.run import get_swmm_version, swmm5_run as run
-from swmm_api.run import get_result_filenames, SWMMRunError
+# from swmm_api.run_swmm.run_swmm_toolkit import get_swmm_version_owa, run
+from swmm_api.run_swmm import get_result_filenames, SWMMRunError
+from swmm_api.run_swmm.run_epaswmm import get_swmm_version_epa, swmm5_run as run
 
 # t = Timeseries.create_section("""KOSTRA 01-01-2021 00:00 0.0
 # KOSTRA 01-01-2021 00:05 1.9999999999999982
@@ -34,7 +34,7 @@ example_dirs = [os.path.join(parent_dir, 'epaswmm5_apps_manual'),
                 os.path.join(parent_dir, 'epaswmm5_apps_manual', 'Samples'),
                 os.path.join(parent_dir, 'epaswmm5_apps_manual', 'Example6-Final_AllSections_GUI')]
 
-version = get_swmm_version()
+version = get_swmm_version_epa()
 print(f'Version: {version}')
 print()
 
@@ -109,7 +109,7 @@ with tqdm(example_files, desc='TESTING_ALL_EXAMPLES') as example_files:
             continue
 
         # READ
-        inp = read_inp_file(fn)
+        inp = SwmmInput(fn)
 
         # MANIPULATE
 
@@ -143,7 +143,7 @@ with tqdm(example_files, desc='TESTING_ALL_EXAMPLES') as example_files:
 
         # RUN
         # swmm5_run(inp_fn, init_print=False)
-        # run_progress(fn_inp)
+        # swmm5_run_progress(fn_inp)
         try:
             run(fn_inp)
         except SWMMRunError as e:

@@ -1,10 +1,10 @@
 import os
 
-from swmm_api import read_inp_file
+from swmm_api import read_inp_file, swmm5_run
 from swmm_api.input_file import SEC
 from swmm_api.input_file.macros.geo import complete_vertices
-from swmm_api.run import (swmm5_run, delete_swmm_files, get_swmm_version, get_swmm_version_base, infer_swmm_path,
-                          SWMM_PATH, )
+from swmm_api.run_swmm import (delete_swmm_files,)
+from swmm_api.run_swmm.run_epaswmm import infer_swmm_path, get_swmm_version_base, get_swmm_version_epa
 
 inp = read_inp_file('adjust_subcatchemnt_pattern.inp')
 inp.force_convert_all()
@@ -36,5 +36,5 @@ swmm5_run('temp.inp', swmm_path='C:\Program Files (x86)\EPA SWMM 5.1.015\swmm5.e
 # t0 = time.perf_counter()
 # print(infer_swmm_path())
 # print(SWMM_PATH)
-# print(get_swmm_version())
+# print(get_swmm_version_epa())
 # print(time.perf_counter() - t0)

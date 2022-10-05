@@ -108,15 +108,15 @@ Run SWMM with a specified executable.
 
 ```python
 from swmm_api import swmm5_run
-swmm5_run('new_inputfile.inp', swmm_path=r'C:\path\to\swmm.exe')
+swmm5_run('new_inputfile.inp', swmm_lib_path=r'C:\path\to\runswmm.exe')
 ```
 
-Or run SWMM with pyswmm. This would be platform independent as pyswmm is compiled for all platforms.
+Or run SWMM with [pyswmm](https://github.com/OpenWaterAnalytics/pyswmm). This would be platform independent as pyswmm is compiled for all platforms.
 Additionally, you gain the advantage of a progress bar.
 
 ```python
-from swmm_api.run_py import run_progress
-run_progress('new_inputfile.inp')
+from swmm_api import swmm5_run
+swmm5_run('new_inputfile.inp', progress_size=100)
 ```
 
 ```

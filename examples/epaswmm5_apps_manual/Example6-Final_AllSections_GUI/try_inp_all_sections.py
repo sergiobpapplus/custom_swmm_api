@@ -1,5 +1,5 @@
 from swmm_api import SwmmInput, SwmmReport, SwmmOutput, SwmmHotstart
-from swmm_api.run_py import run
+from swmm_api.run_swmm import swmm5_run_owa
 
 # rpt = SwmmReport('Example6-Final_AllSections_GUI.rpt')
 # rpt.analyse_end

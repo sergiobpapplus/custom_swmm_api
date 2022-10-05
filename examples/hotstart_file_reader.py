@@ -1,5 +1,4 @@
-from swmm_api.hotstart import SwmmHotstart
-from swmm_api import SwmmInput, SwmmOutput, SwmmReport
+from swmm_api import SwmmInput, SwmmOutput, SwmmReport, SwmmHotstart
 
 
 def main():

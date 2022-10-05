@@ -12,7 +12,7 @@ import pandas as pd
 
 from .helpers import (_get_title_of_part, _remove_lines, _part_to_frame, _continuity_part_to_dict, ReportUnitConversion,
                       _routing_part_to_dict, _quality_continuity_part_to_dict, )
-from .._read_txt import read_txt_file
+from .._io_helpers._read_txt import read_txt_file, DEFAULT_ENCODING
 from ..input_file.helpers import natural_keys
 
 
@@ -20,12 +20,14 @@ class SwmmReport:
     """
     SWMM Report file (xxx.rpt).
     """
-    def __init__(self, filename):
+
+    def __init__(self, filename, encoding=DEFAULT_ENCODING):
         """
-        create Report instance to read an .rpt-file
+        Create Report instance to read a rpt-file.
 
         Args:
-            filename (str): path to .rpt file
+            filename (str): Path to  the rpt file.
+            encoding (str): Encoding of the .rpt-text-file (None -> auto-detect encoding ... takes a few seconds)
 
         Notes:
             For more information see SWMM 5.1 User Manual | 9.1 Viewing a Status Report | S. 136
@@ -41,7 +43,7 @@ class SwmmReport:
         self._converted_parts = {}
         # ________________
         # split report file to a dict
-        self._report_to_dict()
+        self._report_to_dict(encoding=encoding)
 
         # ________________
         self._version_title = None
@@ -115,7 +117,7 @@ class SwmmReport:
     def is_file(self):
         return os.path.isfile(self._filename)
 
-    def _report_to_dict(self):
+    def _report_to_dict(self, encoding=DEFAULT_ENCODING):
         """
         convert the report file into a dictionary depending on the different parts
         
@@ -125,7 +127,7 @@ class SwmmReport:
         if not self.is_file():
             return
 
-        txt = read_txt_file(self._filename)
+        txt = read_txt_file(self._filename, encoding=encoding)
         lines = txt.split('\n')
 
         if not lines:
@@ -147,12 +149,12 @@ class SwmmReport:
                 part = '  ****' + part
 
             key = _get_title_of_part(part, i)
+            new_lines = _remove_lines(part, title=False, empty=True, sep=False)
             if key in self._raw_parts:
-                new_lines = _remove_lines(part, title=False, empty=True, sep=False)
                 if new_lines.count('\n') == self._raw_parts[key].count('\n'):
                     self._raw_parts[key] = '\n'.join([_concat_lines(a, b) for a, b in zip(self._raw_parts[key].split('\n'), new_lines.split('\n'))])
             else:
-                self._raw_parts[key] = _remove_lines(part, title=False, empty=True, sep=False)
+                self._raw_parts[key] = new_lines
 
     def _get_converted_part(self, key):
         if key not in self._converted_parts:
@@ -1000,12 +1002,13 @@ class SwmmReport:
         print(self._pretty_dict(self.get_warnings()))
 
 
-def read_rpt_file(filename):
+def read_rpt_file(filename, encoding=DEFAULT_ENCODING):
     """
     Read the SWMM Report file (xxx.rpt).
 
     Args:
         filename (str): filename of the report file
+        encoding (str): Encoding of the .inp-text-file (None -> auto-detect encoding ... takes a few seconds)
 
     Returns:
         SwmmReport: report file object
@@ -1013,4 +1016,4 @@ def read_rpt_file(filename):
     See Also:
         :meth:`SwmmReport.__init__` : Equal functionality.
     """
-    return SwmmReport(filename)
+    return SwmmReport(filename, encoding=encoding)

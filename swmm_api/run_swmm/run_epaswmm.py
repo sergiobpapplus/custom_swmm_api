@@ -5,23 +5,19 @@ __email__ = "markus.pichler@tugraz.at"
 __version__ = "0.1"
 __license__ = "MIT"
 
-import subprocess
+
 import os
+import subprocess
 from sys import platform as _platform
 
-from swmm_api import SwmmReport
+from ._run_helpers import SWMMRunError, get_report_errors
 
-
-class SWMMRunError(UserWarning):
-    pass
+SWMM_PATH = None
 
 
 def get_swmm_command_line(swmm_path, inp, rpt, out):
     cmd = (swmm_path, inp, rpt, out)
     return cmd, inp, rpt, out
-
-
-SWMM_PATH = None
 
 
 def infer_swmm_path():
@@ -59,35 +55,6 @@ def infer_swmm_path():
 
     SWMM_PATH = swmm_path
     return swmm_path
-
-
-def get_result_filenames(inp_fn):
-    """
-    get filenames for the Report and Output files
-
-    Args:
-        inp_fn (str): filename of the Input-Files
-
-    Returns:
-        tuple(str, str): filenames for the Report- and Output-file
-    """
-    return inp_fn.replace('.inp', '.rpt'), inp_fn.replace('.inp', '.out')
-
-
-def delete_swmm_files(fn_inp, including_inp=False):
-    """
-    Delete the swmm project files.
-
-    Helpful if you run just a temporary test.
-
-    Args:
-        fn_inp (str): filename of the inp-file
-        including_inp (bool): if the inp-file should also be deleted.
-    """
-    fn_rpt, fn_out = get_result_filenames(fn_inp)
-    for fn in (fn_out, fn_rpt, (fn_inp if including_inp else None)):
-        if fn is not None and os.path.isfile(fn):
-            os.remove(fn)
 
 
 def get_swmm_command_line_auto(inp, rpt_dir=None, out_dir=None, create_out=True, swmm_path=None):
@@ -129,39 +96,12 @@ def run_swmm_custom(command_line):
     return shell_output
 
 
-def check_swmm_errors(fn_rpt, shell_output):
-    msgs = {}
-
-    if isinstance(shell_output, str):
-        msgs['CALL'] = shell_output
-
-    else:
-        stdout = shell_output.stdout.decode()
-        # if 'error' in stdout:
-        msgs.update({
-            'CALL': shell_output.args,
-            'RETURN': shell_output.returncode,
-            'ERROR': shell_output.stderr.decode(),
-            'OUT': stdout,
-        })
-
-    if os.path.isfile(fn_rpt):
-        rpt = SwmmReport(fn_rpt)
-        errors = rpt.get_errors()
-        if errors:
-            msgs['REPORT'] = rpt._pretty_dict(errors)
-    else:
-        msgs['REPORT'] = 'NO Report file created!!!'
-
-    if 'REPORT' in msgs:
-        sep = '\n' + '_' * 100 + '\n'
-        error_msg = sep + sep.join('{}:\n  {}'.format(k, v) for k, v in msgs.items())
-        raise SWMMRunError(error_msg)
-
-
-def swmm5_run(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=True, swmm_path=None):
+def swmm5_run_epa(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=True, swmm_path=None):
     """
-    Run a simulation with an EPA-SWMM input-file.
+    Run a simulation with EPA-SWMM.
+
+    EPA-SWMM must be installed in the default folder.
+    In linux and mac (*nix) swmm must be executeable with the `swmm5` command.
 
     The default working directory is the input-file directory.
 
@@ -202,10 +142,10 @@ def swmm5_run_parallel(inp_fns, processes=4):
         inp_fns (list): list of SWMM modell filenames (.inp-files)
         processes (int): number of parallel processes
     """
-    _run_parallel(inp_fns, swmm5_run, processes=processes)
+    _run_parallel(inp_fns, swmm5_run_epa, processes=processes)
 
 
-def _run_parallel(variable, func=swmm5_run, processes=4):
+def _run_parallel(variable, func=swmm5_run_epa, processes=4):
     from tqdm.auto import tqdm
     from functools import partial
 
@@ -221,17 +161,6 @@ def _run_parallel(variable, func=swmm5_run, processes=4):
             pass
 
 
-def get_swmm_version():
-    """
-    Get the swmm version used for simulation with the API.
-
-    Returns:
-        str: swmm version
-    """
-    swmm_path = infer_swmm_path()
-    return get_swmm_version_base(swmm_path)
-
-
 def get_swmm_version_base(swmm_path):
     """
     Get the swmm version.
@@ -244,3 +173,38 @@ def get_swmm_version_base(swmm_path):
     """
     shell_output = subprocess.check_output([swmm_path, '--version'])
     return shell_output.decode().strip()
+
+
+def get_swmm_version_epa():
+    """
+    Get the EPA-swmm version used for simulation with the API.
+
+    Returns:
+        str: swmm version
+    """
+    swmm_path = infer_swmm_path()
+    return get_swmm_version_base(swmm_path)
+
+
+def check_swmm_errors(fn_rpt, shell_output):
+    msgs = {}
+
+    if isinstance(shell_output, str):
+        msgs['CALL'] = shell_output
+
+    else:
+        stdout = shell_output.stdout.decode()
+        # if 'error' in stdout:
+        msgs.update({
+            'CALL'  : shell_output.args,
+            'RETURN': shell_output.returncode,
+            'ERROR' : shell_output.stderr.decode(),
+            'OUT'   : stdout,
+        })
+
+    msgs['REPORT'] = get_report_errors(fn_rpt)
+
+    if msgs['REPORT'] != 'No Errors.':
+        sep = '\n' + '_' * 100 + '\n'
+        error_msg = sep + sep.join('{}:\n  {}'.format(k, v) for k, v in msgs.items())
+        raise SWMMRunError(error_msg)

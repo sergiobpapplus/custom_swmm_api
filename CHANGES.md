@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.post1 (Sep 06, 2022)
+
+changed
+
+- running swmm functions are reordered
+
 ## 0.3 (Sep 06, 2022)
 
 removed:
