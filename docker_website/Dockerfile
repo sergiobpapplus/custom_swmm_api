@@ -6,25 +6,24 @@ RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends pandoc proj-bin
 
 # RUN  update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-RUN pip3 install --upgrade pip3
+RUN pip3 install --upgrade pip
 
-RUN pip3 install \
-    numpy \
-    pandas \
-    tqdm \
-    networkx \
-    fastparquet \
-    matplotlib \
-    Shapely \
-    pyproj \
-    Rtree \
-    geopandas \
-    sphinx \
-    nbsphinx \
-    recommonmark \
-    SWMM_xsections_shape_generator \
-    pydata_sphinx_theme \
-    pyswmm
+RUN pip3 install numpy
+RUN pip3 install pandas
+RUN pip3 install tqdm
+RUN pip3 install networkx
+RUN pip3 install fastparquet
+RUN pip3 install matplotlib
+RUN pip3 install Shapely
+RUN pip3 install pyproj
+RUN pip3 install Rtree
+RUN pip3 install geopandas
+RUN pip3 install sphinx
+RUN pip3 install nbsphinx
+RUN pip3 install recommonmark
+RUN pip3 install SWMM_xsections_shape_generator
+RUN pip3 install pydata_sphinx_theme
+RUN pip3 install pyswmm
 
 
 RUN useradd -ms /bin/bash mp;
