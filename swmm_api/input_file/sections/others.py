@@ -1177,15 +1177,13 @@ class Inlet(BaseSectionObject):
         DROP_CURB inlets with open channels, and a CUSTOM inlet with any conduit.
 
         GRATE and DROP_GRATE types can be any of the following:
+
             - ``P_BAR``-50: Parallel bar grate with bar spacing 17⁄8” on center
-            - ``P_BAR``-50X100: Parallel bar grate with bar spacing 17⁄8” on center and 3⁄8” diameter lateral rods
-            spaced at 4” on center
+            - ``P_BAR``-50X100: Parallel bar grate with bar spacing 17⁄8” on center and 3⁄8” diameter lateral rods spaced at 4” on center
             - ``P_BAR``-30: Parallel bar grate with 11⁄8” on center bar spacing
             - ``CURVED_VANE``: Curved vane grate with 31⁄4” longitudinal bar and 41⁄4” transverse bar spacing on center
-            - ``TILT_BAR``-45: 45 degree tilt bar grate with 21⁄4” longitudinal bar and 4” transverse bar spacing on
-            center
-            - ``TILT_BAR``-30: 30 degree tilt bar grate with 31⁄4” and 4” on center longitudinal and lateral bar
-            spacing respectively
+            - ``TILT_BAR``-45: 45 degree tilt bar grate with 21⁄4” longitudinal bar and 4” transverse bar spacing on center
+            - ``TILT_BAR``-30: 30 degree tilt bar grate with 31⁄4” and 4” on center longitudinal and lateral bar spacing respectively
             - ``RETICULINE``: "Honeycomb" pattern of lateral bars and longitudinal bearing bars
             - ``GENERIC``: A generic grate design.
 

@@ -800,7 +800,7 @@ class FilesSection(InpSectionGeneric):
         Start file (with different names).
 
     Attributes:
-        KEYS: Enum-like for the key values with following members -> {``USE`` | ``SAVE`` | ``RAINFALL`` |``RUNOFF`` |``HOTSTART`` |``RDII`` |``INFLOWS`` |``OUTFLOWS``}
+        KEYS: Enum-like for the key values with following members -> {``USE`` | ``SAVE`` | ``RAINFALL`` | ``RUNOFF`` | ``HOTSTART`` | ``RDII`` | ``INFLOWS`` | ``OUTFLOWS``}
     """
     _label = FILES
 
@@ -902,7 +902,7 @@ class AdjustmentsSection(InpSectionGeneric):
         surface roughness coefficient (Mannings n) can also be specified for individual subcatchments
 
     Attributes:
-        KEYS: Enum-like for the key values with following members -> {``TEMPERATURE`` | ``EVAPORATION`` | ``RAINFALL`` |``CONDUCTIVITY`` |``N_PERV`` |``DSTORE`` |``INFIL``}
+        KEYS: Enum-like for the key values with following members -> {``TEMPERATURE`` | ``EVAPORATION`` | ``RAINFALL`` | ``CONDUCTIVITY`` | ``N_PERV`` | ``DSTORE`` | ``INFIL``}
     """
     _label = ADJUSTMENTS
 
@@ -976,7 +976,7 @@ class BackdropSection(InpSectionGeneric):
             upper-right Y coordinate of backdrop image
 
     Attributes:
-        KEYS: Enum-like for the key values with following members -> {``FILE`` | ``DIMENSIONS`` | ``UNITS`` |``OFFSET`` |``SCALING``}
+        KEYS: Enum-like for the key values with following members -> {``FILE`` | ``DIMENSIONS`` | ``UNITS`` | ``OFFSET`` | ``SCALING``}
     """
     _label = BACKDROP
 

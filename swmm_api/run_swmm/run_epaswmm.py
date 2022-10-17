@@ -111,10 +111,10 @@ def swmm5_run_epa(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=
         out_dir (str): directory in which the output-file is written.
         init_print (bool): if the default commandline output should be printed
         create_out (bool): if the out-file should be created
-        swmm_path (str): custom path to the command line swmm executable. i.e. 'C:\\Program Files\\EPA SWMM 5.2.0 (64-bit)\\runswmm.exe'.
-                UNIX users should place the path to the swmm executable in the system path and name the file 'swmm5'.
+        swmm_path (str): custom path to the command line swmm executable. i.e. ``C:\\Program Files\\EPA SWMM 5.2.0 (64-bit)\\runswmm.exe``.
+                UNIX users should place the path to the swmm executable in the system path and name the file ``swmm5``.
                 Default: the api will search in the standard paths for the swmm exe.
-                Be aware that the 'epaswmm5.exe' is the graphical user interface and will not work for this api.
+                Be aware that the ``epaswmm5.exe`` is the graphical user interface and will not work for this api.
 
     Returns:
         tuple[str, str, str]: INP-, RPT- and OUT-filename

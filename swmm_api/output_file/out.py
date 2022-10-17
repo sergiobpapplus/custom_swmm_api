@@ -60,15 +60,15 @@ class SwmmOutput(SwmmOutExtract):
 
     .. _swmmtoolbox: https://github.com/timcera/swmmtoolbox
     """
-    flow_unit: str
-    labels: dict
-    model_properties: dict
-    pollutant_units: dict
-    report_interval: datetime.timedelta
-    start_date: datetime.datetime
-    swmm_version: str
-    variables: dict
-    filename: str
+    # flow_unit: str
+    # labels: dict
+    # model_properties: dict
+    # pollutant_units: dict
+    # report_interval: datetime.timedelta
+    # start_date: datetime.datetime
+    # swmm_version: str
+    # variables: dict
+    # filename: str
 
     def __init__(self, filename, skip_init=False):
         """

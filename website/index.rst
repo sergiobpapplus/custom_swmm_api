@@ -51,4 +51,4 @@ Sponsors and Partners
     :height: 100
     :target: https://www.tugraz.at/en/institutes/sww/home/
 
-     Institute of Urban Water Management and Landscape Water Engineering
+    Institute of Urban Water Management and Landscape Water Engineering

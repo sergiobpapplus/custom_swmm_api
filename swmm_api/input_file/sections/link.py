@@ -337,15 +337,15 @@ class Weir(_Link):
         The geometry of a weir’s opening is described in the [``XSECTIONS``] section (:class:`CrossSection`).
         The following shapes must be used with each type of weir:
 
-        ==============  ===================
-        Weir Form       Cross-Section Shape
-        ==============  ===================
+        ===============  ===================
+        Weir Form        Cross-Section Shape
+        ===============  ===================
         ``TRANSVERSE``  ``RECT_OPEN``
         ``SIDEFLOW``    ``RECT_OPEN``
         ``V-NOTCH``     ``TRIANGULAR``
         ``TRAPEZOIDAL`` ``TRAPEZOIDAL``
         ``ROADWAY``     ``RECT_OPEN``
-        ==============  ===================
+        ===============  ===================
 
         The ``ROADWAY`` weir is a broad crested rectangular weir used model roadway crossings usually in conjunction with culvert-type conduits.
         It uses the FHWA HDS-5 method to determine a discharge coefficient as a function of flow depth and roadway width and surface.
