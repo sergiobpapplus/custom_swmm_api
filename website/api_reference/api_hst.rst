@@ -10,21 +10,6 @@ Constructor
     SwmmHotstart
     read_hst_file
 
-Content
-~~~~~~~
-.. autosummary::
-    :toctree: hst/
-
-    SwmmHotstart.columns_link
-    SwmmHotstart.columns_node
-    SwmmHotstart.columns_storage
-    SwmmHotstart.columns_subcatchment
-    SwmmHotstart.links
-    SwmmHotstart.nodes
-    SwmmHotstart.storages
-    SwmmHotstart.subcatchments
-    SwmmHotstart.unit
-
 
 Tables
 ~~~~~~

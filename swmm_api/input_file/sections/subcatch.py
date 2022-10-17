@@ -22,15 +22,14 @@ class SubCatchment(BaseSectionObject):
 
     Attributes:
         name (str): Name assigned to subcatchment.
-        rain_gage (str): Name of rain gage in [``RAINGAGES`` ` ``RAINGAGES`` :class:`RainGage` `_ ] section assigned to subcatchment.
+        rain_gage (str): Name of rain gage in [``RAINGAGES``] section (:class:`~swmm_api.input_file.sections.RainGage`) assigned to subcatchment.
         outlet (str): Name of node or subcatchment that receives runoff from subcatchment.
         area (float): Area of subcatchment (acres or hectares).
         imperviousness (float): Percent imperviousness of subcatchment.
         width (float): Characteristic width of subcatchment (ft or meters).
         slope (float): Subcatchment slope (percent).
         curb_length (float): Total curb length (any length units). Use 0 if not applicable.
-        snow_pack (str): Optional name of snow pack object (from [``SNOWPACKS``] section) that characterizes snow
-            accumulation and melting over the subcatchment.
+        snow_pack (str): Optional name of snow pack object (from [``SNOWPACKS``] section) that characterizes snow accumulation and melting over the subcatchment.
     """
     _identifier = IDENTIFIERS.name
     _section_label = SUBCATCHMENTS
@@ -41,7 +40,7 @@ class SubCatchment(BaseSectionObject):
 
         Args:
             name (str): Name assigned to subcatchment.
-            rain_gage (str): Name of rain gage in [``RAINGAGES`` ` ``RAINGAGES`` :class:`RainGage` `_ ] section assigned to subcatchment.
+            rain_gage (str): Name of rain gage in [``RAINGAGES``] section (:class:`~swmm_api.input_file.sections.RainGage`) assigned to subcatchment.
             outlet (str): Name of node or subcatchment that receives runoff from subcatchment.
             area (float): Area of subcatchment (acres or hectares).
             imperviousness (float): Percent imperviousness of subcatchment.

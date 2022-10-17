@@ -22,7 +22,6 @@ Content
 .. autosummary::
     :toctree: out/
 
-    SwmmOutput.filename
     SwmmOutput.number_columns
 
 Export

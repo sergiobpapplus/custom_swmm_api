@@ -24,17 +24,6 @@ class SwmmHotstart(BinaryReader):
         subcatchments (list[tuple]): subcatchments
         unit (str): unit
     """
-
-    columns_link: list[str]
-    columns_node: list[str]
-    columns_storage: list[str]
-    columns_subcatchment: list[str]
-    links: list[tuple]
-    nodes: list[tuple]
-    storages: list[tuple]
-    subcatchments: list[tuple]
-    unit: str
-
     def __init__(self, filename,  inp):
         """
         Read a with SWMM created binary hotstart file.

@@ -340,11 +340,11 @@ class Weir(_Link):
         ===============  ===================
         Weir Form        Cross-Section Shape
         ===============  ===================
-        ``TRANSVERSE``  ``RECT_OPEN``
-        ``SIDEFLOW``    ``RECT_OPEN``
-        ``V-NOTCH``     ``TRIANGULAR``
-        ``TRAPEZOIDAL`` ``TRAPEZOIDAL``
-        ``ROADWAY``     ``RECT_OPEN``
+        ``TRANSVERSE``   ``RECT_OPEN``
+        ``SIDEFLOW``     ``RECT_OPEN``
+        ``V-NOTCH``      ``TRIANGULAR``
+        ``TRAPEZOIDAL``  ``TRAPEZOIDAL``
+        ``ROADWAY``      ``RECT_OPEN``
         ===============  ===================
 
         The ``ROADWAY`` weir is a broad crested rectangular weir used model roadway crossings usually in conjunction with culvert-type conduits.
