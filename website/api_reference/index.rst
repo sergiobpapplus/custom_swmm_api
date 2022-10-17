@@ -11,5 +11,6 @@ API reference
    api_run
    api_rpt
    api_out
+   api_hst
    api_external_files
 

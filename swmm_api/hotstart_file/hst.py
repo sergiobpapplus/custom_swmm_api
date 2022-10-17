@@ -10,15 +10,38 @@ _FILESTAMP = "SWMM5-HOTSTART4"
 
 
 class SwmmHotstart(BinaryReader):
-    """The class that handles all extraction of data from the out file."""
+    """
+    The class that handles all extraction of data from the out file.
+
+    Attributes:
+        columns_link (list[str]): columns_link
+        columns_node (list[str]): columns_node
+        columns_storage (list[str]): columns_storage
+        columns_subcatchment (list[str]): columns_subcatchment
+        links (list[tuple]): links
+        nodes (list[tuple]): nodes
+        storages (list[tuple]): storages
+        subcatchments (list[tuple]): subcatchments
+        unit (str): unit
+    """
+
+    columns_link: list[str]
+    columns_node: list[str]
+    columns_storage: list[str]
+    columns_subcatchment: list[str]
+    links: list[tuple]
+    nodes: list[tuple]
+    storages: list[tuple]
+    subcatchments: list[tuple]
+    unit: str
 
     def __init__(self, filename,  inp):
         """
-        read a with SWMM created binary hotstart file
+        Read a with SWMM created binary hotstart file.
 
         Args:
-            filename (str): path of the hotstart-file
-            inp (swmm_api.SwmmInput): inp-file-data
+            filename (str): Path of the hotstart-file.
+            inp (swmm_api.SwmmInput): inp-file-data.
         """
         super().__init__(filename)
         self.fp.seek(0, SEEK_SET)
@@ -185,24 +208,48 @@ class SwmmHotstart(BinaryReader):
 
     @property
     def links_frame(self):
+        """
+        links_frame
+
+        Returns:
+            pandas.DataFrame: links_frame
+        """
         df = pd.DataFrame.from_records(self.links)
         df.columns = self.columns_link
         return df
 
     @property
     def nodes_frame(self):
+        """
+        nodes_frame
+
+        Returns:
+            pandas.DataFrame: nodes_frame
+        """
         df = pd.DataFrame.from_records(self.nodes)
         df.columns = self.columns_node
         return df
 
     @property
     def storages_frame(self):
+        """
+        storages_frame
+
+        Returns:
+            pandas.DataFrame: storages_frame
+        """
         df = pd.DataFrame.from_records(self.storages)
         df.columns = self.columns_storage
         return df
 
     @property
     def subcatchments_frame(self):
+        """
+        subcatchments_frame
+
+        Returns:
+            pandas.DataFrame: subcatchments_frame
+        """
         df = pd.DataFrame.from_records(self.subcatchments)
         df.columns = self.columns_subcatchment
         return df

@@ -8,9 +8,12 @@ Check
 .. autosummary::
     :toctree: macros/
 
-    check_for_duplicates
     check_for_nodes
+    check_for_duplicates
+    check_for_duplicate_links
+    check_for_duplicate_nodes
     check_for_subcatchment_outlets
+    check_outfall_connections
 
 Collection
 ~~~~~~~~~~
@@ -35,16 +38,17 @@ Compare
     compare_sections
     inp_version_control
 
-Convert
-~~~~~~~
+Convert Objects
+~~~~~~~~~~~~~~~
 
-.. currentmodule:: swmm_api.input_file.macros.convert
+.. currentmodule:: swmm_api.input_file.macros.convert_object
 .. autosummary::
     :toctree: macros/
 
     conduit_to_orifice
     junction_to_outfall
     junction_to_storage
+    junction_to_divider
 
 Cross-Section Curve
 ~~~~~~~~~~~~~~~~~~~
