@@ -141,6 +141,20 @@ def set_zero_node(stations, zero_node):
 
 
 def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=None):
+    """
+    Make a longitudinal plot.
+
+    Args:
+        inp (SwmmInput):
+        start_node (str): Label of the start node.
+        end_node (str): Label of the end node.
+        out (SwmmOut):
+        ax (plt.Axes):
+        zero_node (str): Label of the node, where the x-axis should be 0. Default: at start node.
+
+    Returns:
+        plt.Figure, plt.Axes: matplotlib plot
+    """
     res = get_longitudinal_data(inp, start_node, end_node, out, zero_node=zero_node)
 
     if ax is None:

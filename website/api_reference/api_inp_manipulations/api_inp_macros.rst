@@ -185,19 +185,36 @@ Other Macros
 Plotting
 ~~~~~~~~
 
-.. currentmodule:: swmm_api.input_file.macros.plotting
+.. currentmodule:: swmm_api.input_file.macros.plotting_longitudinal
 .. autosummary::
     :toctree: macros/
 
     get_longitudinal_data
-    get_node_station
     get_water_level
-    iter_over_inp
     iter_over_inp_
-    plot_longitudinal
-    plot_map
-    set_inp_dimensions
+    iter_over_inp
+    get_node_station
     set_zero_node
+    plot_longitudinal
+
+.. currentmodule:: swmm_api.input_file.macros.plotting_map
+.. autosummary::
+    :toctree: macros/
+
+    get_matplotlib_colormap
+    get_color_mapper
+    custom_color_mapper
+    get_discrete_colormap
+    set_inp_dimensions
+    init_empty_map_plot
+    get_auto_size_function
+    add_link_map
+    add_subcatchment_map
+    add_node_map
+    add_node_labels
+    plot_map
+    add_custom_legend
+    add_backdrop
 
 Reduce Unneeded
 ~~~~~~~~~~~~~~~
