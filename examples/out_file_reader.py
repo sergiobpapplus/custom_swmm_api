@@ -7,6 +7,8 @@ from swmm_api.output_file import OBJECTS, VARIABLES
 
 out = read_out_file('epaswmm5_apps_manual/Example6-Final.out')
 
+out.filename
+
 out.variables
 
 out.labels

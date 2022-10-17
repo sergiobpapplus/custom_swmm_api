@@ -81,6 +81,7 @@ class SwmmOutExtract(BinaryReader):
     Args:
         filename (str): Path to the .out-file.
     """
+    filename: str
 
     def __init__(self, filename, skip_init=False):
         super().__init__(filename)
