@@ -58,8 +58,8 @@ Cross-Section Curve
     :toctree: macros/
 
     get_cross_section_maker
+    to_cross_section_maker
     profil_area
-    velocity
 
 Curve
 ~~~~~
@@ -229,6 +229,7 @@ Reduce Unneeded
     reduce_raingages
     remove_empty_sections
     simplify_curves
+    reduce_timeseries
 
 Split the inp File
 ~~~~~~~~~~~~~~~~~~

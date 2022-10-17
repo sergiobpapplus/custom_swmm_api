@@ -58,7 +58,7 @@ Definitions
 Parquet I/O
 ~~~~~~~~~~~
 
-.. currentmodule:: swmm_api.output_file.parquet
+.. currentmodule:: swmm_api.output_file.parquet_helpers
 
 .. autosummary::
     :toctree: out/
