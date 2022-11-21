@@ -1,10 +1,28 @@
 # Changelog
 
-## 0.3.post1 (?, 2022)
+
+## 0.3.post3 (Nov 21, 2022)
+
+fixed
+
+- HotstartFileReader fixed if not all sections in .inp-file
+
+## 0.3.post2 (Oct 18, 2022)
+
+fixed
+
+- added needed package data-file
+
+## 0.3.post1 (Oct 17, 2022)
 
 changed
 
 - running swmm functions are reordered
+- internal package structure
+
+added
+
+- reading .rpt-file with encoding
 
 ## 0.3 (Sep 06, 2022)
 
