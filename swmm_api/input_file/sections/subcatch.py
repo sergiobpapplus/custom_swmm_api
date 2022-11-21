@@ -448,7 +448,7 @@ class Polygon(BaseSectionObject):
         has_interiors = data.interiors.apply(len) > 0
         if has_interiors.any():
             warnings.warn('Converting GeoSeries with Interiors(Holes) to POLYGON inp-section will ignore this interiors!')
-        # s.add_multiple(cls(i, [xy[0:2] for xy in list(p.coords)]) for i, p in data.exterior.iteritems())
+        # s.add_multiple(cls(i, [xy[0:2] for xy in list(p.coords)]) for i, p in data.exterior.items())
         s.add_multiple(cls.from_shapely(i, p) for i, p in data.items())
         return s
 

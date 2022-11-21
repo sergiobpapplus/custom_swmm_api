@@ -46,10 +46,10 @@ class SwmmHotstart(BinaryReader):
         self.unit = _FLOW_UNITS[i_flow_unit]
 
         # ---------
-        # get inp-file-data informations
-        pollutants = list(inp.POLLUTANTS.keys())
-        landuses = list(inp.LANDUSES.keys())
-        labels_subcatchments = list(inp[SEC.SUBCATCHMENTS].keys())
+        # get inp-file-data information
+        pollutants = list(inp.POLLUTANTS.keys()) if inp.POLLUTANTS else []
+        landuses = list(inp.LANDUSES.keys()) if inp.LANDUSES else []
+        labels_subcatchments = list(inp.SUBCATCHMENTS.keys()) if inp.SUBCATCHMENTS else []
 
         kind_nodes = []
         node_labels = []

@@ -15,7 +15,7 @@ from tqdm.auto import tqdm
 from warnings import warn
 
 from .definitions import OBJECTS, VARIABLES
-from swmm_api._io_helpers._read_bin import BinaryReader
+from .._io_helpers._read_bin import BinaryReader
 
 VARIABLES_DICT = {
     OBJECTS.SUBCATCHMENT: VARIABLES.SUBCATCHMENT.LIST_,

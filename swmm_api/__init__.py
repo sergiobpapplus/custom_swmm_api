@@ -9,4 +9,4 @@ from .run_swmm import swmm5_run
 # Post-release segment: .postN oder .rN oder .revN
 # Development release segment: .devN
 # anstatt . kann auch - oder _ verwendet werden
-__version__ = '0.3.post2'
+__version__ = '0.3.post3'
