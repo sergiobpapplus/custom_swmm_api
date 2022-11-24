@@ -129,17 +129,23 @@ def simplify_link_vertices(vertices, dist=1.):
     vertices.vertices = ramer_douglas(vertices.vertices, dist)
 
 
-def simplify_vertices(inp, dist=1.):
+def simplify_vertices(inp, dist=1., min_length=None):
     """
-    removes unneeded vertices with the Ramer-Douglas simplification
+    Removes unneeded vertices with the Ramer-Douglas simplification.
+
+    It is an advantage when the points of the start and end nodes are in the list of vertices.
+    Use :func:`~swmm_api.input_file.macros.geo.complete_vertices` to prepare inp.
 
     Args:
         inp (swmm_api.SwmmInput): SWMM input data
-        dist (float):  threshold of algorythm
+        dist (float): threshold of algorythm
+        min_length (float): minimum length of link to be simplified
 
     .. Important::
         works inplace
     """
     if VERTICES in inp:
         for v in inp.VERTICES:
+            if min_length and (inp.VERTICES[v].get_geo_length() < min_length):
+                continue
             simplify_link_vertices(inp.VERTICES[v], dist)

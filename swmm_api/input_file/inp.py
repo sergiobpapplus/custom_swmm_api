@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import os
 import re
 import warnings
@@ -31,7 +33,7 @@ class SwmmInput(CustomDict):
             **kwargs: only for creating the inp-object as a dict.
         """
         filename = None
-        if len(args) == 1 and isinstance(args[0], str) and os.path.isfile(args[0]):
+        if len(args) == 1 and isinstance(args[0], (str, Path)) and os.path.isfile(args[0]):
             # argument is an inp-file.
             super().__init__()
             filename = args[0]

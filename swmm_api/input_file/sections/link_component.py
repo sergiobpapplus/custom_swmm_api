@@ -1,5 +1,6 @@
 from typing import NamedTuple
 
+import numpy as np
 from numpy import NaN, isnan
 from pandas import DataFrame
 
@@ -341,3 +342,6 @@ class Vertices(BaseSectionObject):
             Vertices: Vertices object
         """
         return cls(link, list(line.coords))
+
+    def get_geo_length(self):
+        return np.sum(np.sqrt(np.sum(np.square(np.diff(np.array(self.vertices), axis=0)), axis=1)))

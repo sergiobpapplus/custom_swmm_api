@@ -90,9 +90,9 @@ def convert_inp_to_geo_package(inp_fn, gpkg_fn=None, driver='GPKG', label_sep='.
     write_geo_package(inp, gpkg_fn, driver=driver, label_sep=label_sep, crs=crs)
 
 
-def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:32633"):
+def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:32633", simplify_link_min_length=None):
     """
-    write the inp file data to a GIS database
+    Write the inp file data to a GIS database.
 
     Args:
         inp (SwmmInput): inp file data
@@ -103,6 +103,7 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
         crs (str): Coordinate Reference System of the geometry objects.
                     Can be anything accepted by pyproj.CRS.from_user_input(),
                     such as an authority string (eg “EPSG:4326”) or a WKT string.
+        simplify_link_min_length (float): simplify links with a minimum length of ... (default: all)
     """
     from geopandas import GeoDataFrame
 
@@ -139,7 +140,7 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
         # ---------------------------------
         links_tags = get_link_tags(inp)
         complete_vertices(inp)
-        simplify_vertices(inp)
+        simplify_vertices(inp, min_length=simplify_link_min_length)
         for sec in LINK_SECTIONS:
             if sec in inp:
                 df = inp[sec].frame.rename(columns=lambda c: f'{sec}{label_sep}{c}').join(
