@@ -70,7 +70,7 @@ class SwmmInput(CustomDict):
             else:
                 if isinstance(self._data[sec], str):
                     if isinstance(d._data[sec], str):
-                        self._data[sec] += '\n' + d._data[sec]
+                        self._data[sec] += f'\n{d._data[sec]}'
                     else:
                         self[sec].update(d[sec])
                         # warnings.warn(f'Updating of string section in INP-file not implemented! Skip Section {sec}')
@@ -88,7 +88,7 @@ class SwmmInput(CustomDict):
                                re.split(r'\[\w+\]', txt)[1:]):
             head = head.upper()
             if head in self._data:
-                self._data[head] += '\n' + lines.strip()
+                self._data[head] += f'\n{lines.strip()}'
             else:
                 self._data[head] = lines.strip()
                 self._original_section_order.append(head)

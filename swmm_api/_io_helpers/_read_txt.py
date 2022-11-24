@@ -9,7 +9,7 @@ DEFAULT_ENCODING = 'utf-8'
 
 def detect_encoding(filename):
     if "linux" in sys.platform:
-        shell_output = subprocess.check_output(['file', '-i', filename]).decode().strip()
+        shell_output = subprocess.check_output(['file', '-i', str(filename)]).decode().strip()
     else:
         try:
             cwd = os.path.dirname(filename)

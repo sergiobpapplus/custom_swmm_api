@@ -109,9 +109,9 @@ def str_to_datetime(date=None, time=None, str_only=False):
         time_format = ''
 
     if str_only:
-        return date + ' ' + time
+        return f'{date} {time}'
     else:
-        return datetime.datetime.strptime(date + ' ' + time, month_format + date_format2 + ' ' + time_format)
+        return datetime.datetime.strptime(f'{date} {time}', f'{month_format}{date_format2} {time_format}')
 
 
 def datetime_to_str(dt):

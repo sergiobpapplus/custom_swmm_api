@@ -21,7 +21,7 @@ def split_inp_to_files(inp_fn, **kwargs):
     os.mkdir(parent)
     inp = SwmmInput.read_file(inp_fn, **kwargs)
     for s in inp.keys():
-        with open(os.path.join(parent, s + '.txt'), 'w') as f:
+        with open(os.path.join(parent, f'{s}.txt'), 'w') as f:
             f.write(inp._data[s])
 
 
