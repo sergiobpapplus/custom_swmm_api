@@ -1,0 +1,8 @@
+networkx:    full,macros
+fastparquet: full,macros
+matplotlib:  full,macros
+SWMM_xsections_shape_generator:  full,macros
+Shapely: full,gis
+pyproj:  full,gis
+Rtree:   full,gis
+geopandas:   full,gis

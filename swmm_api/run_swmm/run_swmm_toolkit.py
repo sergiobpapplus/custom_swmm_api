@@ -5,9 +5,6 @@ __email__ = "markus.pichler@tugraz.at"
 __version__ = "0.1"
 __license__ = "MIT"
 
-
-from swmm.toolkit import solver
-
 from ._run_helpers import get_report_errors, get_result_filenames, SWMMRunError
 
 
@@ -27,6 +24,12 @@ def swmm5_run_owa(fn_inp, fn_rpt=None, fn_out=None):
         fn_rpt = fn_rpt_default
     if fn_out is None:
         fn_out = fn_out_default
+
+    try:
+        from swmm.toolkit import solver
+    except ModuleNotFoundError as e:
+        raise (e, SWMMRunError('to run SWMM with OWA-SWMM you have to install the swmm-toolkit package (pip install swmm-toolkit).'))
+
     try:
         solver.swmm_run(fn_inp, fn_rpt, fn_out)
         print()  # solver doesn't write a last new-line
@@ -41,4 +44,9 @@ def get_swmm_version_owa():
     Returns:
         str: swmm version
     """
+    try:
+        from swmm.toolkit import solver
+    except ModuleNotFoundError as e:
+        raise (e, SWMMRunError('to run SWMM with OWA-SWMM you have to install the swmm-toolkit package (pip install swmm-toolkit).'))
+
     return '.'.join(solver.swmm_version_info())

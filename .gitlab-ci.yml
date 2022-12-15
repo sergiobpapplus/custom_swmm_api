@@ -3,7 +3,7 @@ image: registry.gitlab.com/markuspichler/swmm_api
 pages:
   stage: deploy
   script:
-  - sphinx-build -b html ./website public
+  - sphinx-build -b html ./documentation public
   artifacts:
     paths:
     - public
