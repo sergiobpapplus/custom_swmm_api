@@ -1,7 +1,7 @@
 image: registry.gitlab.com/markuspichler/swmm_api
 
-stages:
 #  - documentation
+stages:
   - fetch-version
   - build
   - release
