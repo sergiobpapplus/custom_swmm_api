@@ -1,7 +1,14 @@
 image: registry.gitlab.com/markuspichler/swmm_api
 
-pages:
-  stage: deploy
+stages:
+  - documentation
+  - fetch-version
+  - build
+  - release
+
+
+documentation:
+  stage: documentation
   script:
   - cp README.md ./documentation/README.md
   - cp CHANGES.md ./documentation/CHANGES.md
@@ -11,3 +18,75 @@ pages:
     - public
   only:
   - master
+
+
+fetch-semantic-version:
+  # Requires Node >= 10.13 version
+  image: node:16
+  stage: fetch-version
+  except:
+    variables:
+      - $CI_COMMIT_TAG
+  only:
+    refs:
+    - main
+    #- alpha
+    #- /^(([0-9]+)\.)?([0-9]+)\.x/ # This matches maintenance branches
+    #- /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/ # This matches pre-releases
+  script:
+    - npm install @semantic-release/gitlab @semantic-release/exec @semantic-release/changelog @google/semantic-release-replace-plugin
+    - npx semantic-release --generate-notes false --dry-run
+  artifacts:
+    reports:
+      dotenv: build.env
+
+build-package:
+  stage: build
+  script:
+    - pip install twine
+    - python setup.py bdist_wheel
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+#    - TWINE_PASSWORD=${PYPI_TOKE} TWINE_USERNAME=__token__ python -m twine upload dist/*
+  artifacts:
+    paths:
+      - dist/*.whl
+  needs:
+    - job: fetch-semantic-version
+      artifacts: true
+  only:
+    refs:
+    - main
+
+release-package:
+  image: node:16
+  stage: release
+  script:
+    - touch CHANGELOG.md
+    - npm install @semantic-release/gitlab @semantic-release/exec @semantic-release/changelog @google/semantic-release-replace-plugin
+    - npx semantic-release
+  artifacts:
+    paths:
+    - CHANGELOG.md
+  needs:
+    - job: fetch-semantic-version
+      artifacts: true
+    - job: build-package
+  only:
+    refs:
+    - main
+
+#version-badge:
+#  stage: release
+#  script:
+#    - apt-get update -y
+#    - apt-get install -y jq curl
+#    - version=$VERSION
+#    - version_badge_id=$(curl --header "PRIVATE-TOKEN:${GITLAB_TOKEN}" ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/badges | jq -c 'map(select(.name | contains("Version")))[0].id')
+#    - "curl --request PUT --header \"PRIVATE-TOKEN:${GITLAB_TOKEN}\" --data \"image_url=https://img.shields.io/badge/version-${version}-blue\" ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/badges/${version_badge_id}"
+#  needs:
+#    - job: fetch-semantic-version
+#      artifacts: true
+#    - job: release-package
+#  only:
+#    refs:
+#    - main
