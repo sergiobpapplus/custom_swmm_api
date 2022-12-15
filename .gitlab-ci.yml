@@ -1,24 +1,24 @@
 image: registry.gitlab.com/markuspichler/swmm_api
 
 stages:
-  - documentation
+#  - documentation
   - fetch-version
   - build
   - release
 
 
-documentation:
-  stage: documentation
-  script:
-  - cp README.md ./documentation/README.md
-  - cp CHANGES.md ./documentation/CHANGES.md
-  - sphinx-build -b html ./documentation public
-  artifacts:
-    paths:
-    - public
-  only:
-    refs:
-    - main
+#documentation:
+#  stage: documentation
+#  script:
+#  - cp README.md ./documentation/README.md
+#  - cp CHANGES.md ./documentation/CHANGES.md
+#  - sphinx-build -b html ./documentation public
+#  artifacts:
+#    paths:
+#    - public
+#  only:
+#    refs:
+#    - main
 
 
 fetch-semantic-version:
