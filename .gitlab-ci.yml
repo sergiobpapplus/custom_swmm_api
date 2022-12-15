@@ -1,4 +1,4 @@
-image: registry.gitlab.com/markuspichler/swmm_api
+image: python:3.9.7
 
 #  - documentation
 stages:
@@ -8,6 +8,7 @@ stages:
 
 
 #documentation:
+#  image: registry.gitlab.com/markuspichler/swmm_api
 #  stage: documentation
 #  script:
 #  - cp README.md ./documentation/README.md
