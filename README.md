@@ -26,6 +26,31 @@ This package is based on the command line SWMM syntax. ([see Appendix D in the S
 pip install swmm-api
 ```
 
+... to install the package with all dependencies for macros use:
+
+```bash
+pip install swmm-api[macros]
+```
+
+... to install the package with all dependencies for GIS I/O use (ONLY for Linux!):
+
+```bash
+pip install swmm-api[gis]
+```
+
+... and to install the package with all dependencies for macros and GIS I/O use (ONLY for Linux!):
+
+```bash
+pip install swmm-api[full]
+```
+
+To add the GIS functionality to **Windows**, I recommend using python with 
+[miniconda](https://docs.conda.io/en/latest/miniconda.html) (or [Anaconda](https://www.anaconda.com/))
+and run `conda install -c conda-forge geopandas` to install the GIS dependencies (see [GeoPandas](https://geopandas.org/en/stable/getting_started.html)).
+
+Tipp: Using [Mamba](https://mamba.readthedocs.io/en/latest/index.html#) instead of conda is much faster.
+
+
 ## Documentation
 [Link](https://markuspichler.gitlab.io/swmm_api) to the documentation of the api and some example jupyter notebook.
 
@@ -37,7 +62,7 @@ R-language:
 
 python:
 
-- **swmmio** / [docs](https://swmmio.readthedocs.io/en/latest/) / [pypi](https://pypi.org/project/swmmio/) / [GitHub](https://github.com/aerispaha/swmmio)
+- **swmmio** / [docs](https://swmmio.readthedocs.io/en/latest/) / [pypi](https://pypi.org/project/swmmio/) / [GitHub](https://github.com/aerispaha/swmmio) / simular to this package but more high-level approach (= slower for specific tasks)
 - **GisToSWMM5** / [GitHub](https://github.com/AaltoUrbanWater/GisToSWMM5) / converting gis data to swmm model (also possible with swmm_api: `swmm_api.input_file.macro_snippets.gis_standard_import` and `swmm_api.input_file.macro_snippets.gis_export`)
 - **swmmtoolbox** / [GitHub](https://github.com/timcera/swmmtoolbox) / Thanks to _Tim Cera_ for this package! I used his package to understand the .out-files but completely rewrote the reading process in this package.
 - **swmmnetwork** / [GitHub](https://github.com/austinorr/swmmnetwork) / create graph network from swmm model (see `swmm_api.input_file.macros.inp_to_graph`)
@@ -59,33 +84,51 @@ python:
 - **SWMM5** / [pypi](https://pypi.org/project/SWMM5/) / [GitHub](https://github.com/asselapathirana/swmm5-python) / simular approach to swmm-toolkit (by Assela Pathirana)
 - **SWMM-xsections-shape-generator** / [pypi](https://pypi.org/project/SWMM-xsections-shape-generator/) / tool to generate custom shapes (by me)
 - **SWMM_EA** / [pypi](https://pypi.org/project/SWMM5_EA/) / usage of genetic algorithms with SWMM (by Assela Pathirana)
-- **OSTRICH-SWMM** / [GitHub](https://github.com/ubccr/ostrich-swmm) / OSTRICH optimization software toolkit with the SWMM 
+- **OSTRICH-SWMM** / [GitHub](https://github.com/ubccr/ostrich-swmm) / OSTRICH optimization software toolkit with SWMM
 
 ## Read, manipulate and write the INP-File
 
 ### Read the INP-File
 
 ```python
-from swmm_api.input_file.section_labels import TIMESERIES
-from swmm_api import read_inp_file
+
+from swmm_api import read_inp_file, SwmmInput
 
 inp = read_inp_file('inputfile.inp')  # type: swmm_api.SwmmInput
+# or 
+inp = SwmmInput.read_file('inputfile.inp')
+# or
+inp = SwmmInput('inputfile.inp')
+
+```
+
+### Getting information
+
+```python
+from swmm_api.input_file.section_labels import TIMESERIES
+
+# getting a specific section of the inp-file
 
 sec_timeseries = inp[TIMESERIES]  # type: swmm_api.input_file.helpers.InpSection
+# or
+sec_timeseries = inp.TIMESERIES  # type: swmm_api.input_file.helpers.InpSection
+
+# getting a specific timeseries as pandas.Series
 ts = inp[TIMESERIES]['regenseries'].pandas  # type: pandas.Series
 ```
 
 ### Manipulate the INP-File
 
 ```python
-from swmm_api import read_inp_file, SwmmInput
 from swmm_api.input_file.section_labels import JUNCTIONS
 
-inp = read_inp_file('inputfile.inp')  # type: swmm_api.SwmmInput
-# or 
-inp = SwmmInput.read_file('inputfile.inp')
+# setting the elevation of a specific node to a new value
 
 inp[JUNCTIONS]['J01'].elevation = 210
+# or
+inp.JUNCTIONS['J01'].elevation = 210
+# or
+inp.JUNCTIONS['J01']['elevation'] = 210
 ```
 
 ### Write the manipulated INP-File

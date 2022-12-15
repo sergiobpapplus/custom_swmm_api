@@ -4,6 +4,8 @@ pages:
   stage: deploy
   script:
   - sphinx-build -b html ./documentation public
+  - cp README.md ./documentation/README.md
+  - cp CHANGES.md ./documentation/CHANGES.md
   artifacts:
     paths:
     - public
