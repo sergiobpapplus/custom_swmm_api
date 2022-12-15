@@ -3,9 +3,9 @@ image: registry.gitlab.com/markuspichler/swmm_api
 pages:
   stage: deploy
   script:
-  - sphinx-build -b html ./documentation public
   - cp README.md ./documentation/README.md
   - cp CHANGES.md ./documentation/CHANGES.md
+  - sphinx-build -b html ./documentation public
   artifacts:
     paths:
     - public

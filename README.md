@@ -44,11 +44,9 @@ pip install swmm-api[gis]
 pip install swmm-api[full]
 ```
 
-To add the GIS functionality to **Windows**, I recommend using python with 
-[miniconda](https://docs.conda.io/en/latest/miniconda.html) (or [Anaconda](https://www.anaconda.com/))
-and run `conda install -c conda-forge geopandas` to install the GIS dependencies (see [GeoPandas](https://geopandas.org/en/stable/getting_started.html)).
-
-Tipp: Using [Mamba](https://mamba.readthedocs.io/en/latest/index.html#) instead of conda is much faster.
+To add the GIS functionality to **Windows**, I recommend using python with [Mamba](https://github.com/conda-forge/miniforge#mambaforge)
+ (or [miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/))
+and run `mamba install geopandas` to install the GIS dependencies (see [GeoPandas](https://geopandas.org/en/stable/getting_started.html)).
 
 
 ## Documentation
