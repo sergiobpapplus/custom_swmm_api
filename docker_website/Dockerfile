@@ -1,9 +1,11 @@
-FROM python:3.9-slim-bullseye
+FROM python:3.10-slim-bullseye
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y\
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends pandoc proj-bin
+
+RUN apt-get install git -y
 
 # RUN  update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 RUN pip3 install --upgrade pip
@@ -24,7 +26,7 @@ RUN pip3 install recommonmark
 RUN pip3 install SWMM_xsections_shape_generator
 RUN pip3 install pydata_sphinx_theme
 RUN pip3 install pyswmm
-
+RUN pip3 install python-semantic-release
 
 RUN useradd -ms /bin/bash mp;
 RUN chmod g+rw /home && \
@@ -37,3 +39,5 @@ WORKDIR /home/mp
 ENV SHELL /bin/bash
 
 USER mp
+
+ENV PATH /home/mp/.local/bin/:$PATH

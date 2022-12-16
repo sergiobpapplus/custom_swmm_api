@@ -47,6 +47,8 @@ homepage = "https://gitlab.com/markuspichler/swmm_api"
 exclude = ['joss_paper*', 'docker_website*', 'documentation*', 'examples*']
 namespaces = false
 
+
+# https://github.com/python-semantic-release/python-semantic-release
 [tool.semantic_release]
 version_variable = 'swmm_api/__init__.py:__version__' # "setup.py:__version__" #
 upload_to_pypi = false

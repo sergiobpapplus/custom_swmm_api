@@ -2,4 +2,4 @@
 
 # docker login "registry.gitlab.com"
 
-docker push registry.gitlab.com/markuspichler/swmm_api
+docker push registry.gitlab.com/markuspichler/swmm_api:latest

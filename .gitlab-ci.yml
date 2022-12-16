@@ -77,12 +77,13 @@ stages:
 #    refs:
 #    - main
 
+# https://github.com/python-semantic-release/python-semantic-release
 release-package-python:
   image: registry.gitlab.com/markuspichler/swmm_api
   stage: release
   script:
-    - pip install python-semantic-release
-    - semantic-release publish
+#    - pip install python-semantic-release
+    - semantic-release publish -v DEBUG
   only:
     refs:
       - main
