@@ -1,10 +1,10 @@
 image: python:3.9.7
 
 #  - documentation
-#stages:
+stages:
 #  - fetch-version
 #  - build
-#  - release
+  - release
 
 
 #documentation:
@@ -79,7 +79,7 @@ image: python:3.9.7
 
 release-package-python:
   image: registry.gitlab.com/markuspichler/swmm_api
-  stage: release2
+  stage: release
   script:
     - pip install python-semantic-release
     - semantic-release publish
