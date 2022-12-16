@@ -51,7 +51,7 @@ namespaces = false
 # https://github.com/python-semantic-release/python-semantic-release
 [tool.semantic_release]
 version_variable = 'swmm_api/__init__.py:__version__' # "setup.py:__version__" #
-upload_to_pypi = false
+upload_to_pypi = true
 hvcs = 'gitlab'
 branch = 'main'
 major_on_zero = false
