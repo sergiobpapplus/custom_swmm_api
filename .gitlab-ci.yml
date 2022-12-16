@@ -77,14 +77,15 @@ image: python:3.9.7
 #    refs:
 #    - main
 
-#release-package-python:
-#  image: registry.gitlab.com/markuspichler/swmm_api
-#  stage: release2
-#  script:
-#    - pip install python-semantic-release
-#  only:
-#    refs:
-#      - main
+release-package-python:
+  image: registry.gitlab.com/markuspichler/swmm_api
+  stage: release2
+  script:
+    - pip install python-semantic-release
+    - semantic-release publish
+  only:
+    refs:
+      - main
 
 #version-badge:
 #  stage: release
