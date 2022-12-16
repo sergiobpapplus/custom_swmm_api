@@ -3,7 +3,7 @@
 # Getting started
 
 [![PyPI](https://img.shields.io/pypi/v/swmm-api.svg)](https://pypi.python.org/pypi/swmm-api)
-[![pipeline status](https://gitlab.com/markuspichler/swmm_api/badges/master/pipeline.svg)](https://gitlab.com/markuspichler/swmm_api/-/commits/master)
+[![pipeline status](https://gitlab.com/markuspichler/swmm_api/badges/main/pipeline.svg)](https://gitlab.com/markuspichler/swmm_api/-/commits/main)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![docs](https://img.shields.io/static/v1.svg?label=sphinx&message=documentation&color=blue)](https://markuspichler.gitlab.io/swmm_api)
 
@@ -134,11 +134,11 @@ inp.JUNCTIONS['J01']['elevation'] = 210
 inp.write_file('new_inputfile.inp')
 ```
 
-see [examples/inp_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/master/examples/inp_file_reader.ipynb)
+see [examples/inp_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/main/examples/inp_file_reader.ipynb)
 
-see [examples/inp_file_structure.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/master/examples/inp_file_structure.ipynb)
+see [examples/inp_file_structure.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/main/examples/inp_file_structure.ipynb)
 
-see [examples/inp_file_macros.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/master/examples/inp_file_macros.ipynb)
+see [examples/inp_file_macros.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/main/examples/inp_file_macros.ipynb)
 
 
 
@@ -170,7 +170,7 @@ from swmm_api import read_out_file
 out = read_out_file('new_inputfile.out')   # type: swmm_api.SwmmOut
 df = out.to_frame()  # type: pandas.DataFrame
 ```
-see [examples/out_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/master/examples/out_file_reader.ipynb)
+see [examples/out_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/main/examples/out_file_reader.ipynb)
 
 
 ## Read the RPT-File
@@ -179,7 +179,7 @@ from swmm_api import read_rpt_file
 rpt = read_rpt_file('new_inputfile.rpt')  # type: swmm_api.SwmmReport
 node_flooding_summary = rpt.node_flooding_summary  # type: pandas.DataFrame
 ```
-see [examples/rpt_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/master/examples/rpt_file_reader.ipynb)
+see [examples/rpt_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/main/examples/rpt_file_reader.ipynb)
 
 ## GIS interactions
 

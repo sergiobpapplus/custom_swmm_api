@@ -1,5 +1,6 @@
 # Changelog
 
+<!--next-version-placeholder-->
 
 ## 0.3.post3 (Nov 21, 2022)
 

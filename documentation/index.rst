@@ -21,7 +21,7 @@ This is an unofficial EPA-SWMM program interface for python to read, manipulate 
    README
    api_reference/index
    examples/index
-   CHANGES
+   CHANGELOG
 
 ******************
 Indices and tables
