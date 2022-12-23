@@ -34,13 +34,15 @@ dynamic = ["version"]
 version = { attr = "swmm_api.__version__" }
 
 [project.optional-dependencies]
-macros = ["networkx", "fastparquet", "matplotlib", "SWMM_xsections_shape_generator"]
+macros = ["networkx", "fastparquet", "matplotlib", "SWMM_xsections_shape_generator", "pyswmm"]
 gis = ["Shapely", "pyproj", "Rtree", "geopandas"]
-full = ["networkx", "fastparquet", "matplotlib", "SWMM_xsections_shape_generator", "Shapely", "pyproj", "Rtree", "geopandas"]
+full = ["networkx", "fastparquet", "matplotlib", "SWMM_xsections_shape_generator", "Shapely", "pyproj", "Rtree", "geopandas", "pyswmm"]
+docs = ["networkx", "fastparquet", "matplotlib", "Shapely", "pyproj", "Rtree", "geopandas", "SWMM_xsections_shape_generator",
+        "sphinx", "nbsphinx", "recommonmark", "pydata_sphinx_theme"]
 
 [project.urls]
 Documentation = "https://markuspichler.gitlab.io/swmm_api"
-Changelog = "https://gitlab.com/markuspichler/swmm_api/-/blob/master/CHANGES.md"
+Changelog = "https://gitlab.com/markuspichler/swmm_api/-/blob/master/CHANGELOG.md"
 homepage = "https://gitlab.com/markuspichler/swmm_api"
 
 [tool.setuptools.packages.find]
