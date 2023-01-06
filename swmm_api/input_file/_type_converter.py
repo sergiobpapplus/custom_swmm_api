@@ -9,18 +9,20 @@ from pandas.tseries.frequencies import to_offset
 def to_bool(x):
     if isinstance(x, bool):
         return x
-    else:
-        if x == 'YES':
+    elif isinstance(x, str):
+        if x.upper() == 'YES':
             return True
-        elif x == 'NO':
+        elif x.upper() == 'NO':
             return False
         else:
-            raise NotImplemented('x not a bool: {}'.format(x))
+            raise NotImplemented(f'x not a "YES" or "NO" but "{x}"')
+    else:
+        raise NotImplemented(f'x not a bool: "{x}" | type={type(x)}')
 
 
 def infer_type(x):
     """
-    infer generic type of inp-file-string
+    Infer generic type of inp-file-string
 
     Args:
         x (str | list[str]):
@@ -32,11 +34,11 @@ def infer_type(x):
         return [infer_type(i) for i in x]
     elif not isinstance(x, str):
         return x
-    elif x == 'YES':
+    elif x.upper() == 'YES':
         return True
-    elif x == 'NO':
+    elif x.upper() == 'NO':
         return False
-    elif x == 'NONE':
+    elif x.upper() == 'NONE':
         return None
     elif x.replace('-', '').isdecimal():
         return int(x)
@@ -164,7 +166,7 @@ def delta2str(d):
 
 def type2str(x):
     """
-    convert any type to a string
+    Convert any type to a string
 
     Args:
         x (any):
