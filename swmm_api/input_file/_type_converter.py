@@ -1,5 +1,6 @@
 import datetime
 import re
+from collections import UserString
 
 import numpy as np
 import pandas as pd
@@ -243,3 +244,10 @@ def txt_to_lines(content):
     """
     for line in _SECTION_PATTERN.finditer(content):
         yield line.group().split()
+
+
+class CaseInsensitiveString(UserString):
+    pass
+
+
+cistr = CaseInsensitiveString

@@ -203,6 +203,17 @@ inp_new = gpkg_to_swmm('geopackage.gpkg', label_sep='.')
 inp_new.write_file('new_inputfile.inp')
 ```
 
+# Be Aware!
+
+As python is case-sensitive this API is also case-sensitive, but SWMM is case-insensitive. 
+This is important for the naming of the objects. 
+For example, you could create a junction 'a' and 'A' with this API, but SWMM would only
+
+---
+
+This documentation will be continuously extended and enhanced. 
+If you have any question, don't hesitate to write the author and email of create an issue on GitLab or GitHub.
+
 MORE INFORMATION COMING SOON
 
 ## Cite as
