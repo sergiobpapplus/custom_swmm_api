@@ -57,6 +57,26 @@ def infer_type(x):
         return x
 
 
+def infer_offset_elevation(x):
+    """
+    Convert string to float.
+
+    Used for link offset parameter.
+    "*" if the option in SWMM is set to "offset measured as elevation" and no offset for this link is set.
+    Otherwise, the input is always a float.
+
+    Args:
+        x (str | float): input from object creation
+
+    Returns:
+        float | str: converted output
+    """
+    if isinstance(x, str) and x == '*':
+        return x
+    else:
+        return float(x)
+
+
 def str_to_datetime(date=None, time=None, str_only=False):
     if date:
         if '-' in date:
