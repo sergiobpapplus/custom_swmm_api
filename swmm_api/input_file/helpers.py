@@ -5,6 +5,8 @@ import types
 from abc import ABC
 from inspect import isfunction, isclass, getdoc, signature
 import warnings
+
+import pandas as pd
 from numpy import isnan
 from pandas import DataFrame, Series
 from tqdm.auto import tqdm
@@ -757,7 +759,7 @@ class BaseSectionObject(ABC):
 
     def copy(self):
         """
-        copy object
+        Copy object.
 
         Returns:
             BaseSectionObject or Child: copy of the object
@@ -819,9 +821,9 @@ class BaseSectionObject(ABC):
     @classmethod
     def _convert_lines(cls, multi_line_args):
         """
-        convert the ``.inp``-file section
+        Convert the ``.inp``-file section.
 
-        creates and yields an object for each line
+        Creates and yields an object for each line.
 
         Args:
             multi_line_args (list[list[str]]): lines in the input file section
@@ -836,9 +838,10 @@ class BaseSectionObject(ABC):
 
 ########################################################################################################################
 def dataframe_to_inp_string(df):
-    """convert a data-frame into a multi-line string
+    """
+    Convert a data-frame into a multi-line tabular string for inp-file creation.
 
-    used to make a better readable .inp file and for debugging
+    Used to make a better readable .inp file and for debugging.
 
     Args:
         df (pandas.DataFrame): section table
@@ -863,7 +866,7 @@ def dataframe_to_inp_string(df):
         if not c.index.name.startswith(COMMENT_STR):
             c.index.name = COMMENT_STR + c.index.name
 
-    if c.index._typ == 'multiindex':
+    if isinstance(c.index, pd.MultiIndex):
         if c.index.names is not None:
             if not c.index.levels[0].name.startswith(COMMENT_STR):
                 c.index.set_names(f';{c.index.names[0]}', level=0, inplace=True)
@@ -880,7 +883,7 @@ def dataframe_to_inp_string(df):
 ########################################################################################################################
 def convert_section(head, lines, converter):
     """
-    convert section string to a section object
+    Convert section string to a section object.
 
     Args:
         head (str): header of the section
@@ -1024,7 +1027,7 @@ def natural_keys(text):
 
 def section_to_string(section, fast=True, sort_objects_alphabetical=False):
     """
-    create a string of a section in an ``.inp``-file
+    Create a string of a section in an ``.inp``-file.
 
     Args:
         section (InpSection | InpSectionGeneric):
