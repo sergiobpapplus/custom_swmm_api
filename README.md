@@ -209,6 +209,12 @@ As python is case-sensitive this API is also case-sensitive, but SWMM is case-in
 This is important for the naming of the objects. 
 For example, you could create a junction 'a' and 'A' with this API, but SWMM would only
 
+> **Note**
+> This is a note
+
+> **Warning**
+> This is a warning
+
 ---
 
 This documentation will be continuously extended and enhanced. 
