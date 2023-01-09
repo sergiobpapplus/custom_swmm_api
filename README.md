@@ -1,6 +1,6 @@
 © [Institute of Urban Water Management and Landscape Water Engineering](https://www.sww.tugraz.at), [Graz University of Technology](https://www.tugraz.at/home/) and [Markus Pichler](mailto:markus.pichler@tugraz.at)
 
-# Getting started
+# 💡 Getting started
 
 [![PyPI](https://img.shields.io/pypi/v/swmm-api.svg)](https://pypi.python.org/pypi/swmm-api)
 [![pipeline status](https://gitlab.com/markuspichler/swmm_api/badges/main/pipeline.svg)](https://gitlab.com/markuspichler/swmm_api/-/commits/main)
@@ -49,7 +49,7 @@ To add the GIS functionality to **Windows**, I recommend using python with [Mamb
 and run `mamba install geopandas` to install the GIS dependencies (see [GeoPandas](https://geopandas.org/en/stable/getting_started.html)).
 
 
-## Documentation
+## 📖 Documentation
 [Link](https://markuspichler.gitlab.io/swmm_api) to the documentation of the api and some example jupyter notebook.
 
 ## Alternative packages
@@ -181,7 +181,7 @@ node_flooding_summary = rpt.node_flooding_summary  # type: pandas.DataFrame
 ```
 see [examples/rpt_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/main/examples/rpt_file_reader.ipynb)
 
-## GIS interactions
+## 🗺️ GIS interactions
 
 [`geopandas`](https://geopandas.org/) and its requirements (`Shapely`, `pyproj`, `Rtree`) must be installed! (not that easy on Windows)
 
@@ -203,17 +203,11 @@ inp_new = gpkg_to_swmm('geopackage.gpkg', label_sep='.')
 inp_new.write_file('new_inputfile.inp')
 ```
 
-# Be Aware!
+# ⚠️ Be Aware!
 
-As python is case-sensitive this API is also case-sensitive, but SWMM is case-insensitive. 
-This is important for the naming of the objects. 
-For example, you could create a junction 'a' and 'A' with this API, but SWMM would only
-
-> **Note**
-> This is a note
-
-> **Warning**
-> This is a warning
+> As python is case-sensitive this API is also case-sensitive, but SWMM is case-insensitive. 
+> This is important for the naming of the objects. 
+> For example, you could create a junction 'a' and 'A' with this API, but SWMM would only
 
 ---
 
