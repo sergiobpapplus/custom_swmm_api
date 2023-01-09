@@ -2,7 +2,7 @@ from numpy import NaN, isnan
 
 from ._identifiers import IDENTIFIERS
 from ..helpers import BaseSectionObject
-from .._type_converter import to_bool
+from .._type_converter import to_bool, infer_offset_elevation
 from ..section_labels import CONDUITS, ORIFICES, OUTLETS, PUMPS, WEIRS
 
 
@@ -66,8 +66,8 @@ class Conduit(_Link):
         _Link.__init__(self, name, from_node, to_node)
         self.length = float(length)
         self.roughness = float(roughness)
-        self.offset_upstream = float(offset_upstream)
-        self.offset_downstream = float(offset_downstream)
+        self.offset_upstream = infer_offset_elevation(offset_upstream)
+        self.offset_downstream = infer_offset_elevation(offset_downstream)
         self.flow_initial = float(flow_initial)
         self.flow_max = float(flow_max)
         if self.flow_max == 0:
@@ -133,7 +133,7 @@ class Orifice(_Link):
         """
         _Link.__init__(self, name, from_node, to_node)
         self.orientation = str(orientation)
-        self.offset = float(offset)
+        self.offset = infer_offset_elevation(offset)
         self.discharge_coefficient = float(discharge_coefficient)
         self.has_flap_gate = to_bool(has_flap_gate)
         self.hours_to_open = float(hours_to_open)
@@ -216,7 +216,7 @@ class Outlet(_Link):
                                   ``NO`` (:obj:`False`) if not (default is ``NO``).
         """
         _Link.__init__(self, name, from_node, to_node)
-        self.offset = float(offset)
+        self.offset = infer_offset_elevation(offset)
         self.curve_type = str(curve_type).upper()
 
         if args:
@@ -408,7 +408,7 @@ class Weir(_Link):
         """
         _Link.__init__(self, name, from_node, to_node)
         self.form = str(form)
-        self.height_crest = float(height_crest)
+        self.height_crest = infer_offset_elevation(height_crest)
         self.discharge_coefficient = float(discharge_coefficient)
         self.has_flap_gate = to_bool(has_flap_gate)
         self.n_end_contractions = n_end_contractions
