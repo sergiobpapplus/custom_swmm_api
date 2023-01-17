@@ -55,9 +55,9 @@ def set_inp_dimensions(ax: plt.Axes, inp: SwmmInput):
 
 
 def init_empty_map_plot() -> (plt.Figure, plt.Axes):
-    fig, ax = plt.subplots()  # type: plt.Figure, plt.Axes
+    fig, ax = plt.subplots(layout='constrained')  # type: plt.Figure, plt.Axes
     ax.set_axis_off()
-    ax.set_aspect(1.0)
+    ax.set_aspect('equal')
     return fig, ax
 
 
@@ -311,7 +311,6 @@ def plot_map(inp, sc_connector=True, sc_center=True,
     # ---------------------
     add_node_map(ax, inp)
 
-    fig.set_constrained_layout(True)
     return fig, ax
 
 

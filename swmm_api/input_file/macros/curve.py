@@ -12,7 +12,7 @@ def curve_figure(curve):
     Returns:
         matplotlib.pyplot.Figure: curve plot
     """
-    fig, ax = subplots()
+    fig, ax = subplots(layout='constrained')
 
     # -------------------------
     xlim = 1
@@ -61,6 +61,4 @@ def curve_figure(curve):
     # ax.grid(True, which='minor', linestyle=':', linewidth=0.5)
     ax.set_axisbelow(True)
 
-    # ------------------
-    fig.set_constrained_layout(True)
     return fig
