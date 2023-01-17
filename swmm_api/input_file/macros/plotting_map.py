@@ -311,7 +311,7 @@ def plot_map(inp, sc_connector=True, sc_center=True,
     # ---------------------
     add_node_map(ax, inp)
 
-    fig.tight_layout()
+    fig.set_constrained_layout(True)
     return fig, ax
 
 

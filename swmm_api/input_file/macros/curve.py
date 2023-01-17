@@ -62,5 +62,5 @@ def curve_figure(curve):
     ax.set_axisbelow(True)
 
     # ------------------
-    fig.tight_layout()
+    fig.set_constrained_layout(True)
     return fig
