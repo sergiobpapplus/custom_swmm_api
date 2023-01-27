@@ -32,13 +32,13 @@ pip install swmm-api
 pip install swmm-api[macros]
 ```
 
-... to install the package with all dependencies for GIS I/O use (ONLY for Linux!):
+... to install the package with all dependencies for GIS I/O use (for Linux or for Windows using python >= 3.10):
 
 ```bash
 pip install swmm-api[gis]
 ```
 
-... and to install the package with all dependencies for macros and GIS I/O use (ONLY for Linux!):
+... and to install the package with all dependencies for macros and GIS I/O use (for Linux or for Windows using python >= 3.10):
 
 ```bash
 pip install swmm-api[full]
@@ -48,6 +48,7 @@ To add the GIS functionality to **Windows**, I recommend using python with [Mamb
  (or [miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/))
 and run `mamba install geopandas` to install the GIS dependencies (see [GeoPandas](https://geopandas.org/en/stable/getting_started.html)).
 
+Installing GeoPandas and its dependencies now work on Windows since python version >= 3.10.
 
 ## 📖 Documentation
 [Link](https://markuspichler.gitlab.io/swmm_api) to the documentation of the api and some example jupyter notebook.

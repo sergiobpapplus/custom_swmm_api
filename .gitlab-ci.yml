@@ -1,16 +1,23 @@
 image: python:3.9.7
 
 stages:
-  - documentation
+  - pages
   - release
 
 
-documentation:
+pages:
   image: registry.gitlab.com/markuspichler/swmm_api
   stage: documentation
   script:
   - cp README.md ./documentation/README.md
   - cp CHANGELOG.md ./documentation/CHANGELOG.md
+  - cp ./examples/hotstart_file_reader.ipynb ./documentation/examples/hotstart_file_reader.ipynb
+  - cp ./examples/inp_file_macros.ipynb ./documentation/examples/inp_file_macros.ipynb
+  - cp ./examples/inp_file_reader.ipynb ./documentation/examples/inp_file_reader.ipynb
+  - cp ./examples/inp_file_structure.ipynb ./documentation/examples/inp_file_structure.ipynb
+  - cp ./examples/out_file_reader.ipynb ./documentation/examples/out_file_reader.ipynb
+  - cp ./examples/rpt_file_reader.ipynb ./documentation/examples/rpt_file_reader.ipynb
+  - cp ./examples/gis_data_to_swmm.ipynb ./documentation/examples/gis_data_to_swmm.ipynb
   - sphinx-build -b html ./documentation public
   artifacts:
     paths:

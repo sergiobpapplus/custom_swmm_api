@@ -12,3 +12,4 @@ Examples
    rpt_file_reader
    out_file_reader
    hotstart_file_reader
+   gis_data_to_swmm
