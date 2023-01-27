@@ -216,6 +216,13 @@ If you have any question, don't hesitate to write the author and email of create
 
 MORE INFORMATION COMING SOON
 
-## Cite as
+# Cite as
 
 > *Pichler, Markus. (2022). swmm_api: API for reading, manipulating and running SWMM-Projects with python (0.3). Zenodo. https://doi.org/10.5281/zenodo.7054804*
+
+# Publications mentioning `swmm-api`
+
+- Baumann, H., Ravn, N. H., & Schaum, A. (2022). Efficient hydrodynamic modelling of urban stormwater systems for real-time applications. *Modelling, 3(4)*, 464–480. https://doi.org/10.3390/modelling3040030
+- Farina, A., Di Nardo, A., Gargano, R., & Greco, R. (2022). Assessing the environmental impact of combined sewer overflows through a parametric study. *EWaS5*, 8. https://doi.org/10.3390/environsciproc2022021008
+- Schilling, J., & Tränckner, J. (2022). Generate_swmm_inp: An open-source qgis plugin to import and export model input files for swmm. *Water, 14(14)*, 2262. https://doi.org/10.3390/w14142262
+- Zhang, Z., Tian, W., & Liao, Z. (2023). Towards coordinated and robust real-time control: A decentralized approach for combined sewer overflow and urban flooding reduction based on multi-agent reinforcement learning. *Water Research, 229*, 119498. https://doi.org/10.1016/j.watres.2022.119498
