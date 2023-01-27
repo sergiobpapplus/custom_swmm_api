@@ -7,7 +7,7 @@ stages:
 
 pages:
   image: registry.gitlab.com/markuspichler/swmm_api
-  stage: documentation
+  stage: pages
   script:
   - cp README.md ./documentation/README.md
   - cp CHANGELOG.md ./documentation/CHANGELOG.md
