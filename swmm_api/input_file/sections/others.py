@@ -1,5 +1,6 @@
 import datetime
 import warnings
+from typing import Literal
 
 import pandas as pd
 from numpy import NaN
@@ -824,19 +825,24 @@ class Control(BaseSectionObject):
             SIMULATION CLOCKTIME = 22:45:00
         """
 
-        def __init__(self, logic, kind, *args):
+        def __init__(self, logic: Literal['IF', 'OR'], kind, *args, label=NaN, attribute=None, relation: Literal['=', '<>', '<', '<=', '>', '>=']=None, value=None):
             self.logic = logic.upper()  # if and or
             self.kind = kind.upper()  # Control.OBJECTS
-            self.label = NaN
             line = list(args)
-            if kind.upper() == Control.OBJECTS.SIMULATION:
-                pass
-            else:
-                self.label = line.pop(0)
+            if line:
+                self.label = NaN
+                # 'SIMULATION' has/needs no label
+                if kind.upper() != Control.OBJECTS.SIMULATION:
+                    self.label = line.pop(0)
 
-            self.attribute = line.pop(0).upper()
-            self.relation = line.pop(0)
-            self.value = ' '.join(line)
+                self.attribute = line.pop(0).upper()
+                self.relation = line.pop(0)
+                self.value = ' '.join([str(i) for i in line])
+            else:
+                self.label = label
+                self.attribute = attribute
+                self.relation = relation
+                self.value = value
 
     class _Action(BaseSectionObject):
         """
@@ -860,13 +866,16 @@ class Control(BaseSectionObject):
             ORIFICE ORI_23 SETTING = PID 0.1 0.1 0.0
         """
 
-        def __init__(self, logic, kind, label, action, relation, *value):
+        def __init__(self, logic: Literal['THEN', 'AND'], kind, label, action, relation='=', *values, value=None):
             self.logic = logic.upper()  # THEN, AND
             self.kind = kind.upper()  # Control.OBJECTS
             self.label = label  # label of the object
             self.action = action.upper()  #
             self.relation = relation  # immer "="  # always equal
-            self.value = ' '.join(value)
+            if value is not None:
+                self.value = value
+            else:
+                self.value = ' '.join(values)
 
         def to_inp_line(self):
             """
