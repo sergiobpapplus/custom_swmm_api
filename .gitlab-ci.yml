@@ -18,6 +18,7 @@ pages:
   - cp ./examples/out_file_reader.ipynb ./documentation/examples/out_file_reader.ipynb
   - cp ./examples/rpt_file_reader.ipynb ./documentation/examples/rpt_file_reader.ipynb
   - cp ./examples/gis_data_to_swmm.ipynb ./documentation/examples/gis_data_to_swmm.ipynb
+  - cp ./examples/how_to_add_control_rules.ipynb ./documentation/examples/how_to_add_control_rules.ipynb
   - sphinx-build -b html ./documentation public
   artifacts:
     paths:
