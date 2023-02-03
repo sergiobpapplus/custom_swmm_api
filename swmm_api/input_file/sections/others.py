@@ -792,12 +792,12 @@ class Control(BaseSectionObject):
         CLOCKTIME = 'CLOCKTIME'
 
     class LOGIC:
-        RULE = 'RULE'
-        IF = 'IF'
-        THEN = 'THEN'
-        PRIORITY = 'PRIORITY'
-        AND = 'AND'
-        OR = 'OR'
+        RULE = 'RULE'  # only to declare the first line of a rule
+        IF = 'IF'  # only for conditions
+        THEN = 'THEN'  # only for actions
+        PRIORITY = 'PRIORITY'  # only to declare the last line of a rule with a priority
+        AND = 'AND'  # only for actions
+        OR = 'OR'  # only for conditions
 
     class _Condition(BaseSectionObject):
         """
