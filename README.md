@@ -6,13 +6,14 @@
 [![pipeline status](https://gitlab.com/markuspichler/swmm_api/badges/main/pipeline.svg)](https://gitlab.com/markuspichler/swmm_api/-/commits/main)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![docs](https://img.shields.io/static/v1.svg?label=sphinx&message=documentation&color=blue)](https://markuspichler.gitlab.io/swmm_api)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7054804.svg)](https://doi.org/10.5281/zenodo.7054804)
+[![Gitter](https://badges.gitter.im/MarkusPic/swmm-api.svg)](https://gitter.im/MarkusPic/swmm-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Latest Release](https://gitlab.com/markuspichler/swmm_api/-/badges/release.svg)](https://gitlab.com/markuspichler/swmm_api/-/releases)
 
 [![PyPI - Downloads](https://img.shields.io/pypi/dd/swmm-api)](https://pypi.python.org/pypi/swmm-api)
 [![PyPI - Downloads](https://img.shields.io/pypi/dw/swmm-api)](https://pypi.python.org/pypi/swmm-api)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/swmm-api)](https://pypi.python.org/pypi/swmm-api)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7054804.svg)](https://doi.org/10.5281/zenodo.7054804)
-[![Gitter](https://badges.gitter.im/MarkusPic/swmm-api.svg)](https://gitter.im/MarkusPic/swmm-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 
 With this package you can read INP-files, manipulate them and write new ones.
@@ -44,46 +45,13 @@ pip install swmm-api[gis]
 pip install swmm-api[full]
 ```
 
-To add the GIS functionality to **Windows**, I recommend using python with [Mamba](https://github.com/conda-forge/miniforge#mambaforge)
+To add the GIS functionality on **Windows**, I recommend using python version >= 3.10 or with [Mamba](https://github.com/conda-forge/miniforge#mambaforge)
  (or [miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/))
 and run `mamba install geopandas` to install the GIS dependencies (see [GeoPandas](https://geopandas.org/en/stable/getting_started.html)).
-
-Installing GeoPandas and its dependencies now work on Windows since python version >= 3.10.
 
 ## 📖 Documentation
 [Link](https://markuspichler.gitlab.io/swmm_api) to the documentation of the api and some example jupyter notebook.
 
-## Alternative packages
-
-R-language:
-
-- **swmmr** / [GitHub](https://github.com/dleutnant/swmmr) / [cran](https://cran.r-project.org/web/packages/swmmr/index.html)
-
-python:
-
-- **swmmio** / [docs](https://swmmio.readthedocs.io/en/latest/) / [pypi](https://pypi.org/project/swmmio/) / [GitHub](https://github.com/aerispaha/swmmio) / simular to this package but more high-level approach (= slower for specific tasks)
-- **GisToSWMM5** / [GitHub](https://github.com/AaltoUrbanWater/GisToSWMM5) / converting gis data to swmm model (also possible with swmm_api: `swmm_api.input_file.macro_snippets.gis_standard_import` and `swmm_api.input_file.macro_snippets.gis_export`)
-- **swmmtoolbox** / [GitHub](https://github.com/timcera/swmmtoolbox) / Thanks to _Tim Cera_ for this package! I used his package to understand the .out-files but completely rewrote the reading process in this package.
-- **swmmnetwork** / [GitHub](https://github.com/austinorr/swmmnetwork) / create graph network from swmm model (see `swmm_api.input_file.macros.inp_to_graph`)
-- **SWMMOutputAPI** / [GitHub](https://github.com/bemcdonnell/SWMMOutputAPI) / read the output file (see `swmm_api.output_file.out`) / (OpenWaterAnalytics)
-- **swmm-pandas** / [pypi](https://pypi.org/project/swmm-pandas/) / equal functionalities to this package, but not feature complete
-- **swmmout** / [pypi](https://pypi.org/project/swmmout/) / [docs](https://swmmout.readthedocs.io/en/latest/) / simular to `swmmtoolbox` and `SWMMOutputAPI`
-- **swmmtonetcdf** / [pypi](https://pypi.org/project/swmmtonetcdf/) / [GitHub](https://github.com/cbuahin/swmmtonetcdf)
-- **hymo** / [GitHub](https://github.com/lucashtnguyen/hymo) Input and Report Reader (Lucas Nguyen)
-- **shmm** / [GitHub](https://github.com/lucashtnguyen/shmm) Input Reader (Lucas Nguyen)
-- **swmmreport** / [GitHub](https://github.com/lucashtnguyen/swmmreport) Report Reader (Lucas Nguyen)
-- **swmmdoodler** / [GitHub](https://github.com/Geosyntec/swmmdoodler)
-
-## Other SWMM-related packages
-
-python:
-
-- **pyswmm** / [pypi](https://pypi.org/project/pyswmm/) / [GitHub](https://github.com/OpenWaterAnalytics/pyswmm) / RTC, etc. / based on swmm-toolkit (OpenWaterAnalytics)
-- **swmm-toolkit** / [pypi](https://pypi.org/project/swmm-toolkit/) / [GitHub](https://github.com/OpenWaterAnalytics/swmm-python) / by Michael Tryby (OpenWaterAnalytics)
-- **SWMM5** / [pypi](https://pypi.org/project/SWMM5/) / [GitHub](https://github.com/asselapathirana/swmm5-python) / simular approach to swmm-toolkit (by Assela Pathirana)
-- **SWMM-xsections-shape-generator** / [pypi](https://pypi.org/project/SWMM-xsections-shape-generator/) / tool to generate custom shapes (by me)
-- **SWMM_EA** / [pypi](https://pypi.org/project/SWMM5_EA/) / usage of genetic algorithms with SWMM (by Assela Pathirana)
-- **OSTRICH-SWMM** / [GitHub](https://github.com/ubccr/ostrich-swmm) / OSTRICH optimization software toolkit with SWMM
 
 ## Read, manipulate and write the INP-File
 
@@ -184,7 +152,7 @@ see [examples/rpt_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-
 
 ## 🗺️ GIS interactions
 
-[`geopandas`](https://geopandas.org/) and its requirements (`Shapely`, `pyproj`, `Rtree`) must be installed! (not that easy on Windows)
+[`geopandas`](https://geopandas.org/) and its requirements (`Shapely`, `pyproj`, `Rtree`) must be installed! (Use python version >3.10 or conda (Anaconda|miniconda) on Windows)
 
 ```python
 from swmm_api import SwmmInput
@@ -204,7 +172,7 @@ inp_new = gpkg_to_swmm('geopackage.gpkg', label_sep='.')
 inp_new.write_file('new_inputfile.inp')
 ```
 
-# ⚠️ Be Aware!
+## ⚠️ Be Aware!
 
 > As python is case-sensitive this API is also case-sensitive, but SWMM is case-insensitive. 
 > This is important for the naming of the objects. 
@@ -217,14 +185,46 @@ If you have any question, don't hesitate to write the author and email or create
 
 MORE INFORMATION COMING SOON
 
-# Cite as
+## Cite as
 
 > *Pichler, Markus. (2022). swmm_api: API for reading, manipulating and running SWMM-Projects with python (0.3). Zenodo. https://doi.org/10.5281/zenodo.7054804*
 
-# Publications mentioning `swmm-api`
+## Publications mentioning `swmm-api`
 
 - Baumann, H., Ravn, N. H., & Schaum, A. (2022). Efficient hydrodynamic modelling of urban stormwater systems for real-time applications. *Modelling, 3(4)*, 464–480. https://doi.org/10.3390/modelling3040030
 - Farina, A., Di Nardo, A., Gargano, R., & Greco, R. (2022). Assessing the environmental impact of combined sewer overflows through a parametric study. *EWaS5*, 8. https://doi.org/10.3390/environsciproc2022021008
 - Schilling, J., & Tränckner, J. (2022). Generate_swmm_inp: An open-source qgis plugin to import and export model input files for swmm. *Water, 14(14)*, 2262. https://doi.org/10.3390/w14142262
 - Zhang, Z., Tian, W., & Liao, Z. (2023). Towards coordinated and robust real-time control: A decentralized approach for combined sewer overflow and urban flooding reduction based on multi-agent reinforcement learning. *Water Research, 229*, 119498. https://doi.org/10.1016/j.watres.2022.119498
 - van der Werf, J. A., Kapelan Z., Langeveld, J. G. (2023). Predictive heuristic control: inferring risks from heterogeneous nowcast accuracy. *Water Sci Technol, ?(?)*. https://doi.org/10.2166/wst.2023.027
+
+## Alternative packages
+
+R-language:
+
+- **swmmr** / [GitHub](https://github.com/dleutnant/swmmr) / [cran](https://cran.r-project.org/web/packages/swmmr/index.html)
+
+python:
+
+- **swmmio** / [docs](https://swmmio.readthedocs.io/en/latest/) / [pypi](https://pypi.org/project/swmmio/) / [GitHub](https://github.com/aerispaha/swmmio) / simular to this package but more high-level approach (= slower for specific tasks)
+- **GisToSWMM5** / [GitHub](https://github.com/AaltoUrbanWater/GisToSWMM5) / converting gis data to swmm model (also possible with swmm_api: `swmm_api.input_file.macro_snippets.gis_standard_import` and `swmm_api.input_file.macro_snippets.gis_export`)
+- **swmmtoolbox** / [GitHub](https://github.com/timcera/swmmtoolbox) / Thanks to _Tim Cera_ for this package! I used his package to understand the .out-files but completely rewrote the reading process in this package.
+- **swmmnetwork** / [GitHub](https://github.com/austinorr/swmmnetwork) / create graph network from swmm model (see `swmm_api.input_file.macros.inp_to_graph`)
+- **SWMMOutputAPI** / [GitHub](https://github.com/bemcdonnell/SWMMOutputAPI) / read the output file (see `swmm_api.output_file.out`) / (OpenWaterAnalytics)
+- **swmm-pandas** / [pypi](https://pypi.org/project/swmm-pandas/) / equal functionalities to this package, but not feature complete
+- **swmmout** / [pypi](https://pypi.org/project/swmmout/) / [docs](https://swmmout.readthedocs.io/en/latest/) / simular to `swmmtoolbox` and `SWMMOutputAPI`
+- **swmmtonetcdf** / [pypi](https://pypi.org/project/swmmtonetcdf/) / [GitHub](https://github.com/cbuahin/swmmtonetcdf)
+- **hymo** / [GitHub](https://github.com/lucashtnguyen/hymo) Input and Report Reader (Lucas Nguyen)
+- **shmm** / [GitHub](https://github.com/lucashtnguyen/shmm) Input Reader (Lucas Nguyen)
+- **swmmreport** / [GitHub](https://github.com/lucashtnguyen/swmmreport) Report Reader (Lucas Nguyen)
+- **swmmdoodler** / [GitHub](https://github.com/Geosyntec/swmmdoodler)
+
+### Other SWMM-related packages
+
+python:
+
+- **pyswmm** / [pypi](https://pypi.org/project/pyswmm/) / [GitHub](https://github.com/OpenWaterAnalytics/pyswmm) / RTC, etc. / based on swmm-toolkit (OpenWaterAnalytics)
+- **swmm-toolkit** / [pypi](https://pypi.org/project/swmm-toolkit/) / [GitHub](https://github.com/OpenWaterAnalytics/swmm-python) / by Michael Tryby (OpenWaterAnalytics)
+- **SWMM5** / [pypi](https://pypi.org/project/SWMM5/) / [GitHub](https://github.com/asselapathirana/swmm5-python) / simular approach to swmm-toolkit (by Assela Pathirana)
+- **SWMM-xsections-shape-generator** / [pypi](https://pypi.org/project/SWMM-xsections-shape-generator/) / tool to generate custom shapes (by me)
+- **SWMM_EA** / [pypi](https://pypi.org/project/SWMM5_EA/) / usage of genetic algorithms with SWMM (by Assela Pathirana)
+- **OSTRICH-SWMM** / [GitHub](https://github.com/ubccr/ostrich-swmm) / OSTRICH optimization software toolkit with SWMM
