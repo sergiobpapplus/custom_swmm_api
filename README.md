@@ -52,13 +52,13 @@ and run `mamba install geopandas` to install the GIS dependencies (see [GeoPanda
 ## 📖 Documentation
 [Link](https://markuspichler.gitlab.io/swmm_api) to the documentation of the api and some example jupyter notebook.
 
+[Here](https://gitlab.com/markuspichler/swmm_api/-/tree/main/examples) are example files for other use-cases.
 
 ## Read, manipulate and write the INP-File
 
 ### Read the INP-File
 
 ```python
-
 from swmm_api import read_inp_file, SwmmInput
 
 inp = read_inp_file('inputfile.inp')  # type: swmm_api.SwmmInput
