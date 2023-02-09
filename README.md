@@ -22,6 +22,14 @@ And you can read the RPT- and OUT-files as a pandas DataFrame for further analys
 
 This package is based on the command line SWMM syntax. ([see Appendix D in the SWMM User Manual 5.2](https://www.epa.gov/system/files/documents/2022-04/swmm-users-manual-version-5.2.pdf))
 
+## Introduction
+
+The swmm-api package is a powerful tool for modellers and researchers who use the Storm Water Management Model (SWMM). This software enables the manipulation and analysis of SWMM models, both in terms of the input data and the simulation results. The package is written in Python, making it an attractive option for those who use this language for data management and advanced analysis.
+
+One of the key features of swmm-api is its ability to read and write SWMM import-files (.inp), allowing the user to manipulate the model structure and input data. The package also has the capability to run the SWMM model within the Python environment, providing users with quick access to simulation results. Furthermore, swmm-api can read both the report (.rpt) and binary output-files (.out), presenting the results as a Pandas DataFrame for easy analysis. The ability to read binary hotstart-files (.hst) is also included, which enables the acceleration of simulation time by using initial values stored in the file.
+
+The swmm-api package is designed to be flexible and user-friendly, with an object-oriented structure that is lightweight and fast. The package is based on the SWMM command line syntax, making it easy to use for those familiar with this model. Additionally, swmm-api has the ability to interact with GIS data, making it a valuable tool for modellers working with spatial data.
+
 ## Install the package
 ```bash
 pip install swmm-api
