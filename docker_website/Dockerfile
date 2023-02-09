@@ -20,6 +20,7 @@ RUN pip3 install Shapely
 RUN pip3 install pyproj
 RUN pip3 install Rtree
 RUN pip3 install geopandas
+RUN pip3 install jupyter
 RUN pip3 install sphinx
 RUN pip3 install nbsphinx
 RUN pip3 install recommonmark

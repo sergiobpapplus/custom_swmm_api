@@ -101,7 +101,7 @@ def swmm5_run_epa(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=
     Run a simulation with EPA-SWMM.
 
     EPA-SWMM must be installed in the default folder.
-    In linux and mac (*nix) swmm must be executeable with the `swmm5` command.
+    In linux and mac (\*nix) swmm must be executeable with the `swmm5` command.
 
     The default working directory is the input-file directory.
 
