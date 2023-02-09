@@ -68,7 +68,7 @@ class SwmmOutput(SwmmOutExtract):
     # start_date: datetime.datetime
     # swmm_version: str
     # variables: dict
-    # filename: str
+    filename: str
 
     def __init__(self, filename, skip_init=False):
         """

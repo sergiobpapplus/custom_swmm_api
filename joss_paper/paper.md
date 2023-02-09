@@ -18,7 +18,7 @@ bibliography: paper.bib
 
 # Summary
 
-[https://joss.readthedocs.io/en/latest/submitting.html#what-should-my-paper-contain](joss.readthedocs.io)
+[joss.readthedocs.io](https://joss.readthedocs.io/en/latest/submitting.html#what-should-my-paper-contain)
 
 JOSS welcomes submissions from broadly diverse research areas. For this reason, we require that authors include in the paper some sentences that explain the software functionality and domain of use to a non-specialist reader. We also require that authors explain the research applications of the software. The paper should be between 250-1000 words. Authors submitting papers significantly longer than 1000 words may be asked to reduce the length of their paper.
 

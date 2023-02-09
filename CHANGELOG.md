@@ -3,33 +3,43 @@
 <!--next-version-placeholder-->
 
 ## v0.3.3 (2023-02-03)
+
 ### Fix
+
 * Added keyword arguments to control condition and action init ([`bf1ad7a`](https://gitlab.com/markuspichler/swmm_api/-/commit/bf1ad7a166002e2562831f64332c12a8075b7ace))
 
 ### Documentation
+
 * Tutorial How to add control rules ([`0ca1d9c`](https://gitlab.com/markuspichler/swmm_api/-/commit/0ca1d9cef327c18d5447af8db977b179c1310668), [`b8d652f`](https://gitlab.com/markuspichler/swmm_api/-/commit/b8d652f02402f56d9cf0c3948014bf998296b076), [`9442147`](https://gitlab.com/markuspichler/swmm_api/-/commit/9442147211cbed03fbb45a3a6b0489a317ed8659))
 * Adding example to import gis data ([`e2c148e`](https://gitlab.com/markuspichler/swmm_api/-/commit/e2c148e5eb35dbf93ddc759aed6b325cb49eb66c))
 * Adding publications mentioning swmm-api to readme ([`4d209ab`](https://gitlab.com/markuspichler/swmm_api/-/commit/4d209aba439ae3d1cc55bcbe6b5613743441ac6d))
 
 ### Style
+
 * matplotlib constrained layout
 
 ## v0.3.2 (2023-01-09)
+
 ### Fix
+
 * Added ability to set * as offset for "offset measured as elevation"-option. ([`6994640`](https://gitlab.com/markuspichler/swmm_api/-/commit/699464091dacfc67283a7ea7b6a84bee8d105e8f))
 * case insensitive string comparison for type convertion of "YES", "NO" and "NONE"
 * infer_offset_elevation function (only internal)
 
 ### Documentation
+
 * added warning in readme
 * added some icons to headers
 * capital letter at beginning
 
 ## v0.3.1 (2022-12-16)
+
 ### Fix
+
 * Ci-test ([`189d64c`](https://gitlab.com/markuspichler/swmm_api/-/commit/189d64c958426679339cfb781b7fd64755647931))
 
 ### added
+
 * get_geo_length to Vertices object
 * possibility to set path as a pathlib.Path-object
 * parameter for minimum length to simplify vertices function 
