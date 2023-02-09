@@ -2,45 +2,77 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.3 (2023-02-03)
+### Fix
+* Added keyword arguments to control condition and action init ([`bf1ad7a`](https://gitlab.com/markuspichler/swmm_api/-/commit/bf1ad7a166002e2562831f64332c12a8075b7ace))
+
+### Documentation
+* Tutorial How to add control rules ([`0ca1d9c`](https://gitlab.com/markuspichler/swmm_api/-/commit/0ca1d9cef327c18d5447af8db977b179c1310668), [`b8d652f`](https://gitlab.com/markuspichler/swmm_api/-/commit/b8d652f02402f56d9cf0c3948014bf998296b076), [`9442147`](https://gitlab.com/markuspichler/swmm_api/-/commit/9442147211cbed03fbb45a3a6b0489a317ed8659))
+* Adding example to import gis data ([`e2c148e`](https://gitlab.com/markuspichler/swmm_api/-/commit/e2c148e5eb35dbf93ddc759aed6b325cb49eb66c))
+* Adding publications mentioning swmm-api to readme ([`4d209ab`](https://gitlab.com/markuspichler/swmm_api/-/commit/4d209aba439ae3d1cc55bcbe6b5613743441ac6d))
+
+### Style
+* matplotlib constrained layout
+
+## v0.3.2 (2023-01-09)
+### Fix
+* Added ability to set * as offset for "offset measured as elevation"-option. ([`6994640`](https://gitlab.com/markuspichler/swmm_api/-/commit/699464091dacfc67283a7ea7b6a84bee8d105e8f))
+* case insensitive string comparison for type convertion of "YES", "NO" and "NONE"
+* infer_offset_elevation function (only internal)
+
+### Documentation
+* added warning in readme
+* added some icons to headers
+* capital letter at beginning
+
+## v0.3.1 (2022-12-16)
+### Fix
+* Ci-test ([`189d64c`](https://gitlab.com/markuspichler/swmm_api/-/commit/189d64c958426679339cfb781b7fd64755647931))
+
+### added
+* get_geo_length to Vertices object
+* possibility to set path as a pathlib.Path-object
+* parameter for minimum length to simplify vertices function 
+
 ## 0.3.post3 (Nov 21, 2022)
 
-fixed
+### Fix
 
 - HotstartFileReader fixed if not all sections in .inp-file
 
 ## 0.3.post2 (Oct 18, 2022)
 
-fixed
+### Fix
 
 - added needed package data-file
 
 ## 0.3.post1 (Oct 17, 2022)
 
-changed
+### changed
 
 - running swmm functions are reordered
 - internal package structure
 
-added
+### added
 
 - reading .rpt-file with encoding
 
 ## 0.3 (Sep 06, 2022)
 
-removed:
+### removed
 
 - CoordinatesGeo (functionality included in Coordinate)
 - VerticesGeo (functionality included in Vertices)
 - PolygonGeo (functionality included in Polygon)
 - SwmmInputGeo (functionality included in SwmmInput)
 
-changed:
+### changed
 
 - SwmmInput init is equal to SwmmInput.read_file
 - better repr for SwmmInput and InpSections
 - map plot function is separated in several function for better customization
 
-new:
+### new
 
 - swmm_api.input_file.macros.compare_inp_objects()
 - add_backdrop to map plot
@@ -54,7 +86,7 @@ new:
 - input_file.macros.update_area
 - error message when swmm is not found
 
-fixed:
+### Fix
 
 - inp update error
 - minor issues with GIS import end export
@@ -78,7 +110,8 @@ Fixed Error when using Timeseries past the year 3000.
 
 ## 0.2.0.18 (Feb 22, 2022)
 
-fixed:
+### Fix
+
 - type in swmm_api.input_file.macros.collection.subcachtment_nodes_dict > subcatchment_nodes_dict
 - copy error for swmm_api.input_file.sections.lid.LIDControl, swmm_api.input_file.sections.others.Hydrograph, SnowPack
 - reduce_controls now works
@@ -86,10 +119,10 @@ fixed:
 - infiltration object type recognition
 - error when reading the report section "routing time step summary"
 
-renamed:
+### renamed
 - in swmm_api.input_file.macros.collection subcatchment_nodes_dict to subcatchments_per_node_dict
 
-added:
+### added
 - function swmm_api.input_file.macros.edit.remove_quality_model
 - swmm_api.input_file.section_list.POLLUTANT_SECTIONS
 - missing report sections
@@ -102,38 +135,38 @@ added:
 - possibility to turn off sorting in inp-file write_file (`sort_objects_alphabetical=False`)
 - SwmmHotstart file reader
 
-moved:
+### moved
 - SEC from swmm_api.input_file.section_abr to swmm_api.input_file
 
-improved:
+### improved
 - performance for reading bis inp-files
 - natural sorting for objects. (i.e. the object names \[J1, J2, J10\] were previously sorted as  \[J1, J10, J2\])
 - sections will be sorted as in the read file
 - default sorting is based on sorting of the EPA SWMM GUI / PCSWMM
 - copy unconverted inp file as string
 
-changed:
+### changed
 - in swmm_api.input_file.macros.check the functions check_for_nodes, check_for_duplicates now return set of error and don't print
 - BaseSectionObject are now hashable
 - Control object has now objects as action and condition for better usability
 
 
 ## 0.2.0.17 (Feb 11, 2022)
-fixed:
+### fixed
 - error in copy Pollutant
 - error in TimeseriesData when datetime is a float
 
-renamed:
+### renamed
 - in swmm_api.input_file.macros.geo update_vertices to complete_vertices 
 
-added:
+### added
 - swmm_api.input_file.macros.edit.flip_link_direction
 - swmm_api.input_file.macros.geo.complete_link_vertices
 - swmm_api.input_file.macros.geo.simplify_link_vertices
 - swmm_api.input_file.macros.geo.simplify_vertices
 - automatic creation for sections when getter is called and not in inp-data
 
-moved:
+### moved
 - reduce_vertices from swmm_api.input_file.macros.reduce_unneeded to geo
 
 ## 0.2.0.16 (Jan 7, 2022)

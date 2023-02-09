@@ -57,4 +57,5 @@ upload_to_pypi = true
 hvcs = 'gitlab'
 branch = 'main'
 major_on_zero = false
-version_source = 'tag'
+version_source = 'commit' # 'tag' 'tag_only'
+commit_subject = 'New version v{version} 🔥'
