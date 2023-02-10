@@ -3,6 +3,7 @@ from .report_file import read_rpt_file, SwmmReport
 from .output_file import read_out_file, SwmmOutput, out2frame
 from .hotstart_file import read_hst_file, SwmmHotstart
 from .run_swmm import swmm5_run
+from ._io_helpers._config import CONFIG
 
 # https://peps.python.org/pep-0440/
 # Pre-release segment: {a|b|rc}N

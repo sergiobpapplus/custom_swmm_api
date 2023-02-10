@@ -186,6 +186,17 @@ inp_new.write_file('new_inputfile.inp')
 > This is important for the naming of the objects. 
 > For example, you could create a junction 'a' and 'A' with this API, but SWMM would only consider one and ignore the other.
 
+AND
+
+> This package uses `utf-8` as default encoding for the file I/O (reading and writing inp, rpt and out files.)
+> Every function to read a file has the option to define a custom encoding (for example Windows uses this as default for german `encoding='iso-8859-1'`).
+
+But one can set a default encoding for the package using:
+```python
+from swmm_api import CONFIG
+CONFIG['encoding'] = 'iso-8859-1'
+```
+
 ---
 
 This documentation will be continuously extended and enhanced. 

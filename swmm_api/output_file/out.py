@@ -60,14 +60,15 @@ class SwmmOutput(SwmmOutExtract):
 
     .. _swmmtoolbox: https://github.com/timcera/swmmtoolbox
     """
-    def __init__(self, filename, skip_init=False):
+    def __init__(self, filename, skip_init=False, encoding=''):
         """
         Read the SWMM Output file (xxx.out).
 
         Args:
             filename(str): Path to the output-file (.out).
+            encoding (str): Encoding of the text in the binary-file (None -> auto-detect encoding ... takes a few seconds | '' -> use default = 'utf-8')
         """
-        SwmmOutExtract.__init__(self, filename, skip_init=skip_init)
+        SwmmOutExtract.__init__(self, filename, skip_init=skip_init, encoding=encoding)
 
         self._frame = None
         self._data = None
@@ -331,20 +332,22 @@ class SwmmOutput(SwmmOutExtract):
     #     )
 
 
-def read_out_file(filename):
-    """
-    Read the SWMM Output file (xxx.out).
+read_out_file = SwmmOutput
 
-    Args:
-        filename (str): filename of the output file
-
-    Returns:
-        SwmmOutput: output file object
-
-    See Also:
-        :meth:`SwmmOutput.__init__` : Equal functionality.
-    """
-    return SwmmOutput(filename)
+# def read_out_file(filename):
+#     """
+#     Read the SWMM Output file (xxx.out).
+#
+#     Args:
+#         filename (str): filename of the output file
+#
+#     Returns:
+#         SwmmOutput: output file object
+#
+#     See Also:
+#         :meth:`SwmmOutput.__init__` : Equal functionality.
+#     """
+#     return SwmmOutput(filename)
 
 
 def out2frame(filename):

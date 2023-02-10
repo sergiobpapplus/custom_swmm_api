@@ -15,13 +15,13 @@ class SWMMRunError(UserWarning):
 
 def get_result_filenames(inp_fn):
     """
-    get filenames for the Report and Output files
+    Get filenames for the Report and Output files
 
     Args:
         inp_fn (str): filename of the Input-Files
 
     Returns:
-        tuple(str, str): filenames for the Report- and Output-file
+        tuple[str, str]: filenames for the Report- and Output-file
     """
     return inp_fn.replace('.inp', '.rpt'), inp_fn.replace('.inp', '.out')
 

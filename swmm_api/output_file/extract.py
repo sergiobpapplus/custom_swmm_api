@@ -80,11 +80,12 @@ class SwmmOutExtract(BinaryReader):
 
     Args:
         filename (str): Path to the .out-file.
+        encoding (str): Encoding of the text in the binary-file (None -> auto-detect encoding ... takes a few seconds | '' -> use default = 'utf-8')
     """
     filename: str
 
-    def __init__(self, filename, skip_init=False):
-        super().__init__(filename)
+    def __init__(self, filename, skip_init=False, encoding=''):
+        super().__init__(filename, encoding)
 
         if skip_init:
             return

@@ -3,6 +3,8 @@ import struct
 from io import SEEK_SET
 from os import remove
 
+from ._encoding import get_default_encoding
+
 _RECORDSIZE = 4
 
 
@@ -15,12 +17,13 @@ class BinaryReader(abc.ABC):
         filename (str): Path to the binary file.
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename, encoding=''):
         """
         Read a binary file in SWMM. Used for output- and hotstart-files (.out | .hst).
 
         Args:
             filename (str): Path to the binary file.
+            encoding (str): Encoding of the text-file (None -> auto-detect encoding ... takes a few seconds | '' -> use default = 'utf-8')
         """
         self.fp = None
         if all([hasattr(filename, i) for i in ['tell', 'seek', 'read', 'close']]):
@@ -29,6 +32,7 @@ class BinaryReader(abc.ABC):
         else:
             self.fp = open(filename, "rb")
             self.filename = filename
+        self.encoding = get_default_encoding(encoding)
 
     @abc.abstractmethod
     def __repr__(self):
@@ -78,7 +82,7 @@ class BinaryReader(abc.ABC):
         size = {'d': 2}.get(dtype, 1)
         if dtype == 's':
             s = self._next_base(f'{n}s', n)[0]
-            return str(s, encoding="ascii", errors="replace")
+            return str(s, encoding=self.encoding, errors="replace")
         elif flat and (n == 1):
             return self._next_base(dtype, size * _RECORDSIZE)[0]
         else:

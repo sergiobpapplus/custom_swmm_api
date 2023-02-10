@@ -12,7 +12,8 @@ import pandas as pd
 
 from .helpers import (_get_title_of_part, _remove_lines, _part_to_frame, _continuity_part_to_dict, ReportUnitConversion,
                       _routing_part_to_dict, _quality_continuity_part_to_dict, )
-from .._io_helpers._read_txt import read_txt_file, DEFAULT_ENCODING
+from .._io_helpers._encoding import get_default_encoding
+from .._io_helpers._read_txt import read_txt_file
 from ..input_file.helpers import natural_keys
 
 
@@ -21,13 +22,13 @@ class SwmmReport:
     SWMM Report file (xxx.rpt).
     """
 
-    def __init__(self, filename, encoding=DEFAULT_ENCODING):
+    def __init__(self, filename, encoding=''):
         """
         Create Report instance to read a rpt-file.
 
         Args:
             filename (str): Path to  the rpt file.
-            encoding (str): Encoding of the .rpt-text-file (None -> auto-detect encoding ... takes a few seconds)
+            encoding (str): Encoding of the text-file (None -> auto-detect encoding ... takes a few seconds | '' -> use default = 'utf-8')
 
         Notes:
             For more information see SWMM 5.1 User Manual | 9.1 Viewing a Status Report | S. 136
@@ -117,17 +118,22 @@ class SwmmReport:
     def is_file(self):
         return os.path.isfile(self._filename)
 
-    def _report_to_dict(self, encoding=DEFAULT_ENCODING):
+    def _report_to_dict(self, encoding=''):
         """
-        convert the report file into a dictionary depending on the different parts
-        
+        Convert the report file into a dictionary depending on the different parts.
+
+        Args:
+            encoding (str): Encoding of the text-file (None -> auto-detect encoding ... takes a few seconds | '' -> use default = 'utf-8')
+
         Returns:
             dict[str, str]: dictionary of parts of the report file
         """
         if not self.is_file():
             return
 
-        txt = read_txt_file(self._filename, encoding=encoding)
+        self._encoding = get_default_encoding(encoding, self._filename)
+
+        txt = read_txt_file(self._filename, encoding=self._encoding)
         lines = txt.split('\n')
 
         if not lines:
@@ -1002,18 +1008,20 @@ class SwmmReport:
         print(self._pretty_dict(self.get_warnings()))
 
 
-def read_rpt_file(filename, encoding=DEFAULT_ENCODING):
-    """
-    Read the SWMM Report file (xxx.rpt).
+read_rpt_file = SwmmReport
 
-    Args:
-        filename (str): filename of the report file
-        encoding (str): Encoding of the .inp-text-file (None -> auto-detect encoding ... takes a few seconds)
-
-    Returns:
-        SwmmReport: report file object
-
-    See Also:
-        :meth:`SwmmReport.__init__` : Equal functionality.
-    """
-    return SwmmReport(filename, encoding=encoding)
+# def read_rpt_file(filename, encoding=DEFAULT_ENCODING):
+#     """
+#     Read the SWMM Report file (xxx.rpt).
+#
+#     Args:
+#         filename (str): filename of the report file
+#         encoding (str): Encoding of the .inp-text-file (None -> auto-detect encoding ... takes a few seconds)
+#
+#     Returns:
+#         SwmmReport: report file object
+#
+#     See Also:
+#         :meth:`SwmmReport.__init__` : Equal functionality.
+#     """
+#     return SwmmReport(filename, encoding=encoding)
