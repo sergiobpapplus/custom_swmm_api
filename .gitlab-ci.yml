@@ -37,7 +37,7 @@ release-package-python:
     - git config --global user.email "gitlab-ci@python-semantic-release.com"
     - git config --global user.name "python-semantic-release"
     - git config --global --add safe.directory '*'
-    - semantic-release publish -v DEBUG --noop
+    - semantic-release publish -v DEBUG
   only:
     refs:
       - main
