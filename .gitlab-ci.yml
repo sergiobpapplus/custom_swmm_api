@@ -5,27 +5,27 @@ stages:
   - release
 
 
-pages:
-  image: registry.gitlab.com/markuspichler/swmm_api:latest
-  stage: pages
-  script:
-  - cp README.md ./documentation/README.md
-  - cp CHANGELOG.md ./documentation/CHANGELOG.md
-  - cp ./examples/hotstart_file_reader.ipynb ./documentation/examples/hotstart_file_reader.ipynb
-  - cp ./examples/inp_file_macros.ipynb ./documentation/examples/inp_file_macros.ipynb
-  - cp ./examples/inp_file_reader.ipynb ./documentation/examples/inp_file_reader.ipynb
-  - cp ./examples/inp_file_structure.ipynb ./documentation/examples/inp_file_structure.ipynb
-  - cp ./examples/out_file_reader.ipynb ./documentation/examples/out_file_reader.ipynb
-  - cp ./examples/rpt_file_reader.ipynb ./documentation/examples/rpt_file_reader.ipynb
-  - cp ./examples/gis_data_to_swmm.ipynb ./documentation/examples/gis_data_to_swmm.ipynb
-  - cp ./examples/how_to_add_control_rules.ipynb ./documentation/examples/how_to_add_control_rules.ipynb
-  - sphinx-build -b html ./documentation public
-  artifacts:
-    paths:
-    - public
-  only:
-    refs:
-    - main
+#pages:
+#  image: registry.gitlab.com/markuspichler/swmm_api:latest
+#  stage: pages
+#  script:
+#  - cp README.md ./documentation/README.md
+#  - cp CHANGELOG.md ./documentation/CHANGELOG.md
+#  - cp ./examples/hotstart_file_reader.ipynb ./documentation/examples/hotstart_file_reader.ipynb
+#  - cp ./examples/inp_file_macros.ipynb ./documentation/examples/inp_file_macros.ipynb
+#  - cp ./examples/inp_file_reader.ipynb ./documentation/examples/inp_file_reader.ipynb
+#  - cp ./examples/inp_file_structure.ipynb ./documentation/examples/inp_file_structure.ipynb
+#  - cp ./examples/out_file_reader.ipynb ./documentation/examples/out_file_reader.ipynb
+#  - cp ./examples/rpt_file_reader.ipynb ./documentation/examples/rpt_file_reader.ipynb
+#  - cp ./examples/gis_data_to_swmm.ipynb ./documentation/examples/gis_data_to_swmm.ipynb
+#  - cp ./examples/how_to_add_control_rules.ipynb ./documentation/examples/how_to_add_control_rules.ipynb
+#  - sphinx-build -b html ./documentation public
+#  artifacts:
+#    paths:
+#    - public
+#  only:
+#    refs:
+#    - main
 
 
 # https://github.com/python-semantic-release/python-semantic-release
