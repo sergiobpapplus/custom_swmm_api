@@ -1,8 +1,9 @@
 import inspect
 import time
 
+import pandas as pd
 from numpy import NaN
-from pandas import MultiIndex
+# from pandas import MultiIndex
 from tqdm.auto import tqdm
 
 from .geo import complete_vertices, simplify_vertices, reduce_vertices
@@ -255,7 +256,8 @@ def links_geo_data_frame(inp, label_sep='.'):
             if res is None:
                 res = df
             else:
-                res = res.append(df)
+                res = pd.concat([res, df], axis=0)
+                # res = res.append(df)
     return GeoDataFrame(res)
 
 
@@ -293,7 +295,8 @@ def nodes_geo_data_frame(inp, label_sep='.'):
             if res is None:
                 res = df
             else:
-                res = res.append(df)
+                res = pd.concat([res, df], axis=0)
+                # res = res.append(df)
 
     return GeoDataFrame(res)
 
@@ -332,7 +335,7 @@ def gpkg_to_swmm(fn, label_sep='.', infiltration_class=None, custom_section_hand
             cols = gdf.columns[gdf.columns.str.startswith(sub_sec)]
             if not cols.empty:
                 gdf_sub = gdf[cols].copy()
-                gdf_sub.columns = MultiIndex.from_tuples([col.split(label_sep) for col in gdf_sub.columns])
+                gdf_sub.columns = pd.MultiIndex.from_tuples([col.split(label_sep) for col in gdf_sub.columns])
                 cols_order = gdf_sub.columns.droplevel(1)
                 gdf_sub = gdf_sub.stack(1)[cols_order]
                 inp[sub_sec].update(section_dict[sub_sec].create_section(gdf_sub.reset_index().values))
