@@ -1,7 +1,7 @@
 image: python:3.9.7
 
 stages:
-  - pages
+#  - pages
   - release
 
 
@@ -36,7 +36,34 @@ release-package-python:
   script:
     - git config --global user.email "gitlab-ci@python-semantic-release.com"
     - git config --global user.name "python-semantic-release"
-    - semantic-release publish -v DEBUG
+    - semantic-release publish -v DEBUG --noop
   only:
     refs:
       - main
+
+# Usage: semantic-release [OPTIONS] COMMAND [ARGS]...
+#
+#Options:
+#  -v, --verbosity LVL             Either CRITICAL, ERROR, WARNING, INFO or
+#                                  DEBUG
+#  --major                         Force major version.
+#  --minor                         Force minor version.
+#  --patch                         Force patch version.
+#  --prerelease                    Creates a prerelease version.
+#  --prerelease-patch / --no-prerelease-patch
+#                                  whether or not prerelease always gets at
+#                                  least a patch-level bump  [default:
+#                                  prerelease-patch]
+#  --post                          Post changelog.
+#  --retry                         Retry the same release, do not bump.
+#  --noop                          No-operations mode, finds the new version
+#                                  number without changing it.
+#  -D, --define TEXT               setting="value", override a configuration
+#                                  value.
+#  --help                          Show this message and exit.
+#
+#Commands:
+#  changelog      Generate the changelog since the last release.
+#  print-version  Print the current or new version to standard output.
+#  publish        Run the version task, then push to git and upload to an...
+#  version        Detect the new version according to git log and semver.
