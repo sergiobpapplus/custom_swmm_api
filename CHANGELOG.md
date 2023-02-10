@@ -2,6 +2,22 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.0 (2023-02-10)
+### Feature
+* Adding warning to out-file-reader when request is not found. ([`baaaa58`](https://gitlab.com/markuspichler/swmm_api/-/commit/baaaa583832a462d9f004d538a8928cd364b924b))
+* Ability to set global default encoding for reading inp, out, and report files. ([`8365ba8`](https://gitlab.com/markuspichler/swmm_api/-/commit/8365ba85dd272fd229c8dc53da867c9000efdde5))
+
+### Documentation
+* New docker image for the website generation ([`6333ccc`](https://gitlab.com/markuspichler/swmm_api/-/commit/6333ccca6fbd7d6f4286e7fc574a687936b00308))
+* Into + joss-paper ([`2bacb27`](https://gitlab.com/markuspichler/swmm_api/-/commit/2bacb279c1ca6cb2b51f0b04f8b1a4f238b5c26c))
+* Typo ([`2f35161`](https://gitlab.com/markuspichler/swmm_api/-/commit/2f35161aeb42dc68a5af2c76aff8495351e53826))
+* Typo ([`cbc9f3a`](https://gitlab.com/markuspichler/swmm_api/-/commit/cbc9f3a824aa41b98f44ade7d4e705a53126aee5))
+* Changes in readme ([`3a240b6`](https://gitlab.com/markuspichler/swmm_api/-/commit/3a240b6440fbae9f87d5fad97a0ce2f24af988e6))
+* Changes in readme ([`cea2da5`](https://gitlab.com/markuspichler/swmm_api/-/commit/cea2da5fc3bc43cf5855cf1b8e458bdb6a217c28))
+* Changes in readme ([`9b069dd`](https://gitlab.com/markuspichler/swmm_api/-/commit/9b069ddf966f7ad3e22f32cfade10a1b658369e1))
+* Added reference to readme ([`6da8f41`](https://gitlab.com/markuspichler/swmm_api/-/commit/6da8f411fd90d51eccecb5386365f9977bdaabd4))
+* Typo in readme ([`255132f`](https://gitlab.com/markuspichler/swmm_api/-/commit/255132f92eefc6b2f35c191654a09ba8a73aa061))
+
 ## v0.3.3 (2023-02-03)
 
 ### Fix
