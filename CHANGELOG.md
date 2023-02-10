@@ -2,52 +2,6 @@
 
 <!--next-version-placeholder-->
 
-## v0.4.0-beta.2 (2023-02-10)
-### Feature
-* Adding warning to out-file-reader when request is not found. ([`baaaa58`](https://gitlab.com/markuspichler/swmm_api/-/commit/baaaa583832a462d9f004d538a8928cd364b924b))
-* Ability to set global default encoding for reading inp, out, and report files. ([`8365ba8`](https://gitlab.com/markuspichler/swmm_api/-/commit/8365ba85dd272fd229c8dc53da867c9000efdde5))
-* Test ci ([`629dd4f`](https://gitlab.com/markuspichler/swmm_api/-/commit/629dd4ffe143c3f9e4a01ef95f9e793788bd2d4f))
-
-### Fix
-* Added keyword arguments to control condition and action init ([`bf1ad7a`](https://gitlab.com/markuspichler/swmm_api/-/commit/bf1ad7a166002e2562831f64332c12a8075b7ace))
-* Added ability to set * as offset for "offset measured as elevation"-option. ([`6994640`](https://gitlab.com/markuspichler/swmm_api/-/commit/699464091dacfc67283a7ea7b6a84bee8d105e8f))
-* Ci-test ([`189d64c`](https://gitlab.com/markuspichler/swmm_api/-/commit/189d64c958426679339cfb781b7fd64755647931))
-* Test ci ([`7c0759e`](https://gitlab.com/markuspichler/swmm_api/-/commit/7c0759e1a346c3e4c3b5d47cac4d662dc321158a))
-* Test ci ([`33d668b`](https://gitlab.com/markuspichler/swmm_api/-/commit/33d668b9341258209666bc13e86ed8323104ce8f))
-* Test ci ([`2df0482`](https://gitlab.com/markuspichler/swmm_api/-/commit/2df0482a3bfcf220cb67b2ab147c237c79da456b))
-
-### Documentation
-* New docker image for the website generation ([`6333ccc`](https://gitlab.com/markuspichler/swmm_api/-/commit/6333ccca6fbd7d6f4286e7fc574a687936b00308))
-* Into + joss-paper ([`2bacb27`](https://gitlab.com/markuspichler/swmm_api/-/commit/2bacb279c1ca6cb2b51f0b04f8b1a4f238b5c26c))
-* Typo ([`2f35161`](https://gitlab.com/markuspichler/swmm_api/-/commit/2f35161aeb42dc68a5af2c76aff8495351e53826))
-* Typo ([`cbc9f3a`](https://gitlab.com/markuspichler/swmm_api/-/commit/cbc9f3a824aa41b98f44ade7d4e705a53126aee5))
-* Changes in readme ([`3a240b6`](https://gitlab.com/markuspichler/swmm_api/-/commit/3a240b6440fbae9f87d5fad97a0ce2f24af988e6))
-* Changes in readme ([`cea2da5`](https://gitlab.com/markuspichler/swmm_api/-/commit/cea2da5fc3bc43cf5855cf1b8e458bdb6a217c28))
-* Changes in readme ([`9b069dd`](https://gitlab.com/markuspichler/swmm_api/-/commit/9b069ddf966f7ad3e22f32cfade10a1b658369e1))
-* Added reference to readme ([`6da8f41`](https://gitlab.com/markuspichler/swmm_api/-/commit/6da8f411fd90d51eccecb5386365f9977bdaabd4))
-* Typo in readme ([`255132f`](https://gitlab.com/markuspichler/swmm_api/-/commit/255132f92eefc6b2f35c191654a09ba8a73aa061))
-* Tutorial How to add control rules ([`0ca1d9c`](https://gitlab.com/markuspichler/swmm_api/-/commit/0ca1d9cef327c18d5447af8db977b179c1310668))
-* Tutorial How to add control rules ([`b8d652f`](https://gitlab.com/markuspichler/swmm_api/-/commit/b8d652f02402f56d9cf0c3948014bf998296b076))
-* Tutorial How to add control rules ([`9442147`](https://gitlab.com/markuspichler/swmm_api/-/commit/9442147211cbed03fbb45a3a6b0489a317ed8659))
-* Adding example to import gis data ([`e2c148e`](https://gitlab.com/markuspichler/swmm_api/-/commit/e2c148e5eb35dbf93ddc759aed6b325cb49eb66c))
-* Adding publications mentioning swmm-api to readme ([`4d209ab`](https://gitlab.com/markuspichler/swmm_api/-/commit/4d209aba439ae3d1cc55bcbe6b5613743441ac6d))
-
-## v0.4.0-beta.1 (2023-02-10)
-### Feature
-* Adding warning to out-file-reader when request is not found. ([`baaaa58`](https://gitlab.com/markuspichler/swmm_api/-/commit/baaaa583832a462d9f004d538a8928cd364b924b))
-* Ability to set global default encoding for reading inp, out, and report files. ([`8365ba8`](https://gitlab.com/markuspichler/swmm_api/-/commit/8365ba85dd272fd229c8dc53da867c9000efdde5))
-
-### Documentation
-* New docker image for the website generation ([`6333ccc`](https://gitlab.com/markuspichler/swmm_api/-/commit/6333ccca6fbd7d6f4286e7fc574a687936b00308))
-* Into + joss-paper ([`2bacb27`](https://gitlab.com/markuspichler/swmm_api/-/commit/2bacb279c1ca6cb2b51f0b04f8b1a4f238b5c26c))
-* Typo ([`2f35161`](https://gitlab.com/markuspichler/swmm_api/-/commit/2f35161aeb42dc68a5af2c76aff8495351e53826))
-* Typo ([`cbc9f3a`](https://gitlab.com/markuspichler/swmm_api/-/commit/cbc9f3a824aa41b98f44ade7d4e705a53126aee5))
-* Changes in readme ([`3a240b6`](https://gitlab.com/markuspichler/swmm_api/-/commit/3a240b6440fbae9f87d5fad97a0ce2f24af988e6))
-* Changes in readme ([`cea2da5`](https://gitlab.com/markuspichler/swmm_api/-/commit/cea2da5fc3bc43cf5855cf1b8e458bdb6a217c28))
-* Changes in readme ([`9b069dd`](https://gitlab.com/markuspichler/swmm_api/-/commit/9b069ddf966f7ad3e22f32cfade10a1b658369e1))
-* Added reference to readme ([`6da8f41`](https://gitlab.com/markuspichler/swmm_api/-/commit/6da8f411fd90d51eccecb5386365f9977bdaabd4))
-* Typo in readme ([`255132f`](https://gitlab.com/markuspichler/swmm_api/-/commit/255132f92eefc6b2f35c191654a09ba8a73aa061))
-
 ## v0.3.3 (2023-02-03)
 
 ### Fix
