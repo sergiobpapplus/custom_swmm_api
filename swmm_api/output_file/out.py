@@ -6,6 +6,7 @@ __version__ = "0.1"
 __license__ = "MIT"
 
 import datetime
+import warnings
 from itertools import product
 from numpy import dtype, fromfile, frombuffer
 from pandas import date_range, DataFrame, MultiIndex
@@ -15,6 +16,10 @@ from .extract import SwmmOutExtract
 from .definitions import OBJECTS, VARIABLES
 
 from . import parquet_helpers as parquet
+
+
+class SwmmOutputWarning(UserWarning):
+    pass
 
 
 class SwmmOutput(SwmmOutExtract):
@@ -233,20 +238,28 @@ class SwmmOutput(SwmmOutExtract):
             list: filtered list of tuple(kind, label, variable)
         """
 
-        def _filter(i, possibilities):
+        def _filter(i, possibilities, error_label):
             if i is None:
                 return possibilities
             elif isinstance(i, str):
                 if i in possibilities:
                     return [i]
                 else:
+                    warnings.warn(f'Did not found {error_label} "{i}" in output-file, return empty data. Possibilities: {possibilities}.', SwmmOutputWarning)
                     return []
             elif isinstance(i, list):
-                return [j for j in i if j in possibilities]
+                # return [j for j in i if j in possibilities]
+                l = []
+                for j in i:
+                    if j in possibilities:
+                        l.append(j)
+                    else:
+                        warnings.warn(f'Did not found {error_label} "{j}" in output-file, skipping request. Possibilities: {possibilities}', SwmmOutputWarning)
+                return l
 
         columns = []
-        for k in _filter(kind, OBJECTS.LIST_):
-            columns += list(product([k], _filter(label, self.labels[k]), _filter(variable, self.variables[k])))
+        for k in _filter(kind, OBJECTS.LIST_, 'object kind'):
+            columns += list(product([k], _filter(label, self.labels[k], f'{k} label'), _filter(variable, self.variables[k], f'{k} variable')))
         return columns
 
     def _to_pandas(self, data, drop_useless=False):
