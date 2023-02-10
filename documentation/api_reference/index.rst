@@ -7,10 +7,10 @@ API reference
    :maxdepth: 2
    :caption: Content:
 
-   api_inp_manipulations/index
-   api_run
-   api_rpt
-   api_out
-   api_hst
-   api_external_files
+   inp/index
+   run
+   rpt
+   out
+   hst
+   external_files
 

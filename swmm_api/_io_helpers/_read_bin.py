@@ -8,17 +8,20 @@ _RECORDSIZE = 4
 
 class BinaryReader(abc.ABC):
     """
-    Parent class for reading the binary output (.out)- and hotstart-files.
+    Parent class for reading the binary output- and hotstart-files (.out | .hst).
 
     Attributes:
         fp (file-like): Stream of the open file.
-        filename (str): Path to the .out-file.
-
-    Args:
-        filename (str): Path to the .out-file.
+        filename (str): Path to the binary file.
     """
 
     def __init__(self, filename):
+        """
+        Read a binary file in SWMM. Used for output- and hotstart-files (.out | .hst).
+
+        Args:
+            filename (str): Path to the binary file.
+        """
         self.fp = None
         if all([hasattr(filename, i) for i in ['tell', 'seek', 'read', 'close']]):
             self.fp = filename

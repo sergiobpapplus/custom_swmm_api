@@ -2,9 +2,9 @@ from io import SEEK_SET
 
 import pandas as pd
 
-from swmm_api._io_helpers._read_bin import BinaryReader
-from swmm_api.input_file import SEC
-from swmm_api.output_file.extract import _FLOW_UNITS
+from .._io_helpers._read_bin import BinaryReader
+from ..input_file import SEC
+from ..output_file.extract import _FLOW_UNITS
 
 _FILESTAMP = "SWMM5-HOTSTART4"
 
@@ -23,13 +23,14 @@ class SwmmHotstart(BinaryReader):
         storages (list[tuple]): storages
         subcatchments (list[tuple]): subcatchments
         unit (str): unit
+        filename (str): Path to the hotstart-file (.hst).
     """
     def __init__(self, filename,  inp):
         """
-        Read a with SWMM created binary hotstart file.
+        Read a with SWMM created binary hotstart file (.hst).
 
         Args:
-            filename (str): Path of the hotstart-file.
+            filename (str): Path to the hotstart-file.
             inp (swmm_api.SwmmInput): inp-file-data.
         """
         super().__init__(filename)
@@ -198,10 +199,11 @@ class SwmmHotstart(BinaryReader):
     @property
     def links_frame(self):
         """
-        links_frame
+        Get a table with the initial values of all links.
+        The columns are ['label', 'kind', 'flow', 'depth', 'setting'] + pollutants.
 
         Returns:
-            pandas.DataFrame: links_frame
+            pandas.DataFrame: table with the initial values of all links.
         """
         df = pd.DataFrame.from_records(self.links)
         df.columns = self.columns_link
@@ -210,10 +212,11 @@ class SwmmHotstart(BinaryReader):
     @property
     def nodes_frame(self):
         """
-        nodes_frame
+        Get a table with the initial values of all nodes.
+        The columns are ['label', 'kind', 'depth', 'lateral_flow'] + pollutants.
 
         Returns:
-            pandas.DataFrame: nodes_frame
+            pandas.DataFrame: table with the initial values of all nodes.
         """
         df = pd.DataFrame.from_records(self.nodes)
         df.columns = self.columns_node
@@ -222,10 +225,11 @@ class SwmmHotstart(BinaryReader):
     @property
     def storages_frame(self):
         """
-        storages_frame
+        Get a table with the initial values of all storages.
+        The columns are ['label', 'kind', 'depth', 'lateral_flow', 'hydraulic_residence_time'] + pollutants
 
         Returns:
-            pandas.DataFrame: storages_frame
+            pandas.DataFrame: table with the initial values of all storages
         """
         df = pd.DataFrame.from_records(self.storages)
         df.columns = self.columns_storage
@@ -234,10 +238,11 @@ class SwmmHotstart(BinaryReader):
     @property
     def subcatchments_frame(self):
         """
-        subcatchments_frame
+        Get a table with the initial values of all subcatchments.
+        The columns depend on model.
 
         Returns:
-            pandas.DataFrame: subcatchments_frame
+            pandas.DataFrame: table with the initial values of all subcatchments.
         """
         df = pd.DataFrame.from_records(self.subcatchments)
         df.columns = self.columns_subcatchment

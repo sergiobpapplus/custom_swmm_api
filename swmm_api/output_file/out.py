@@ -56,26 +56,16 @@ class SwmmOutput(SwmmOutExtract):
         swmm_version (str): SWMM Version
         variables (dict[str, list]): variables per object-type inclusive the pollutants.
         fp (file-like): Stream of the open file.
-        filename (str): Path to the .out-file.
+        filename (str): Path to the output-file (.out).
 
     .. _swmmtoolbox: https://github.com/timcera/swmmtoolbox
     """
-    # flow_unit: str
-    # labels: dict
-    # model_properties: dict
-    # pollutant_units: dict
-    # report_interval: datetime.timedelta
-    # start_date: datetime.datetime
-    # swmm_version: str
-    # variables: dict
-    filename: str
-
     def __init__(self, filename, skip_init=False):
         """
         Read the SWMM Output file (xxx.out).
 
         Args:
-            filename(str): Path to the .out-file.
+            filename(str): Path to the output-file (.out).
         """
         SwmmOutExtract.__init__(self, filename, skip_init=skip_init)
 

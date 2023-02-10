@@ -98,7 +98,8 @@ extensions = [
     'sphinx.ext.extlinks',
     'sphinx.ext.napoleon',  # numpy/google docstrings
     'nbsphinx',  # jupyter notebook
-    'recommonmark',  # markdown
+    # 'recommonmark',  # markdown old
+    'myst_parser', # markdown new
 ]
 
 # Add any paths that contain templates here, relative to this directory.

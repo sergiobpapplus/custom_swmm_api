@@ -20,10 +20,10 @@ RUN pip3 install Shapely
 RUN pip3 install pyproj
 RUN pip3 install Rtree
 RUN pip3 install geopandas
-RUN pip3 install jupyter
+RUN pip3 install ipython
 RUN pip3 install sphinx
 RUN pip3 install nbsphinx
-RUN pip3 install recommonmark
+RUN pip3 install myst-parser  # recommonmark  # markdown
 RUN pip3 install SWMM_xsections_shape_generator
 RUN pip3 install pydata_sphinx_theme
 RUN pip3 install pyswmm

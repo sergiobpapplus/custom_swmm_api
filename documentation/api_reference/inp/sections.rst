@@ -18,7 +18,7 @@ Each section has a specific type, which can be seen under:
 Generic Sections
 ^^^^^^^^^^^^^^^^
 .. autosummary::
-    :toctree: inp_sections/
+    :toctree: sections/
 
     TitleSection
     OptionSection
@@ -33,14 +33,14 @@ Generic Sections
 Node Sections
 ^^^^^^^^^^^^^
 .. autosummary::
-    :toctree: inp_sections/
+    :toctree: sections/
 
     Junction
     Storage
     Outfall
 
 .. autosummary::
-    :toctree: inp_sections/
+    :toctree: sections/
 
     DryWeatherFlow
     Inflow
@@ -52,7 +52,7 @@ Node Sections
 Link Sections
 ^^^^^^^^^^^^^
 .. autosummary::
-    :toctree: inp_sections/
+    :toctree: sections/
 
     Conduit
     Weir
@@ -61,7 +61,7 @@ Link Sections
     Pump
 
 .. autosummary::
-    :toctree: inp_sections/
+    :toctree: sections/
 
     CrossSection
     Loss
@@ -71,7 +71,7 @@ Link Sections
 Subcatchment Sections
 ^^^^^^^^^^^^^^^^^^^^^
 .. autosummary::
-    :toctree: inp_sections/
+    :toctree: sections/
 
     SubCatchment
     SubArea
@@ -88,7 +88,7 @@ Subcatchment Sections
 Other Object-based Sections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autosummary::
-    :toctree: inp_sections/
+    :toctree: sections/
 
     RainGage
     Symbol
@@ -115,7 +115,7 @@ Other Object-based Sections
 LID Sections
 ^^^^^^^^^^^^
 .. autosummary::
-    :toctree: inp_sections/
+    :toctree: sections/
 
     LIDControl
     LIDUsage
