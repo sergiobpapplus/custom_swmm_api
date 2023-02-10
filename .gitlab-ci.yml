@@ -6,7 +6,7 @@ stages:
 
 
 pages:
-  image: registry.gitlab.com/markuspichler/swmm_api
+  image: registry.gitlab.com/markuspichler/swmm_api:latest
   stage: pages
   script:
   - cp README.md ./documentation/README.md
@@ -31,7 +31,7 @@ pages:
 # https://github.com/python-semantic-release/python-semantic-release
 # https://python-semantic-release.readthedocs.io/en/latest/
 release-package-python:
-  image: registry.gitlab.com/markuspichler/swmm_api
+  image: registry.gitlab.com/markuspichler/swmm_api:latest
   stage: release
   script:
     - git config --global user.email "gitlab-ci@python-semantic-release.com"
