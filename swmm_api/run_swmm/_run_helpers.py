@@ -6,6 +6,8 @@ __version__ = "0.1"
 __license__ = "MIT"
 
 import os
+from pathlib import Path
+
 from swmm_api import SwmmReport
 
 
@@ -13,17 +15,20 @@ class SWMMRunError(UserWarning):
     pass
 
 
-def get_result_filenames(inp_fn):
+def get_result_filenames(fn_inp):
     """
     Get filenames for the Report and Output files
 
     Args:
-        inp_fn (str): filename of the Input-Files
+        fn_inp (str): filename of the Input-Files
 
     Returns:
-        tuple[str, str]: filenames for the Report- and Output-file
+        tuple[str, str] | tuple[Path, Path]: filenames for the Report- and Output-file
     """
-    return inp_fn.replace('.inp', '.rpt'), inp_fn.replace('.inp', '.out')
+    if isinstance(fn_inp, str):
+        return fn_inp.replace('.inp', '.rpt'), fn_inp.replace('.inp', '.out')
+    if isinstance(fn_inp, Path):
+        return fn_inp.with_suffix('.rpt'), fn_inp.with_suffix('.out')
 
 
 def delete_swmm_files(fn_inp, including_inp=False):
