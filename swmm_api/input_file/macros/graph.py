@@ -6,34 +6,50 @@ from ..inp import SwmmInput
 from ..section_labels import SUBCATCHMENTS
 
 
-def inp_to_graph(inp):
+def inp_to_graph(inp, add_subcatchments=False):
     """
-    create a network of the model with the networkx package
+    Create a network of the model with the networkx package
 
     Args:
         inp (SwmmInput): inp-file data
+        add_subcatchments (bool): if the subcatchments should be added to the graph
 
     Returns:
         networkx.DiGraph: networkx graph of the model
     """
     # g = nx.Graph()
     g = DiGraph()
-    for node in nodes_dict(inp).keys():
-        g.add_node(node)
+
+    # Add all nodes
+    for node in nodes_dict(inp).values():
+        g.add_node(node.name, obj=node)
+
+    # Add all subcatchments as nodes
+    # connect SC to outlet nodes
+    if add_subcatchments and (SUBCATCHMENTS in inp):
+        for sc_label, sc in inp[SUBCATCHMENTS].items():
+            g.add_node(sc.name, obj=sc)
+        for sc in inp.SUBCATCHMENTS.values():  # has to be a second loop -> if a SC has a SC as Outlet and that SC is not jet in the network
+            g.add_edge(sc.name, sc.outlet, label=f'Outlet({sc.name})')
+
     for link in links_dict(inp).values():
         # if link.FromNode not in g:
         #     g.add_node(link.FromNode)
         # if link.ToNode not in g:
         #     g.add_node(link.ToNode)
-        if g.has_edge(link.from_node, link.to_node):
-            old_label = g.get_edge_data(link.from_node, link.to_node)['label']
-            if isinstance(old_label, str):
-                new_label = [old_label, link.name]
-            elif isinstance(old_label, list):
-                new_label.append(link.name)
-            g.add_edge(link.from_node, link.to_node, label=new_label)
-        else:
-            g.add_edge(link.from_node, link.to_node, label=link.name)
+
+        if g.has_edge(link.from_node, link.to_node):  # Parallel link
+            label = g.get_edge_data(link.from_node, link.to_node)['label']
+            obj = g.get_edge_data(link.from_node, link.to_node)['obj']
+            if isinstance(label, str):
+                label = [label]
+                obj = [obj]
+            label.append(link.name)
+            obj.append(link)
+            g.add_edge(link.from_node, link.to_node, label=label, obj=obj)
+
+        else:  # new link
+            g.add_edge(link.from_node, link.to_node, label=link.name, obj=link)
     return g
 
 
@@ -49,14 +65,16 @@ def get_path_subgraph(base, start, end):
     return sub_list, sub_graph
 
 
-def next_links(inp, node, g=None):
-    if g is None:
-        g = inp_to_graph(inp)
-    links = links_dict(inp)
-    for label in _next_links_labels(g, node):
-        yield links[label]
+# ---------------------------------------
+def next_nodes(g, node):
+    return list(g.successors(node))
 
 
+def previous_nodes(g, node):
+    return list(g.predecessors(node))
+
+
+# ---------------------------------------
 def _next_links_labels(g, node):
     for i in g.out_edges(node):
         label = g.get_edge_data(*i)['label']
@@ -70,18 +88,16 @@ def next_links_labels(g, node):
     return list(_next_links_labels(g, node))
 
 
-def next_nodes(g, node):
-    return list(g.successors(node))
-
-
-def previous_links(inp, node, g=None):
+def next_links(inp, node, g=None):
     if g is None:
         g = inp_to_graph(inp)
     links = links_dict(inp)
-    for label in _previous_links_labels(g, node):
-        yield links[label]
+    for label in _next_links_labels(g, node):
+        if label in links:
+            yield links[label]
 
 
+# ---------------------------------------
 def _previous_links_labels(g, node):
     for i in g.in_edges(node):
         label = g.get_edge_data(*i)['label']
@@ -95,8 +111,18 @@ def previous_links_labels(g, node):
     return list(_previous_links_labels(g, node))
 
 
-def previous_nodes(g, node):
-    return list(g.predecessors(node))
+def previous_links(inp, node, g=None):
+    if g is None:
+        g = inp_to_graph(inp)
+    links = links_dict(inp)
+    for label in _previous_links_labels(g, node):
+        if label in links:
+            yield links[label]
+
+
+# def _previous_links(g, node):
+#     for i in g.in_edges(node):
+#         yield i, g.get_edge_data(*i)
 
 
 def links_connected(inp, node, g=None):
@@ -119,7 +145,7 @@ def links_connected(inp, node, g=None):
 
 
 def number_in_out(g, node):
-    return len(list(g.predecessors(node))), len(list(g.successors(node)))
+    return g.in_degree(node), g.out_degree(node)
 
 
 def downstream_nodes(graph, node):
@@ -284,45 +310,3 @@ def conduit_iter_over_inp(inp, start, end):
     #             break
     #     if not found or (node is not None and (node == end)):
     #         break
-
-
-def inp_to_graph2(inp):
-    """
-    Create a network of the model with the networkx package.
-
-    Args:
-        inp (SwmmInput): inp-file data
-
-    Returns:
-        networkx.DiGraph: networkx graph of the model
-    """
-    # g = nx.Graph()
-    g = DiGraph()
-    for node_label, node in nodes_dict(inp).items():
-        g.add_node(node_label, obj=node)
-
-    if SUBCATCHMENTS in inp:
-        for sc_label, sc in inp[SUBCATCHMENTS].items():
-            g.add_node(sc.name, obj=sc)
-        for sc in inp.SUBCATCHMENTS.values():
-            g.add_edge(sc.name, sc.outlet, label=f'Outlet({sc.name})')
-
-    for link in links_dict(inp).values():
-        # if link.FromNode not in g:
-        #     g.add_node(link.FromNode)
-        # if link.ToNode not in g:
-        #     g.add_node(link.ToNode)
-        if g.has_edge(link.from_node, link.to_node):
-            old_label = g.get_edge_data(link.from_node, link.to_node)['label']
-            old_obj = g.get_edge_data(link.from_node, link.to_node)['obj']
-            if isinstance(old_label, str):
-                new_label = [old_label, link.name]
-                new_obj = [old_obj, link]
-            elif isinstance(old_label, list):
-                new_label.append(link.name)
-                new_obj.append(old_obj)
-            g.add_edge(link.from_node, link.to_node, label=new_label, obj=new_obj)
-            print(new_label)
-        else:
-            g.add_edge(link.from_node, link.to_node, label=link.name, obj=link)
-    return g
