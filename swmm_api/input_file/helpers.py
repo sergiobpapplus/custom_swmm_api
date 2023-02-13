@@ -37,7 +37,11 @@ _TYPES_NO_COPY = (int, float, str, datetime.date, datetime.time)
 ########################################################################################################################
 class CustomDict:
     """
-    imitate :class:`collections.UserDict` (:term:`dict-like <mapping>`) but operations only effect self._data
+    Custom implementation of dict.
+
+    Used for SwmmInput, InpSection and InpSectionGeneric.
+
+    Imitates :class:`collections.UserDict` (:term:`dict-like <mapping>`), but operations only effect ``self._data``.
     """
     def __init__(self, d=None, **kwargs):
         if d is None:
@@ -74,36 +78,34 @@ class CustomDict:
         return self._data.__str__()
 
     def get(self, key, default=None):
-        """
-
-        Args:
-            key:
-            default:
-
-        Returns:
-
-        """
+        """see :py:meth:`dict.get`"""
         if isinstance(key, list):
             return (self.get(k) for k in key)
         return self._data.get(key) if key in self else default
 
     def copy(self):
+        """see :py:meth:`dict.copy`"""
         return type(self)({k: v if isinstance(v, _TYPES_NO_COPY) else v.copy() for k, v in self._data.items()})
         # return type(self)(self._data.copy())
 
     def values(self):
+        """see :py:meth:`dict.values`"""
         return self._data.values()
 
     def keys(self):
+        """see :py:meth:`dict.keys`"""
         return self._data.keys()
 
     def items(self):
+        """see :py:meth:`dict.items`"""
         return self._data.items()
 
     def update(self, d=None, **kwargs):
+        """see :py:meth:`dict.update`"""
         self._data.update(d, **kwargs)
 
     def pop(self, key):
+        """see :py:meth:`dict.pop`"""
         return self._data.pop(key)
 
     def __bool__(self):
@@ -308,7 +310,7 @@ class InpSection(CustomDict):
 
     def add_multiple(self, *items):
         """
-        add objects to section
+        Add objects to section.
 
         Args:
             *items (BaseSectionObject): new objects
@@ -320,7 +322,7 @@ class InpSection(CustomDict):
 
     def add_obj(self, obj):
         """
-        add object to section
+        Add object to section.
 
         Args:
             obj (BaseSectionObject): new object
@@ -329,7 +331,7 @@ class InpSection(CustomDict):
 
     def add_inp_lines(self, multi_line_args):
         """
-        creates and adds objects for each line
+        Creates and adds objects for each line.
 
         Args:
             multi_line_args (list[list[str]]): lines in the input file section
@@ -339,7 +341,7 @@ class InpSection(CustomDict):
     @classmethod
     def from_inp_lines(cls, lines, section_class):
         """
-        convert the lines of a section to this class and each line to a object
+        Convert the lines of a section to this class and each line to an object.
 
         This function is used for the ``.inp``-file reading
 
@@ -362,7 +364,7 @@ class InpSection(CustomDict):
 
     def to_inp_lines(self, fast=False, sort_objects_alphabetical=False):
         """
-        convert the section to a multi-line ``.inp``-file conform string
+        Convert the section to a multi-line ``.inp``-file conform string.
 
         This function is used for the ``.inp``-file writing
 
@@ -389,7 +391,7 @@ class InpSection(CustomDict):
 
     def iter_inp_lines(self, sort_objects_alphabetical=False):
         """
-        convert the section to a multi-line ``.inp``-file conform string
+        Convert the section to a multi-line ``.inp``-file conform string.
 
         This function is used for the ``.inp``-file writing
 
@@ -419,7 +421,7 @@ class InpSection(CustomDict):
 
     @property
     def frame(self):
-        """convert section to a pandas data-frame
+        """Convert section to a :class:`pandas.DataFrame`.
 
         This property is used for debugging purposes and data analysis of the input data of the swmm model.
 
@@ -429,7 +431,7 @@ class InpSection(CustomDict):
         return self.get_dataframe(set_index=True, sort_objects_alphabetical=True)
 
     def get_dataframe(self, set_index=True, sort_objects_alphabetical=False):
-        """convert section to a pandas data-frame
+        """Convert section to a :class:`pandas.DataFrame`.
 
         Args:
             set_index (bool): set object keys as index
@@ -448,7 +450,7 @@ class InpSection(CustomDict):
 
     def create_new_empty(self):
         """
-        create a new empty section of this kind of section
+        Create a new empty section of this kind of section.
 
         Returns:
             InpSection: new empty section
@@ -457,7 +459,7 @@ class InpSection(CustomDict):
 
     def copy(self):
         """
-        get a copy of the section
+        Get a copy of the section.
 
         Returns:
             InpSection: copy of the section
@@ -472,7 +474,7 @@ class InpSection(CustomDict):
 
     def filter_keys(self, keys, by=None):
         """
-        filter parts of the section with keys (identifier strings or attribute string)
+        Filter parts of the section with keys (identifier strings or attribute string).
 
         Args:
             keys (list | set): list of names to filter by (ether the identifier or the attribute of "by")
@@ -508,7 +510,7 @@ class InpSection(CustomDict):
 
     def slice_section(self, keys, by=None):
         """
-        filter parts of the section with keys (identifier strings or attribute string)
+        Filter parts of the section with keys (identifier strings or attribute string).
 
         Args:
             keys (list | set): list of names to filter by (ether the identifier or the attribute of "by")
@@ -523,10 +525,10 @@ class InpSection(CustomDict):
 
 
 class InpSectionGeo(InpSection):
-    """child class of :class:`~swmm_api.input_file.helpers.InpSection`. See parent class for all functions."""
+    """Child class of :class:`~swmm_api.input_file.helpers.InpSection`. See parent class for all functions."""
     def __init__(self, section_object, crs="EPSG:32633"):
         """
-        create a section for ``.inp``-file with geo-objects (i.e. nodes, links, subcatchments, raingages, ...)
+        Create a section for ``.inp``-file with geo-objects (i.e. nodes, links, subcatchments, raingages, ...).
 
         Args:
             section_object (BaseSectionObject-like): object class which is stored in this section.
@@ -557,6 +559,7 @@ class InpSectionGeo(InpSection):
     def geo_series(self):
         """
         Get a geopandas.GeoSeries representation for the geo-section.
+
         This function sets the object default crs.
 
         Returns:
@@ -566,7 +569,7 @@ class InpSectionGeo(InpSection):
 
     def get_geo_series(self, crs):
         """
-        get a geopandas.GeoSeries representation for the geo-section using a custom crs.
+        Get a geopandas.GeoSeries representation for the geo-section using a custom crs.
 
         Args:
             crs: Coordinate Reference System of the geometry objects.
@@ -590,7 +593,7 @@ def split_line_with_quotes(line):
 
 def free_attributes(key):
     # TODO maybe laster?!
-    return key  # .lower()  # .replace('_', '')
+    return key  # .lower()  # .replace('_', '') -> .casefold() betten than fold
 
 
 ########################################################################################################################

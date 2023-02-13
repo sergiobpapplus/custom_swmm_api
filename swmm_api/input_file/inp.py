@@ -7,8 +7,7 @@ import warnings
 from .helpers import (section_to_string, CustomDict, convert_section, InpSection,
                       InpSectionGeneric, SECTION_ORDER_DEFAULT, check_order, SECTIONS_ORDER_MP, head_to_str,
                       iter_section_lines, SwmmInputWarning, BaseSectionObject, )
-from .._io_helpers._encoding import get_default_encoding
-from .._io_helpers._read_txt import read_txt_file
+from .._io_helpers import get_default_encoding, read_txt_file
 from .section_types import SECTION_TYPES
 from .section_labels import *
 from .sections import *
@@ -221,8 +220,8 @@ class SwmmInput(CustomDict):
 
         Args:
             infiltration_class: One of
-                :class:`~swmm_api.input_file.sections.InfiltrationCurve`,
-                :class:`~swmm_api.input_file.sections.NumberInfiltrationGreenAmpt`,
+                :class:`~swmm_api.input_file.sections.InfiltrationCurveNumber`,
+                :class:`~swmm_api.input_file.sections.InfiltrationGreenAmpt`,
                 :class:`~swmm_api.input_file.sections.InfiltrationHorton`
         """
         self._converter[INFILTRATION] = infiltration_class
@@ -338,7 +337,7 @@ class SwmmInput(CustomDict):
 
     def add_new_section(self, section):
         """
-        add new section to the inp-data
+        Add new section to the inp-data.
 
         Args:
             section (InpSection, InpSectionGeneric):
@@ -353,7 +352,7 @@ class SwmmInput(CustomDict):
 
     def add_obj(self, obj):
         """
-        add object to respective section
+        Add object to respective section.
 
         Args:
             obj (BaseSectionObject):new object
@@ -363,7 +362,7 @@ class SwmmInput(CustomDict):
 
     def add_multiple(self, *items):
         """
-        add multiple objects to respective sections
+        Add multiple objects to respective sections.
 
         Args:
             *items (BaseSectionObject): new objects
