@@ -6,6 +6,7 @@ from numpy import NaN
 # from pandas import MultiIndex
 from tqdm.auto import tqdm
 
+from .reduce_unneeded import remove_empty_sections
 from .geo import complete_vertices, simplify_vertices, reduce_vertices
 from .tags import get_node_tags, get_link_tags, get_subcatchment_tags, TAG_COL_NAME
 from ..inp import SwmmInput
@@ -108,6 +109,8 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
     """
     from geopandas import GeoDataFrame
 
+    remove_empty_sections(inp)
+
     todo_sections = NODE_SECTIONS + LINK_SECTIONS + [SUBCATCHMENTS]
     print(*todo_sections, sep=' | ')
 
@@ -132,7 +135,8 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
 
                 df = df.join(inp[COORDINATES].geo_series).join(nodes_tags)
 
-                GeoDataFrame(df).to_file(gpkg_fn, driver=driver, layer=sec)
+                if not df.empty:
+                    GeoDataFrame(df).to_file(gpkg_fn, driver=driver, layer=sec)
                 print(f'{f"{time.perf_counter() - t0:0.1f}s":^{len(sec)}s}', end=' | ')
             else:
                 print(f'{f"-":^{len(sec)}s}', end=' | ')
@@ -155,7 +159,8 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
 
                 df = df.join(inp[VERTICES].geo_series).join(links_tags)
 
-                GeoDataFrame(df).to_file(gpkg_fn, driver=driver, layer=sec)
+                if not df.empty:
+                    GeoDataFrame(df).to_file(gpkg_fn, driver=driver, layer=sec)
 
                 print(f'{f"{time.perf_counter() - t0:0.1f}s":^{len(sec)}s}', end=' | ')
             else:
@@ -171,7 +176,8 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
             inp[INFILTRATION].frame.rename(columns=lambda c: f'{INFILTRATION}{label_sep}{c}')).join(
             inp[POLYGONS].geo_series).join(get_subcatchment_tags(inp))
 
-        GeoDataFrame(df).to_file(gpkg_fn, driver=driver, layer=SUBCATCHMENTS)
+        if not df.empty:
+            GeoDataFrame(df).to_file(gpkg_fn, driver=driver, layer=SUBCATCHMENTS)
 
         print(f'{f"{time.perf_counter() - t0:0.1f}s":^{len(SUBCATCHMENTS)}s}')
 
