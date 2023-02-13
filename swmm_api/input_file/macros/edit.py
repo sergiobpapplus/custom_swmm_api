@@ -1,7 +1,9 @@
+from typing import Literal
+
 from numpy import interp, mean, ceil
 
 from .collection import nodes_dict, links_dict, subcatchments_per_node_dict
-from .graph import next_links_labels, previous_links, previous_links_labels, links_connected
+from .graph import next_links_labels, previous_links, previous_links_labels, links_connected, _previous_links_labels
 from .macros import calc_slope, find_link, delete_sections
 from ..inp import SwmmInput
 from ..section_labels import *
@@ -30,10 +32,28 @@ def delete_node(inp, node_label, graph=None, alt_node=None):
     if (TAGS in inp) and ((Tag.TYPES.Node, node_label) in inp.TAGS):
         del inp[TAGS][(Tag.TYPES.Node, node_label)]
 
+    connected_subcatchments = []
+
     # AND delete connected links
     if graph is not None:
         if node_label in graph:
-            links = next_links_labels(graph, node_label) + previous_links_labels(graph, node_label)  # type: List[str]
+            if alt_node is not None:
+                links_in = []
+                for c in graph.in_edges(node_label):
+                    l = graph.get_edge_data(*c)['label']
+                    if l.startswith('Outlet('):
+                        connected_subcatchments.append(c[0])
+                    else:
+                        links_in.append(l)
+
+                # move SC
+                # for sc in connected_subcatchments:
+                #     graph.add_edge(sc.name, alt_node, label=f'Outlet({sc.name})')
+            else:
+                links_in = previous_links_labels(graph, node_label)
+
+            links = next_links_labels(graph, node_label) + links_in  # type: list[str]
+
             graph.remove_node(node_label)
         else:
             links = []
@@ -50,7 +70,7 @@ def delete_node(inp, node_label, graph=None, alt_node=None):
 
     if alt_node is not None:
         move_flows(inp, node_label, alt_node)
-        reconnect_subcatchments(inp, node_label, alt_node)
+        reconnect_subcatchments(inp, node_label, alt_node, graph, connected_subcatchments)
 
 
 def move_flows(inp: SwmmInput, from_node, to_node, only_constituent=None):
@@ -96,13 +116,17 @@ def move_flows(inp: SwmmInput, from_node, to_node, only_constituent=None):
                 elif section == INFLOWS:
                     # Inflows can't be added due to the multiplication factor / timeseries
                     # if (TimeSeries, Type, Mfactor, Sfactor,Pattern) are equal then sum(Baseline)
-                    print(f'WARNING: move_flows  from "{from_node}" to "{to_node}". Already Exists!')
+                    if all(obj[k] == inp[section][index_new][k] for k in ['constituent', 'time_series', 'kind', 'mass_unit_factor', 'scale_factor', 'pattern']):
+                        inp[section][index_new].base_value += obj.base_value
+
+                    else:
+                        print(f'WARNING: in `move_flows` from "{from_node}" to "{to_node}". {section} Already Exists! -> Ignoring')
 
             # else:
             #     print(f'Nothing to move from "{from_node}" [{section}]')
 
 
-def reconnect_subcatchments(inp: SwmmInput, from_node, to_node):
+def reconnect_subcatchments(inp: SwmmInput, from_node, to_node, graph=None, connected_subcatchments=None):
     """
     Reconnect sub-catchements from one node to another.
 
@@ -117,10 +141,16 @@ def reconnect_subcatchments(inp: SwmmInput, from_node, to_node):
     if SUBCATCHMENTS not in inp:
         return
 
-    df = inp.SUBCATCHMENTS.frame
-    sc_search = df.outlet == from_node
-    for sc_label in sc_search[sc_search].index:
+    if connected_subcatchments is None:
+        df = inp.SUBCATCHMENTS.frame
+        sc_search = df.outlet == from_node
+        connected_subcatchments = sc_search[sc_search].index
+
+    for sc_label in connected_subcatchments:
         inp.SUBCATCHMENTS[sc_label].outlet = to_node
+        if graph is not None:
+            graph.add_edge(sc_label, to_node, label=f'Outlet({sc_label})')
+
     # for sc in subcatchments_per_node_dict(inp)[from_node]:
     #     sc.outlet = to_node
 
@@ -267,15 +297,16 @@ def combine_vertices(inp: SwmmInput, label1, label2):
         inp[VERTICES].add_obj(vertices_class(label1, vertices=new_vertices))
 
 
-def combine_conduits(inp, c1, c2, graph=None):
+def combine_conduits(inp, c1, c2, graph=None, reroute_flows_to: Literal['from_node', 'to_node']='from_node'):
     """
-    combine the two conduits to one keep attributes of the first (c1)
+    Combine the two conduits to one - keep attributes of the first (c1).
 
     Args:
         inp (SwmmInput): inp data
         c1 (str | Conduit): conduit 1 to combine
         c2 (str | Conduit): conduit 2 to combine
         graph (networkx.DiGraph): optional, runs faster with graph (inp representation)
+        reroute_flows_to (str): reroute the flows and subcatchments outlets to new link.
 
     Returns:
         Conduit: new combined conduit
@@ -327,7 +358,7 @@ def combine_conduits(inp, c1, c2, graph=None):
         # add losses
         pass
 
-    delete_node(inp, common_node, graph=graph, alt_node=c_new.from_node)
+    delete_node(inp, common_node, graph=graph, alt_node=c_new[reroute_flows_to])
     return c_new
 
 
@@ -370,6 +401,8 @@ def dissolve_conduit(inp, c, graph=None):
     Returns:
         SwmmInput: inp data
     """
+    if isinstance(c, str):
+        c = links_dict(inp)[c]
     common_node = c.from_node
     for c_old in list(previous_links(inp, common_node, g=graph)):
         if graph:
