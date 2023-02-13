@@ -132,7 +132,7 @@ class SwmmInput(CustomDict):
         The sections will be converted when used.
 
         Args:
-            filename (str): path/filename to .inp file
+            filename (str | Path): path/filename to .inp file
             custom_converter (dict): dictionary of {section: converter/section_type} Default: :py:const:`SECTION_TYPES`
             force_ignore_case (bool): SWMM is case-insensitive but python is case-sensitive -> set True to ignore case
                                         all text/labels will be set to uppercase
