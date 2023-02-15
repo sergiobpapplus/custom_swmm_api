@@ -54,7 +54,10 @@ class SwmmInput(CustomDict):
 
     def copy(self):
         """Copy inp-data."""
-        new = type(self)()
+        new = type(self)()  # type: SwmmInput
+        new._converter = self._converter
+        new._default_encoding = self._default_encoding
+        new._original_section_order = self._original_section_order
         for key in self:
             if hasattr(self._data[key], 'copy'):
                 new._data[key] = self._data[key].copy()
@@ -286,6 +289,8 @@ class SwmmInput(CustomDict):
 
         if encoding is None:
             encoding = self._default_encoding   # None->autodetect | str->custom
+            if encoding == '':
+                encoding = get_default_encoding(encoding)
 
         with open(filename, 'w', encoding=encoding) as f:
             for head in self._get_section_headers(custom_sections_order):
