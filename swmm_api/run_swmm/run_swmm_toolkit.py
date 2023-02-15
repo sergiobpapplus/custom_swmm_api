@@ -31,7 +31,7 @@ def swmm5_run_owa(fn_inp, fn_rpt=None, fn_out=None):
         raise (e, SWMMRunError('to run SWMM with OWA-SWMM you have to install the swmm-toolkit package (pip install swmm-toolkit).'))
 
     try:
-        solver.swmm_run(fn_inp, fn_rpt, fn_out)
+        solver.swmm_run(str(fn_inp), str(fn_rpt), str(fn_out))
         print()  # solver doesn't write a last new-line
     except Exception as e:
         raise SWMMRunError(f'{e.args[0]}\n{fn_inp}\n{get_report_errors(fn_rpt)}')
