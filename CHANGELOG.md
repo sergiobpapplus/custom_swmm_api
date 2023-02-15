@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.1 (2023-02-13)
+### Fix
+* Inp_to_graph adds now the swmm-objects to the graph object ([`444fb4f`](https://gitlab.com/markuspichler/swmm_api/-/commit/444fb4fb3957bab2964aed12898ec855d1f00ccd))
+* Improvements for delete_node(), move_node(), reconnect_subcatchments(), combine_conduits() ([`9a81ba9`](https://gitlab.com/markuspichler/swmm_api/-/commit/9a81ba9216b36c49bc784f2d7654a25cfb961dd1))
+* Remove empty sections before gis export ([`6a244c7`](https://gitlab.com/markuspichler/swmm_api/-/commit/6a244c73fd0cba47dbfc557ef2c69e6f93ce1738))
+* Get_result_filename accepts now a `Path` as parameter ([`6f78982`](https://gitlab.com/markuspichler/swmm_api/-/commit/6f78982711b44dfba3d84df4926d0acbf90efe6a))
+* Pyswmm only takes string for the input-filename ([`82603c7`](https://gitlab.com/markuspichler/swmm_api/-/commit/82603c7a57b15041692bfc1176816871239156f3))
+
+### Documentation
+* Allow path and string ([`ff62215`](https://gitlab.com/markuspichler/swmm_api/-/commit/ff6221565add779d1cf0eced9fd4d06b5dbefa43))
+* Minor documentation fixes ([`adf4d9b`](https://gitlab.com/markuspichler/swmm_api/-/commit/adf4d9bf9aa8a71baa3219f896d24c9c02588292))
+
 ## v0.4.0 (2023-02-10)
 ### Feature
 * Adding warning to out-file-reader when request is not found. ([`baaaa58`](https://gitlab.com/markuspichler/swmm_api/-/commit/baaaa583832a462d9f004d538a8928cd364b924b))
