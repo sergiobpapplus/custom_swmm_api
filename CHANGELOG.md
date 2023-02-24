@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.2 (2023-02-15)
+### Fix
+* Input-file class copy function also copies the converter classes, the encoding and the section ordering ([`03ad15b`](https://gitlab.com/markuspichler/swmm_api/-/commit/03ad15b9eb742609dbd308dacf35604eaadfb905))
+* Owa-swmm-api only takes string for the input-filename ([`31ebf60`](https://gitlab.com/markuspichler/swmm_api/-/commit/31ebf603ac22bce95c8b755ed4e049d374bc2d9a))
+
 ## v0.4.1 (2023-02-13)
 ### Fix
 * Inp_to_graph adds now the swmm-objects to the graph object ([`444fb4f`](https://gitlab.com/markuspichler/swmm_api/-/commit/444fb4fb3957bab2964aed12898ec855d1f00ccd))
