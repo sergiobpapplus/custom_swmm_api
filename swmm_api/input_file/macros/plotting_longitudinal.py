@@ -13,15 +13,16 @@ class COLS:
     STATION = 'x'
     WATER = 'water'
     # NODE_STATION = 'node'
+    LABEL = 'label'
 
 
-def get_longitudinal_data(inp, start_node, end_node, out=None, zero_node=None):
+def get_longitudinal_data(inp, start_node, end_node, out=None, zero_node=None, depth_agg_func=None, add_node_labels=False):
     sub_list, sub_graph = get_path_subgraph(inp, start=start_node, end=end_node)
 
     if zero_node is None:
         zero_node = start_node
 
-    keys = [COLS.STATION, COLS.INVERT_ELEV, COLS.CROWN_ELEV, COLS.GROUND_ELEV, COLS.WATER]
+    keys = [COLS.STATION, COLS.INVERT_ELEV, COLS.CROWN_ELEV, COLS.GROUND_ELEV, COLS.WATER, COLS.LABEL]
 
     res = {k: [] for k in keys}
 
@@ -36,7 +37,9 @@ def get_longitudinal_data(inp, start_node, end_node, out=None, zero_node=None):
     # ---------------
     nodes_depth = None
     if out is not None:
-        nodes_depth = out.get_part(OBJECTS.NODE, sub_list, VARIABLES.NODE.DEPTH).mean().to_dict()
+        if depth_agg_func is None:
+            depth_agg_func = lambda s: s.mean()
+        nodes_depth = depth_agg_func(out.get_part(OBJECTS.NODE, sub_list, VARIABLES.NODE.DEPTH)).to_dict()
     # ---------------
     stations_ = list(iter_over_inp_(inp, sub_list, sub_graph))
     stations = dict(stations_)
@@ -50,7 +53,7 @@ def get_longitudinal_data(inp, start_node, end_node, out=None, zero_node=None):
         elif isinstance(n, (Storage, Junction)):
             gok += n.depth_max
         # ---------------
-        if out is not None:
+        if nodes_depth is not None:
             water = sok + nodes_depth[node]
         else:
             water = None
@@ -70,7 +73,7 @@ def get_longitudinal_data(inp, start_node, end_node, out=None, zero_node=None):
                 sok_ += prior_conduit.offset_downstream
 
             buk = profile_height + sok_
-            _update_res(x - stations[zero_node], sok_, buk, gok, water)
+            _update_res(x - stations[zero_node], sok_, buk, gok, water, node)
 
         if following_conduit:
             following_conduit = following_conduit[0]
@@ -85,7 +88,7 @@ def get_longitudinal_data(inp, start_node, end_node, out=None, zero_node=None):
                 sok_ += following_conduit.offset_upstream
 
             buk = profile_height + sok_
-            _update_res(x - stations[zero_node], sok_, buk, gok, water)
+            _update_res(x - stations[zero_node], sok_, buk, gok, water, node)
 
     return res
 
@@ -140,7 +143,7 @@ def set_zero_node(stations, zero_node):
     return {node: stations[node] - stations[zero_node] for node in stations}
 
 
-def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=None):
+def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=None, depth_agg_func=None, add_node_lables=False):
     """
     Make a longitudinal plot.
 
@@ -155,7 +158,7 @@ def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=No
     Returns:
         plt.Figure, plt.Axes: matplotlib plot
     """
-    res = get_longitudinal_data(inp, start_node, end_node, out, zero_node=zero_node)
+    res = get_longitudinal_data(inp, start_node, end_node, out, zero_node=zero_node, depth_agg_func=depth_agg_func, add_node_labels=add_node_lables)
 
     if ax is None:
         fig, ax = plt.subplots()
@@ -171,7 +174,7 @@ def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=No
     ax.fill_between(res[COLS.STATION], res[COLS.GROUND_ELEV], res[COLS.CROWN_ELEV], color='#C49B98', alpha=0.5)
     ax.fill_between(res[COLS.STATION], res[COLS.INVERT_ELEV], bottom, color='#C49B98', alpha=0.5)
 
-    if out is not None:
+    if any(res[COLS.WATER]):
         # Water line
         ax.plot(res[COLS.STATION], res[COLS.WATER], c='b', lw=0.7)
         # Water fill
@@ -185,4 +188,75 @@ def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=No
 
     ax.set_xlim(res[COLS.STATION][0], res[COLS.STATION][-1])
     ax.set_ylim(bottom=bottom)
+
+    if add_node_lables:
+        _add_node_labels(ax, res)
+
+
+        ax.set_xticks(res[COLS.STATION], which='major')
+        ax.set_xticklabels(res[COLS.LABEL], rotation=90, minor=False)
+        ax.grid(axis='x', ls=':', color='grey', which='major')
+
     return fig, ax
+
+
+def _add_node_labels(ax, res):
+    secax = ax.secondary_xaxis('top')
+    # secax.set_xlabel('angle [rad]')
+    secax.set_xticks(ax.get_xticks())
+
+    # secax.set_xticks(res[COLS.STATION], which='major')
+    # secax.set_xticklabels(res[COLS.LABEL], rotation=90, minor=False)
+    # secax.grid(axis='x', ls=':', color='grey', which='major')
+
+
+
+def animated_plot_longitudinal(filename, inp, start_node, end_node, out=None, ax=None, zero_node=None):
+    """
+    Create an animation of the water level in the nodes as a mp4 file.
+
+    Args:
+        filename:
+        inp (SwmmInput):
+        start_node (str): Label of the start node.
+        end_node (str): Label of the end node.
+        out (SwmmOut):
+        ax (plt.Axes):
+        zero_node (str): Label of the node, where the x-axis should be 0. Default: at start node.
+    """
+    import matplotlib.animation as animation
+    plt.rcParams['animation.ffmpeg_path'] = r'C:\Program Files\ffmpeg\bin\ffmpeg.exe'
+    fps = 10  # frames per second
+    extra_args = ['-vcodec', 'libx264', '-crf', '18']  # codec and quality
+
+    # Writer
+    FFMpegWriter = animation.writers['ffmpeg']
+    # metadata = dict(title='Nice movie', artist='cle')
+    writer = FFMpegWriter(fps=fps, extra_args=extra_args)
+
+    fig, ax = plot_longitudinal(inp, start_node, end_node, ax=ax, zero_node=zero_node)
+
+    fig.set_size_inches(15,6)
+
+    line_water = None
+    from tqdm import tqdm
+
+    with writer.saving(fig, filename, 200):  # dpi > 200: maybe performance problems when playing
+        for j in tqdm(out.index[8:240:2]):
+            res = get_longitudinal_data(inp, start_node, end_node, out, zero_node=zero_node, depth_agg_func=lambda s: s.loc[str(j)])
+
+            if line_water is not None:
+                ax.lines.remove(line_water[0])
+                ax.collections.remove(fill_water)
+                ax.collections.remove(fill_conduit)
+
+            # Water line
+            line_water = ax.plot(res[COLS.STATION], res[COLS.WATER], c='b', lw=0.7)
+            # Water fill
+            fill_water = ax.fill_between(res[COLS.STATION], res[COLS.WATER], res[COLS.INVERT_ELEV], color='#00D7FF', alpha=0.7)
+            # Conduit Fill
+            fill_conduit = ax.fill_between(res[COLS.STATION], res[COLS.CROWN_ELEV], res[COLS.WATER], color='#B0B0B0', alpha=0.5)
+
+            ax.set_title(f'Time = {j}')
+
+            writer.grab_frame()
