@@ -276,7 +276,7 @@ class SwmmInput(CustomDict):
         Write a new ``.inp``-file.
 
         Args:
-            filename (str): path/filename of created ``.inp``-file
+            filename (str | Path): path/filename of created ``.inp``-file
             fast (bool): don't use any formatting else format as table
             encoding (str): define encoding for resulting inp-file. Default is same as read inp file or package default ('utf-8')
             custom_sections_order (list[str]): list of section names to preset the order of the section in the created
