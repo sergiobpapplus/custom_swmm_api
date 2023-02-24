@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.3 (2023-02-24)
+### Fix
+* Added setter to OptionSection ([`3d927ce`](https://gitlab.com/markuspichler/swmm_api/-/commit/3d927cec2e85333e36fea6a20986b67f491aec79))
+* Fixed wrong outfile data index ([`34f7350`](https://gitlab.com/markuspichler/swmm_api/-/commit/34f735034d694af54b3f6580271a727080995526))
+* Fixed wrong outfile data index ([`aebc9e5`](https://gitlab.com/markuspichler/swmm_api/-/commit/aebc9e50993ee1b76e58b5d8dc18982e217b2095))
+* Added function write_calibration_files ([`b2f52e6`](https://gitlab.com/markuspichler/swmm_api/-/commit/b2f52e6d93b32a26bfe235376d555c6b8c60306c))
+* Added function animated_plot_longitudinal ([`f19915e`](https://gitlab.com/markuspichler/swmm_api/-/commit/f19915ebcd7df9a7eba5b27cc2c84486950231ab))
+
+### Documentation
+* Inp write file also possible as Path-type ([`f327d55`](https://gitlab.com/markuspichler/swmm_api/-/commit/f327d557d31d6b74f4825d6600856bc937880c32))
+
 ## v0.4.2 (2023-02-15)
 ### Fix
 * Input-file class copy function also copies the converter classes, the encoding and the section ordering ([`03ad15b`](https://gitlab.com/markuspichler/swmm_api/-/commit/03ad15b9eb742609dbd308dacf35604eaadfb905))
