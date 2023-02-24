@@ -5,6 +5,8 @@ __email__ = "markus.pichler@tugraz.at"
 __version__ = "0.1"
 __license__ = "MIT"
 
+from pathlib import Path
+
 import pandas as pd
 from .following_values import remove_following_zeros
 
@@ -90,7 +92,8 @@ def read_swmm_rainfall_file(filename):
 
 def read_swmm_tsf(filename, sep='\t'):
     """
-    read a swmm .tsf-file (TimeSeriesFile).
+    Read a swmm .tsf-file (TimeSeriesFile).
+
     An ASCII-file used in PCSWMM to compare simulations results with measured data, or to export simulation results.
 
     Args:
@@ -105,3 +108,77 @@ def read_swmm_tsf(filename, sep='\t'):
     df.index = pd.to_datetime(df.index, format='%m/%d/%Y %I:%M:%S %p')
     df.columns = ['|'.join(c) for c in df.columns]
     return df
+
+
+def write_calibration_files(df, filename, decimal=3):
+    """
+    Calibration Files contain measurements of variables at one or more locations that can be compared with simulated values in Time Series Plots.
+
+    Separate files can be used for each of the following:
+        - Subcatchment Runoff
+        - Subcatchment Groundwater Flow
+        - Subcatchment Groundwater Elevation
+        - Subcatchment Snow Pack Depth
+        - Subcatchment Pollutant Washoff
+        - Node Depth
+        - Node Lateral Inflow
+        - Node Flooding
+        - Node Water Quality
+        - Link Flow
+        - Link Velocity
+        - Link Depth
+
+    Calibration files are registered to a project by selecting Project >> Calibration Data from the  Main Menu (see Registering Calibration Data).
+
+    The format of the file is as follows:
+        1. The name of the first object with calibration data is entered on a single line.
+        2. Subsequent lines contain the following recorded measurements for the object:
+            - measurement date (month/day/year, e.g., 6/21/2004) or number of whole days since the start of the simulation
+            - measurement time (hours:minutes) on the measurement date or relative to the number of elapsed days
+            - measurement value (for pollutants, a value is required for each pollutant).
+        3. Follow the same sequence for any additional objects.
+
+    Examples:
+        An excerpt from an example calibration file is shown below.
+        It contains flow values for two conduits: 1030 and 1602.
+        Note that a semicolon can be used to begin a comment.
+        In this example, elapsed time rather than the actual measurement date was used.
+
+        ::
+
+            ;Flows for Selected Conduits
+            ;Conduit  Days        Time  Flow
+            ;-----------------------------
+            1030
+                       0     0:15  0
+                       0     0:30  0
+                       0     0:45  23.88
+                       0     1:00  94.58
+                       0     1:15  115.37
+            1602
+                       0     0:15  5.76
+                       0     0:30  38.51
+                       0     1:00  67.93
+                       0     1:15  68.01
+
+    Args:
+        df (pandas.DataFrame): data
+        filename (str | Path): Filename for the calibration file.
+        decimal (int): Number of decimal places.
+    """
+    if isinstance(filename, str):
+        filename = Path(filename)
+
+    if filename.suffix != '.dat':
+        filename = filename.with_suffix('.dat')
+
+    df_ = df.copy().round(decimal)
+    df_.index.name = ';date      time'
+
+    with open(filename, 'w') as f:
+        f.write(';;EPA SWMM Calibration Data')
+
+        for col in df.columns:
+            f.write('\n\n' + '_'*20 + f'\n{col}\n')
+
+            df_[col].to_csv(f, sep='\t', index=True, header=True, date_format='%m/%d/%Y %H:%M', lineterminator='\n')
