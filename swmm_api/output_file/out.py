@@ -26,9 +26,6 @@ class SwmmOutput(SwmmOutExtract):
     """
     Read the SWMM Output file (xxx.out).
 
-    Notes:
-        Combined the reader of `swmmtoolbox`_ with the functionality of pandas.
-
     Attributes:
         index (pandas.DatetimeIndex): Index of the timeseries of the data.
         flow_unit (str): Flow unit. One of [`CMS`, `LPS`, `MLD`, `CFS`, `GPM`, `MGD`]
@@ -62,8 +59,6 @@ class SwmmOutput(SwmmOutExtract):
         variables (dict[str, list]): variables per object-type inclusive the pollutants.
         fp (file-like): Stream of the open file.
         filename (str): Path to the output-file (.out).
-
-    .. _swmmtoolbox: https://github.com/timcera/swmmtoolbox
     """
     def __init__(self, filename, skip_init=False, encoding=''):
         """
@@ -83,10 +78,9 @@ class SwmmOutput(SwmmOutExtract):
 
         # the main datetime index for the results
         try:
-            self.index = date_range(self.start_date + self.report_interval,
-                                    periods=self.n_periods, freq=self.report_interval)
+            self.index = date_range(self.start_date, periods=self.n_periods, freq=self.report_interval)
         except OutOfBoundsDatetime:
-            self.index = [self.start_date + self.report_interval * i for i in range(self.n_periods)]
+            self.index = [self.start_date * i for i in range(self.n_periods)]
 
     def __repr__(self):
         return f'SwmmOutput(file="{self.filename}")'
