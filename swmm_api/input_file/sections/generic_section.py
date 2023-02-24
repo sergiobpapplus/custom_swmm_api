@@ -1,3 +1,6 @@
+from datetime import timedelta
+from typing import Literal
+
 from .._type_converter import infer_type, type2str
 from ..helpers import InpSectionGeneric, SEP_INP
 from ..section_labels import TITLE, OPTIONS, REPORT, EVAPORATION, TEMPERATURE, MAP, FILES, ADJUSTMENTS, BACKDROP
@@ -301,6 +304,174 @@ class OptionSection(InpSectionGeneric):
             assert len(line) == 1
             data[key] = infer_type(line[0])
         return data
+
+    def set_flow_units(self, value:Literal['CFS', 'GPM', 'MGD', 'CMS', 'LPS', 'MLD']='CFS'):
+        """
+        Makes a choice of flow units.
+
+        Selecting a US flow unit means that all other quantities will be expressed in US units,
+        while choosing a metric flow unit will force all quantities to be expressed in metric units.
+
+        Args:
+            value (str): Flow unit. The default is CFS.
+        """
+        self['FLOW_UNITS'] = value
+
+    def set_infiltration(self, value: Literal['HORTON', 'MODIFIED_HORTON', 'GREEN_AMPT', 'MODIFIED_GREEN_AMPT', 'CURVE_NUMBER']='HORTON'):
+        """
+        Selects a model for computing infiltration of rainfall into the upper soil zone of subcatchments.
+
+        Args:
+            value (str): Model for computing infiltration of rainfall into the upper soil zone of subcatchments.
+
+        Returns:
+
+        """
+        self['INFILTRATION'] = value
+
+    def set_flow_routing(self, value: Literal['STEADY', 'KINWAVE', 'DYNWAVE']='KINWAVE'):
+        """
+        Determines which method is used to route flows through the
+        drainage system. STEADY refers to sequential steady state routing (i.e. hydrograph
+        translation), KINWAVE to kinematic wave routing, DYNWAVE to dynamic wave routing.
+        The default routing method is KINWAVE.
+
+        Args:
+            value:
+
+        Returns:
+
+        """
+        self['FLOW_ROUTING'] = value
+
+    # def set_link_offsets(self, value):
+    #     self['___'] = value
+    #
+    # def set_force_main_equation(self, value):
+    #     self['___'] = value
+    #
+    # def set_ignore_rainfall(self, value):
+    #     self['___'] = value
+    #
+    # def set_ignore_snowmelt(self, value):
+    #     self['___'] = value
+    #
+    # def set_ignore_groundwater(self, value):
+    #     self['___'] = value
+    #
+    # def set_ignore_rdii(self, value):
+    #     self['___'] = value
+    #
+    # def set_ignore_routing(self, value):
+    #     self['___'] = value
+    #
+    # def set_ignore_quality(self, value):
+    #     self['___'] = value
+    #
+    # def set_allow_ponding(self, value):
+    #     self['___'] = value
+    #
+    # def set_skip_steady_state(self, value):
+    #     self['___'] = value
+    #
+    # def set_sys_flow_tol(self, value):
+    #     self['___'] = value
+    #
+    # def set_lat_flow_tol(self, value):
+    #     self['___'] = value
+    #
+    # def set_start_date(self, value):
+    #     self['___'] = value
+    #
+    # def set_start_time(self, value):
+    #     self['___'] = value
+    #
+    # def set_end_date(self, value):
+    #     self['___'] = value
+    #
+    # def set_end_time(self, value):
+    #     self['___'] = value
+    #
+    # def set_report_start_date(self, value):
+    #     self['___'] = value
+    #
+    # def set_report_start_time(self, value):
+    #     self['___'] = value
+    #
+    # def set_sweep_start(self, value):
+    #     self['___'] = value
+    #
+    # def set_sweep_end(self, value):
+    #     self['___'] = value
+    #
+    # def set_dry_days(self, value):
+    #     self['___'] = value
+    #
+    # def set_report_step(self, value):
+    #     self['___'] = value
+    #
+    # def set_wet_step(self, value):
+    #     self['___'] = value
+    #
+    # def set_dry_step(self, value):
+    #     self['___'] = value
+
+    def set_routing_step(self, value:float|int|timedelta=600):
+        """
+        ROUTING_STEP is the time step length in seconds used for routing flows and water quality constituents through the conveyance system.
+        The default is 600 sec (5 minutes) which should be reduced if using dynamic wave routing.
+        Fractional values (e.g., 2.5) are permissible as are values entered in hours:minutes:seconds format.
+
+        Args:
+            value (float | int | timedelta): routing step in seconds
+        """
+        self['ROUTING_STEP'] = value
+
+    # def set_lengthening_step(self, value):
+    #     self['___'] = value
+    #
+    # def set_variable_step(self, value):
+    #     self['___'] = value
+    #
+    # def set_minimum_step(self, value):
+    #     self['___'] = value
+
+    def set_inertial_damping(self, value:Literal['NONE', 'PARTIAL', 'FULL']):
+        """
+        Indicates how the inertial terms in the Saint Venant momentum equation will be handled under dynamic wave flow routing.
+        Choosing `NONE` maintains these terms at their full value under all conditions.
+        Selecting `PARTIAL` will reduce the terms as flow comes closer to being critical (and ignores them when flow is supercritical).
+        Choosing `FULL` will drop the terms altogether.
+
+        Args:
+            value (str): How the inertial terms in the Saint Venant momentum equation will be handled under dynamic wave flow routing.
+        """
+        self['INERTIAL_DAMPING'] = value
+
+    def set_inertial_terms(self, value:Literal['ignore', 'dampen', 'keep']):
+        """
+        Indicates how the inertial terms in the Saint Venant momentum equation will be handled under dynamic wave flow routing.
+        Choosing `NONE` maintains these terms at their full value under all conditions.
+        Selecting `PARTIAL` will reduce the terms as flow comes closer to being critical (and ignores them when flow is supercritical).
+        Choosing `FULL` will drop the terms altogether.
+
+        Args:
+            value:
+        """
+        self.set_inertial_damping({'ignore': 'FULL', 'dampen': 'PARTIAL', 'keep': 'NONE'}[value])
+
+    def set_normal_flow_limited(self, value:Literal['SLOPE', 'FROUDE', 'BOTH']='BOTH'):
+        """
+        Specifies which condition is checked to determine if flow in a conduit is supercritical and should thus be limited to the normal flow.
+        Use `SLOPE` to check if the water surface slope is greater than the conduit slope,
+        `FROUDE` to check if the Froude number is greater than 1.0, or
+        `BOTH` to check both conditions.
+        The default is `BOTH`.
+
+        Args:
+            value (str):
+        """
+        self['NORMAL_FLOW_LIMITED'] = value
 
 
 class ReportSection(InpSectionGeneric):
