@@ -194,7 +194,30 @@ class SwmmOutExtract(BinaryReader):
             self._next(n_vars)
 
         # ____
-        self.start_date = datetime.datetime(1899, 12, 30) + datetime.timedelta(days=self._next(dtype='d'))
+
+        """
+        // --- save starting report date & report step
+        //     (if reporting start date > simulation start date then
+        //      make saved starting report date one reporting period
+        //      prior to the date of the first reported result)
+        z = (double)ReportStep/86400.0;
+        if ( StartDateTime + z > ReportStart ) z = StartDateTime;
+        else
+        {
+            z = floor((ReportStart - StartDateTime)/z) - 1.0;
+            z = StartDateTime + z*(double)ReportStep/86400.0;
+        }
+        fwrite(&z, sizeof(REAL8), 1, Fout.file);
+        k = ReportStep;
+        if ( fwrite(&k, sizeof(INT4), 1, Fout.file) < 1)
+        {
+            report_writeErrorMsg(ERR_OUT_WRITE, "");
+            return ErrorCode;
+        }
+        """
+        _base_date = datetime.datetime(1899, 12, 30)
+        _offset_start_td = datetime.timedelta(days=self._next(dtype='d'))
+        # self.start_date_ = _base_date + _offset_start_td
         self.report_interval = datetime.timedelta(seconds=self._next())
 
         # ____
@@ -207,10 +230,21 @@ class SwmmOutExtract(BinaryReader):
         # Out File not complete!
         self._pos_start_output = self.fp.tell()
 
+        # ____
+        # date-offset of the first index in the timeseries
+        _offset_first_index_td = datetime.timedelta(days=self._next(dtype='d'))
+
+        # rounding error in first offset (can only be an integer multiple of report_interval)
+        _factor = (_offset_first_index_td - _offset_start_td) / self.report_interval
+
+        # get real start date of the timeseries
+        self.start_date = _base_date + _offset_start_td + self.report_interval * int(_factor)
+
+        # ____
         self.n_periods = _n_periods
         if _n_periods == 0:
             self._infer_n_periods()
-            warn('Infer time periods of the output file due to an corrupt SWMM .out-file.', SwmmOutExtractWarning)
+            warn('Infer time periods of the output file due to a corrupt SWMM .out-file.', SwmmOutExtractWarning)
 
         if self.n_periods == 0:
             warn('There are zero time periods in the output file.', SwmmOutExtractWarning)
