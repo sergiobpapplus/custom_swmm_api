@@ -11,7 +11,7 @@ _FILESTAMP = "SWMM5-HOTSTART4"
 
 class SwmmHotstart(BinaryReader):
     """
-    The class that handles all extraction of data from the out file.
+    SWMM-hotstart-file class.
 
     Attributes:
         columns_link (list[str]): columns_link
@@ -27,7 +27,7 @@ class SwmmHotstart(BinaryReader):
     """
     def __init__(self, filename,  inp):
         """
-        Read a with SWMM created binary hotstart file (.hst).
+        Read the SWMM-created binary hotstart file (___.hst).
 
         Args:
             filename (str): Path to the hotstart-file.

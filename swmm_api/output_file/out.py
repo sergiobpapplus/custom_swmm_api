@@ -24,9 +24,10 @@ class SwmmOutputWarning(UserWarning):
 
 class SwmmOutput(SwmmOutExtract):
     """
-    Read the SWMM Output file (xxx.out).
+    SWMM-output-file class.
 
     Attributes:
+        filename (str): Path to the output-file (.out).
         index (pandas.DatetimeIndex): Index of the timeseries of the data.
         flow_unit (str): Flow unit. One of [``'CMS', 'LPS', 'MLD', 'CFS', 'GPM', 'MGD'``]
         labels (dict[str, list]): dictionary of the object labels as list (value) for each object type (keys are: ``'link'``, ``'node'``, ``'subcatchment'``)
@@ -51,12 +52,11 @@ class SwmmOutput(SwmmOutExtract):
         swmm_version (str): SWMM Version
         variables (dict[str, list]): variables per object-type inclusive the pollutants.
         fp (file-like): Stream of the open file.
-        filename (str): Path to the output-file (.out).
     """
     filename: str = ...
     def __init__(self, filename, skip_init=False, encoding=''):
         """
-        Read the SWMM Output file (xxx.out).
+        Read a SWMM-output-file (___.out).
 
         Args:
             filename(str): Path to the output-file (.out).

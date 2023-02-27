@@ -16,15 +16,18 @@ from .sections.subcatch import INFILTRATION_DICT
 
 class SwmmInput(CustomDict):
     """
-    Overall class for an input file.
+    SWMM-input-file class.
 
     Child class of dict.
+    Basically a dict where the section labels of the input file are the keys
+    and the values are the data in these sections.
 
-    Just used for the copy function and to identify ``.inp``-file data.
+    You can create a new empty input file, read existing ones and modify that data.
     """
 
     def __init__(self, *args, custom_section_handler=None, encoding='', force_ignore_case=False, **kwargs):
         """
+        Read or create a SWMM-input-file (___.inp).
 
         Args:
             *args: only for creating the inp-object as a dict.

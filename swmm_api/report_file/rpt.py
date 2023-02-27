@@ -19,12 +19,12 @@ from ..input_file.helpers import natural_keys
 
 class SwmmReport:
     """
-    SWMM Report file (xxx.rpt).
+    SWMM-report-file class.
     """
 
     def __init__(self, filename, encoding=''):
         """
-        Create Report instance to read a rpt-file.
+        Read a SWMM-report-file (___.rpt).
 
         Args:
             filename (str): Path to  the rpt file.
