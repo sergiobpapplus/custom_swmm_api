@@ -17,23 +17,6 @@ Macro
 
     out2frame
 
-Content
-~~~~~~~
-.. autosummary::
-    :toctree: out/
-
-    SwmmOutput.number_columns
-
-Export
-~~~~~~
-.. autosummary::
-    :toctree: out/
-
-    SwmmOutput.get_part
-    SwmmOutput.to_frame
-    SwmmOutput.to_numpy
-    SwmmOutput.to_parquet
-
 Definitions
 ~~~~~~~~~~~
 .. currentmodule:: swmm_api.output_file

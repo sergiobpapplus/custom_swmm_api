@@ -1,6 +1,12 @@
+=================
 Input File Reader
------------------
+=================
+.. currentmodule:: swmm_api
 
-.. automodule:: swmm_api.input_file.inp
-    :members:
-    :no-undoc-members:
+Constructor
+~~~~~~~~~~~
+.. autosummary::
+    :toctree: inp/
+
+    SwmmInput
+    read_inp_file

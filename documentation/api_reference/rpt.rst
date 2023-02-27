@@ -12,105 +12,104 @@ Constructor
     read_rpt_file
 
 
-Errors and Warnings
-~~~~~~~~~~~~~~~~~~~
-.. autosummary::
-    :toctree: rpt/
-
-    SwmmReport.get_warnings
-    SwmmReport.get_errors
-    SwmmReport.print_errors
-    SwmmReport.print_warnings
-
-Simulation Info
+Unit Conversion
 ~~~~~~~~~~~~~~~
 .. autosummary::
     :toctree: rpt/
 
-    SwmmReport.analysis_options
-    SwmmReport.analyse_start
-    SwmmReport.analyse_end
-    SwmmReport.analyse_duration
+    ~report_file.helpers.ReportUnitConversion
+
+
+Errors and Warnings
+~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+
+   * - :attr:`SwmmReport.get_warnings`
+   * - :attr:`SwmmReport.get_errors`
+   * - :attr:`SwmmReport.print_errors`
+   * - :attr:`SwmmReport.print_warnings`
+
+
+Simulation Info
+~~~~~~~~~~~~~~~
+.. list-table::
+
+    * - :attr:`SwmmReport.analysis_options`
+    * - :attr:`SwmmReport.analyse_start`
+    * - :attr:`SwmmReport.analyse_end`
+    * - :attr:`SwmmReport.analyse_duration`
 
 Helpers
 ~~~~~~~
-.. autosummary::
-    :toctree: rpt/
+.. list-table::
 
-    SwmmReport.get_version_title
-    SwmmReport.get_simulation_info
-    SwmmReport.note
-    SwmmReport.available_parts
+    * - :attr:`SwmmReport.get_version_title`
+    * - :attr:`SwmmReport.get_simulation_info`
+    * - :attr:`SwmmReport.note`
+    * - :attr:`SwmmReport.available_parts`
 
 Unit
 ~~~~
-.. autosummary::
-    :toctree: rpt/
+.. list-table::
 
-    SwmmReport.flow_unit
-    SwmmReport.unit
+    * - :attr:`SwmmReport.flow_unit`
+    * - :attr:`SwmmReport.unit`
 
-    :toctree: rpt/
-
-    report_file.helpers.ReportUnitConversion
 
 Continuities
 ~~~~~~~~~~~~
-.. autosummary::
-    :toctree: rpt/
+.. list-table::
 
-    SwmmReport.runoff_quantity_continuity
-    SwmmReport.flow_routing_continuity
-    SwmmReport.quality_routing_continuity
-    SwmmReport.runoff_quality_continuity
-    SwmmReport.groundwater_continuity
+    * - :attr:`SwmmReport.runoff_quantity_continuity`
+    * - :attr:`SwmmReport.flow_routing_continuity`
+    * - :attr:`SwmmReport.quality_routing_continuity`
+    * - :attr:`SwmmReport.runoff_quality_continuity`
+    * - :attr:`SwmmReport.groundwater_continuity`
 
 
 Numerics
 ~~~~~~~~
-.. autosummary::
-    :toctree: rpt/
+.. list-table::
 
-    SwmmReport.highest_continuity_errors
-    SwmmReport.highest_flow_instability_indexes
-    SwmmReport.time_step_critical_elements
+    * - :attr:`SwmmReport.highest_continuity_errors`
+    * - :attr:`SwmmReport.highest_flow_instability_indexes`
+    * - :attr:`SwmmReport.time_step_critical_elements`
 
 Summaries
 ~~~~~~~~~
-.. autosummary::
-    :toctree: rpt/
+.. list-table::
 
-    SwmmReport.element_count
-    SwmmReport.conduit_surcharge_summary
-    SwmmReport.cross_section_summary
-    SwmmReport.flow_classification_summary
-    SwmmReport.groundwater_summary
-    SwmmReport.landuse_summary
-    SwmmReport.lid_control_summary
-    SwmmReport.lid_performance_summary
-    SwmmReport.link_flow_summary
-    SwmmReport.link_pollutant_load_summary
-    SwmmReport.link_summary
-    SwmmReport.node_depth_summary
-    SwmmReport.node_flooding_summary
-    SwmmReport.node_inflow_summary
-    SwmmReport.node_summary
-    SwmmReport.node_surcharge_summary
-    SwmmReport.outfall_loading_summary
-    SwmmReport.pollutant_summary
-    SwmmReport.pumping_summary
-    SwmmReport.rainfall_file_summary
-    SwmmReport.raingage_summary
-    SwmmReport.routing_time_step_summary
-    SwmmReport.storage_volume_summary
-    SwmmReport.subcatchment_runoff_summary
-    SwmmReport.subcatchment_summary
-    SwmmReport.subcatchment_washoff_summary
-    SwmmReport.transect_summary
+    * - :attr:`SwmmReport.element_count`
+    * - :attr:`SwmmReport.conduit_surcharge_summary`
+    * - :attr:`SwmmReport.cross_section_summary`
+    * - :attr:`SwmmReport.flow_classification_summary`
+    * - :attr:`SwmmReport.groundwater_summary`
+    * - :attr:`SwmmReport.landuse_summary`
+    * - :attr:`SwmmReport.lid_control_summary`
+    * - :attr:`SwmmReport.lid_performance_summary`
+    * - :attr:`SwmmReport.link_flow_summary`
+    * - :attr:`SwmmReport.link_pollutant_load_summary`
+    * - :attr:`SwmmReport.link_summary`
+    * - :attr:`SwmmReport.node_depth_summary`
+    * - :attr:`SwmmReport.node_flooding_summary`
+    * - :attr:`SwmmReport.node_inflow_summary`
+    * - :attr:`SwmmReport.node_summary`
+    * - :attr:`SwmmReport.node_surcharge_summary`
+    * - :attr:`SwmmReport.outfall_loading_summary`
+    * - :attr:`SwmmReport.pollutant_summary`
+    * - :attr:`SwmmReport.pumping_summary`
+    * - :attr:`SwmmReport.rainfall_file_summary`
+    * - :attr:`SwmmReport.raingage_summary`
+    * - :attr:`SwmmReport.routing_time_step_summary`
+    * - :attr:`SwmmReport.storage_volume_summary`
+    * - :attr:`SwmmReport.subcatchment_runoff_summary`
+    * - :attr:`SwmmReport.subcatchment_summary`
+    * - :attr:`SwmmReport.subcatchment_washoff_summary`
+    * - :attr:`SwmmReport.transect_summary`
 
 Controls
 ~~~~~~~~
-.. autosummary::
-    :toctree: rpt/
+.. list-table::
 
-    SwmmReport.control_actions_taken
+    * - :attr:`SwmmReport.control_actions_taken`

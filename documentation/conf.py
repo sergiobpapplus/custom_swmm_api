@@ -72,7 +72,8 @@ html_theme_options = {  # https://fontawesome.com/v5.15/icons?d=gallery&p=2
              "sizes": "180x180",
              "href": 'swmm_api_logo_180.png'
           },
-       ]
+       ],
+    "show_toc_level": 2
 }
 
 html_favicon = '_static/swmm_api_logo_16.png'
@@ -88,18 +89,19 @@ html_favicon = '_static/swmm_api_logo_16.png'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
+    # 'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.coverage',
+    # 'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages',
+    # 'sphinx.ext.githubpages',
     'sphinx.ext.autosummary',
     'sphinx.ext.extlinks',
     'sphinx.ext.napoleon',  # numpy/google docstrings
     'nbsphinx',  # jupyter notebook
     # 'recommonmark',  # markdown old
     'myst_parser', # markdown new
+    'sphinx.ext.duration',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -146,7 +148,7 @@ html_theme = 'pydata_sphinx_theme'  # 'sphinx_rtd_theme'
 # html_theme = 'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
+# further. For a list of options available for each theme, see the
 # documentation.
 #
 # html_theme_options = {}
@@ -164,7 +166,7 @@ html_css_files = [
 # to template names.
 #
 # The default sidebars (for documents that don't match any pattern) are
-# defined by theme itself.  Builtin themes are using these templates by
+# defined by theme itself. Builtin themes are using these templates by
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
