@@ -940,25 +940,3 @@ class SwmmInput(CustomDict):
 
 
 read_inp_file = SwmmInput.read_file
-
-# def read_inp_file(filename, custom_converter=None, force_ignore_case=False, encoding=DEFAULT_ENCODING):
-#     """
-#     Read ``.inp``-file and convert the sections in pythonic objects.
-#
-#     The sections will be converted when used.
-#
-#     Args:
-#         filename (str): path/filename to .inp file
-#         custom_converter (dict): dictionary of {section: converter/section_type} Default: :py:const:`SECTION_TYPES`
-#         force_ignore_case (bool): SWMM is case-insensitive but python is case-sensitive -> set True to ignore case
-#                                     all text/labels will be set to uppercase
-#         encoding (str): encoding of the .inp-text-file (None -> auto-detect encoding ... takes a few seconds)
-#
-#     Returns:
-#         SwmmInput: dict-like data of the sections in the ``.inp``-file
-#
-#     See Also:
-#         :meth:`SwmmInput.read_file` : Equal functionality.
-#     """
-#     return SwmmInput.read_file(filename, custom_converter=custom_converter, force_ignore_case=force_ignore_case,
-#                                encoding=encoding)

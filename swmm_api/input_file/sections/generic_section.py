@@ -439,6 +439,7 @@ class OptionSection(InpSectionGeneric):
     def set_inertial_damping(self, value:Literal['NONE', 'PARTIAL', 'FULL']):
         """
         Indicates how the inertial terms in the Saint Venant momentum equation will be handled under dynamic wave flow routing.
+
         Choosing `NONE` maintains these terms at their full value under all conditions.
         Selecting `PARTIAL` will reduce the terms as flow comes closer to being critical (and ignores them when flow is supercritical).
         Choosing `FULL` will drop the terms altogether.
@@ -451,9 +452,10 @@ class OptionSection(InpSectionGeneric):
     def set_inertial_terms(self, value:Literal['ignore', 'dampen', 'keep']):
         """
         Indicates how the inertial terms in the Saint Venant momentum equation will be handled under dynamic wave flow routing.
-        Choosing `NONE` maintains these terms at their full value under all conditions.
-        Selecting `PARTIAL` will reduce the terms as flow comes closer to being critical (and ignores them when flow is supercritical).
-        Choosing `FULL` will drop the terms altogether.
+
+        Choosing `keep` maintains these terms at their full value under all conditions.
+        Selecting `dampen` will reduce the terms as flow comes closer to being critical (and ignores them when flow is supercritical).
+        Choosing `ignore` will drop the terms altogether.
 
         Args:
             value:

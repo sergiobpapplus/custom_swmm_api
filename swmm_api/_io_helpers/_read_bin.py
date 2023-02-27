@@ -2,6 +2,7 @@ import abc
 import struct
 from io import SEEK_SET
 from os import remove
+from pathlib import Path
 
 from ._encoding import get_default_encoding
 
@@ -22,7 +23,7 @@ class BinaryReader(abc.ABC):
         Read a binary file in SWMM. Used for output- and hotstart-files (.out | .hst).
 
         Args:
-            filename (str): Path to the binary file.
+            filename (str | Path): Path to the binary file.
             encoding (str): Encoding of the text-file (None -> auto-detect encoding ... takes a few seconds | '' -> use default = 'utf-8')
         """
         self.fp = None
@@ -31,7 +32,7 @@ class BinaryReader(abc.ABC):
             self.filename = '<stream>'
         else:
             self.fp = open(filename, "rb")
-            self.filename = filename
+            self.filename = Path(filename)
         self.encoding = get_default_encoding(encoding)
 
     @abc.abstractmethod

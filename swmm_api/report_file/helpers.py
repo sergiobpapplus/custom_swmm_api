@@ -217,7 +217,7 @@ class ReportUnitConversion:
     >>> ReportUnitConversion('CMS').is_metric()
     True
     >>> ReportUnitConversion('GPM').is_imperial()
-    ['CFS', 'GPM', 'MGD']
+    True
     >>> ReportUnitConversion('CMS').DEPTH1
     'mm'
     """

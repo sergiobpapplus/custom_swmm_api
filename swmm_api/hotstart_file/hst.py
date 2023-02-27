@@ -252,18 +252,4 @@ class SwmmHotstart(BinaryReader):
         return f'SwmmHotstart(file="{self.filename}")'
 
 
-def read_hst_file(filename, inp):
-    """
-    Read a with SWMM created binary hotstart file.
-
-    Args:
-        filename (str): path of the hotstart-file
-        inp (swmm_api.SwmmInput): inp-file-data
-
-    Returns:
-        SwmmHotstart: output file object
-
-    See Also:
-        :meth:`SwmmHotstart.__init__` : Equal functionality.
-    """
-    return SwmmHotstart(filename, inp)
+read_hst_file = SwmmHotstart

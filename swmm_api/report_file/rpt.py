@@ -28,7 +28,7 @@ class SwmmReport:
 
         Args:
             filename (str): Path to  the rpt file.
-            encoding (str): Encoding of the text-file (None -> auto-detect encoding ... takes a few seconds | '' -> use default = 'utf-8')
+            encoding (str): Encoding of the text-file (``None`` -> auto-detect encoding ... takes a few seconds | ``''`` -> use default = ``'utf-8'``).
 
         Notes:
             For more information see SWMM 5.1 User Manual | 9.1 Viewing a Status Report | S. 136
@@ -107,15 +107,18 @@ class SwmmReport:
         return f'SwmmReport(file="{self._filename}")'
 
     def summary(self):
+        """Prints overview of the content in the rpt-file."""
         print(repr(self), 'Headers:', *list(self._raw_parts.keys()), sep='\n  - ')
         # self._pprint({
         #
         # })
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
+        """Bool if file is empty."""
         return not bool(self._raw_parts)
 
-    def is_file(self):
+    def is_file(self) -> bool:
+        """Bool if file exists."""
         return os.path.isfile(self._filename)
 
     def _report_to_dict(self, encoding=''):
@@ -920,14 +923,12 @@ class SwmmReport:
         return di
 
     def print_errors(self):
-        """
-        Print the errors in the report file in a pretty way
-        """
+        """Print the errors in the report file in a pretty way."""
         print(self._pretty_dict(self.get_errors()))
 
     def get_version_title(self):
         """
-        part of the version and title.
+        Get the version of SWMM used and title of the model.
 
         Returns:
             str: version and title
@@ -939,7 +940,7 @@ class SwmmReport:
 
     def get_warnings(self):
         """
-        Malicious objects per warning.
+        Get the malicious objects per warning.
 
         Returns:
             dict[str, (str | bool | list[str])]: key is the warning and value is a object label, a list of object-label or a bool
@@ -1002,26 +1003,8 @@ class SwmmReport:
         return di
 
     def print_warnings(self):
-        """
-        Print the warnings in the report file in a pretty way.
-        """
+        """Print the warnings in the report file in a pretty way."""
         print(self._pretty_dict(self.get_warnings()))
 
 
 read_rpt_file = SwmmReport
-
-# def read_rpt_file(filename, encoding=DEFAULT_ENCODING):
-#     """
-#     Read the SWMM Report file (xxx.rpt).
-#
-#     Args:
-#         filename (str): filename of the report file
-#         encoding (str): Encoding of the .inp-text-file (None -> auto-detect encoding ... takes a few seconds)
-#
-#     Returns:
-#         SwmmReport: report file object
-#
-#     See Also:
-#         :meth:`SwmmReport.__init__` : Equal functionality.
-#     """
-#     return SwmmReport(filename, encoding=encoding)

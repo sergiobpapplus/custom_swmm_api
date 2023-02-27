@@ -11,6 +11,8 @@ import copy
 
 import datetime
 from io import SEEK_END, SEEK_SET
+from pathlib import Path
+
 from tqdm.auto import tqdm
 from warnings import warn
 
@@ -50,7 +52,7 @@ class SwmmOutExtract(BinaryReader):
     The class that handles all extraction of data from the out file.
 
     Attributes:
-        flow_unit (str): Flow unit. One of ['CMS', 'LPS', 'MLD', 'CFS', 'GPM', 'MGD']
+        flow_unit (str): Flow unit. One of [``'CMS', 'LPS', 'MLD', 'CFS', 'GPM', 'MGD'``]
         labels (dict[str, list]): dictionary of the object labels as list (value) for each object type
             (keys are: ``'link'``, ``'node'``, ``'subcatchment'``)
         model_properties (dict[str, [dict[str, list]]]): property values for the subcatchments, nodes and links. 
@@ -82,7 +84,7 @@ class SwmmOutExtract(BinaryReader):
         filename (str): Path to the .out-file.
         encoding (str): Encoding of the text in the binary-file (None -> auto-detect encoding ... takes a few seconds | '' -> use default = 'utf-8')
     """
-    filename: str
+    filename: str | Path
 
     def __init__(self, filename, skip_init=False, encoding=''):
         super().__init__(filename, encoding)
