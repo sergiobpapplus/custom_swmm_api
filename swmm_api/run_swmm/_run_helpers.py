@@ -20,7 +20,7 @@ def get_result_filenames(fn_inp):
     Get filenames for the Report and Output files
 
     Args:
-        fn_inp (str): filename of the Input-Files
+        fn_inp (str | Path): filename of the Input-Files
 
     Returns:
         tuple[str, str] | tuple[Path, Path]: filenames for the Report- and Output-file

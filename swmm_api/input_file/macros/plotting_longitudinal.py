@@ -16,7 +16,7 @@ class COLS:
     LABEL = 'label'
 
 
-def get_longitudinal_data(inp, start_node, end_node, out=None, zero_node=None, depth_agg_func=None, add_node_labels=False):
+def get_longitudinal_data(inp, start_node, end_node, out=None, zero_node=None, depth_agg_func=None):
     sub_list, sub_graph = get_path_subgraph(inp, start=start_node, end=end_node)
 
     if zero_node is None:
@@ -143,7 +143,7 @@ def set_zero_node(stations, zero_node):
     return {node: stations[node] - stations[zero_node] for node in stations}
 
 
-def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=None, depth_agg_func=None, add_node_lables=False):
+def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=None, depth_agg_func=None, add_node_labels=False):
     """
     Make a longitudinal plot.
 
@@ -153,12 +153,14 @@ def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=No
         end_node (str): Label of the end node.
         out (SwmmOut):
         ax (plt.Axes):
-        zero_node (str): Label of the node, where the x-axis should be 0. Default: at start node.
+        zero_node (str): Label
+        add_node_labels (bool): of the node, where the x-axis should be 0. Default: at start node.
+        depth_agg_func (function): Aggregation function to get single value from series. Default: ``lambda s: s.mean()``.
 
     Returns:
         plt.Figure, plt.Axes: matplotlib plot
     """
-    res = get_longitudinal_data(inp, start_node, end_node, out, zero_node=zero_node, depth_agg_func=depth_agg_func, add_node_labels=add_node_lables)
+    res = get_longitudinal_data(inp, start_node, end_node, out, zero_node=zero_node, depth_agg_func=depth_agg_func)
 
     if ax is None:
         fig, ax = plt.subplots()
@@ -189,7 +191,7 @@ def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=No
     ax.set_xlim(res[COLS.STATION][0], res[COLS.STATION][-1])
     ax.set_ylim(bottom=bottom)
 
-    if add_node_lables:
+    if add_node_labels:
         _add_node_labels(ax, res)
 
 
@@ -211,7 +213,7 @@ def _add_node_labels(ax, res):
 
 
 
-def animated_plot_longitudinal(filename, inp, start_node, end_node, out=None, ax=None, zero_node=None):
+def animated_plot_longitudinal(filename, inp, start_node, end_node, out=None, ax=None, zero_node=None, add_node_labels=False):
     """
     Create an animation of the water level in the nodes as a mp4 file.
 
@@ -223,8 +225,11 @@ def animated_plot_longitudinal(filename, inp, start_node, end_node, out=None, ax
         out (SwmmOut):
         ax (plt.Axes):
         zero_node (str): Label of the node, where the x-axis should be 0. Default: at start node.
+        add_node_labels (bool): of the node, where the x-axis should be 0. Default: at start node.
     """
     import matplotlib.animation as animation
+    from tqdm import tqdm
+
     plt.rcParams['animation.ffmpeg_path'] = r'C:\Program Files\ffmpeg\bin\ffmpeg.exe'
     fps = 10  # frames per second
     extra_args = ['-vcodec', 'libx264', '-crf', '18']  # codec and quality
@@ -234,16 +239,15 @@ def animated_plot_longitudinal(filename, inp, start_node, end_node, out=None, ax
     # metadata = dict(title='Nice movie', artist='cle')
     writer = FFMpegWriter(fps=fps, extra_args=extra_args)
 
-    fig, ax = plot_longitudinal(inp, start_node, end_node, ax=ax, zero_node=zero_node)
+    fig, ax = plot_longitudinal(inp, start_node, end_node, ax=ax, zero_node=zero_node, add_node_labels=add_node_labels)
 
     fig.set_size_inches(15,6)
 
     line_water = None
-    from tqdm import tqdm
 
     with writer.saving(fig, filename, 200):  # dpi > 200: maybe performance problems when playing
         for j in tqdm(out.index[8:240:2]):
-            res = get_longitudinal_data(inp, start_node, end_node, out, zero_node=zero_node, depth_agg_func=lambda s: s.loc[str(j)])
+            res = get_longitudinal_data(inp, start_node, end_node, out, zero_node=zero_node, depth_agg_func=lambda s: s.loc[j])
 
             if line_water is not None:
                 ax.lines.remove(line_water[0])

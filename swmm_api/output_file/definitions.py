@@ -24,21 +24,21 @@ class SUBCATCHMENT_VARIABLES:
     All variable names for sub-catchments
 
     Attributes:
-        RAINFALL (str): "rainfall"
-        SNOW_DEPTH (str): "snow_depth"
-        EVAPORATION (str): "evaporation"
-        INFILTRATION (str): "infiltration"
-        RUNOFF (str): "runoff"
-        GW_OUTFLOW (str): "groundwater_outflow"
-        GW_ELEVATION (str): "groundwater_elevation"
-        SOIL_MOISTURE (str): "soil_moisture"
+        RAINFALL (str): "rainfall" - Rainfall (Precipitation) intensity [mm/hr]
+        SNOW_DEPTH (str): "snow_depth" - snow depth [mm]
+        EVAPORATION (str): "evaporation" - Evaporation loss [mm/day]
+        INFILTRATION (str): "infiltration" - Infiltration loss [mm/h]
+        RUNOFF (str): "runoff" - runoff flow rate [flow units in simulation options]
+        GW_OUTFLOW (str): "groundwater_outflow" - Groundwater flow into the drainage network (to node)
+        GW_ELEVATION (str): "groundwater_elevation" - elevation of saturated gw table [m]
+        SOIL_MOISTURE (str): "soil_moisture" - Soil moisture in the unsaturated groundwater zone [fraction]
         LIST_ (list[str]): list of all variables
     """
     RAINFALL = "rainfall"  # rainfall intensity | Rainfall rate [mm/hr] | Precipitation
     SNOW_DEPTH = "snow_depth"  # SNOWDEPTH | snow depth [mm]
     EVAPORATION = "evaporation"  # EVAP | evap loss [mm/day] | Evaporation
     INFILTRATION = "infiltration"  # INFIL | infil loss [mm/h] | Infiltration
-    RUNOFF = "runoff"  # RUNOFF | runoff flow rate
+    RUNOFF = "runoff"  # RUNOFF | runoff flow rate [flow units in simulation options]
     GW_OUTFLOW = "groundwater_outflow"  # GW_FLOW | groundwater flow rate to node | Groundwater flow into the drainage network
     GW_ELEVATION = "groundwater_elevation"  # GW_ELEV | elevation of saturated gw table [m]
     SOIL_MOISTURE = "soil_moisture"  # SOIL_MOIST | Soil moisture in the unsaturated groundwater zone [fraction]
@@ -98,21 +98,21 @@ class SYSTEM_VARIABLES:
     All variable names system-wide values
 
     Attributes:
-        AIR_TEMPERATURE (str): 'air_temperature'
-        RAINFALL (str): 'rainfall'
-        SNOW_DEPTH (str): 'snow_depth'
-        INFILTRATION (str): 'infiltration'
-        RUNOFF (str): 'runoff'
-        DW_INFLOW (str): 'dry_weather_inflow'
-        GW_INFLOW (str): 'groundwater_inflow'
-        RDII_INFLOW (str): 'RDII_inflow'
-        DIRECT_INFLOW (str): 'direct_inflow'
-        LATERAL_INFLOW (str): 'lateral_inflow'
-        FLOODING (str): 'flooding'
-        OUTFLOW (str): 'outflow'
-        VOLUME (str): 'volume'
-        EVAPORATION (str): 'evaporation'
-        PET (str): 'PET'
+        AIR_TEMPERATURE (str): 'air_temperature' - [°C]
+        RAINFALL (str): 'rainfall' - Total rainfall (Precipitation) intensity [mm/hr]
+        SNOW_DEPTH (str): 'snow_depth' - Total snow depth [mm]
+        INFILTRATION (str): 'infiltration' - sum in infiltration of all sub-catchments (weighted by the sc-area) [mm/hr]
+        RUNOFF (str): 'runoff' - Total runoff flow [flow units in simulation options]
+        DW_INFLOW (str): 'dry_weather_inflow' - Total dry weather inflow [flow units in simulation options]
+        GW_INFLOW (str): 'groundwater_inflow' - Total groundwater inflow [flow units in simulation options]
+        RDII_INFLOW (str): 'RDII_inflow' - Total rainfall derived infiltration and inflow [flow units in simulation options]
+        DIRECT_INFLOW (str): 'direct_inflow' - inflow directly defined in section [INFLOWS] and assigned to node [flow units in simulation options]
+        LATERAL_INFLOW (str): 'lateral_inflow' - Total Inflow # INFLOW = RUNOFF + DWFLOW + GWFLOW + IIFLOW + EXFLOW [flow units in simulation options]
+        FLOODING (str): 'flooding' - Total external flooding [flow units in simulation options]
+        OUTFLOW (str): 'outflow' - Total outflow from outfalls [flow units in simulation options]
+        VOLUME (str): 'volume' - Total nodal storage volume in the system [m³]
+        EVAPORATION (str): 'evaporation' - Actual evaporation [mm/day]
+        PET (str): 'PET' - Potential evaporation [mm/day]
         LIST_ (list[str]): list of all variables
     """
     # somewhere are Losses by Exfiltration in STORAGES ??

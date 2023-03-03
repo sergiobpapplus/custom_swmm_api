@@ -5,6 +5,8 @@ __email__ = "markus.pichler@tugraz.at"
 __version__ = "0.1"
 __license__ = "MIT"
 
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
 
@@ -29,8 +31,12 @@ def _check_name(filename):
     Returns:
         str: new filename with extension
     """
-    if not (filename.endswith('.parq') or filename.endswith('.parquet')):
-        filename += '.parq'
+    if isinstance(filename, Path):
+        if not filename.suffix in ('.parq', '.parquet'):
+            filename = filename.with_suffix('.parq')
+    else:
+        if not (filename.endswith('.parq') or filename.endswith('.parquet')):
+            filename += '.parq'
     return filename
 
 
@@ -62,7 +68,7 @@ def write(data, filename, compression='brotli', sep='/'):
 
     Args:
         data (pandas.DataFrame):
-        filename (str): path to resulting file
+        filename (str | Path): path to resulting file
         compression (str): Used compression. See :meth:`pandas.DataFrame.to_parquet`
         sep (str): Character used to separate multiindex labels in the parquet file. (default: ``'/'``)
     """
@@ -107,7 +113,7 @@ def read(filename, sep='/'):
         and separated with the character defined by ``sep`` (default: ``'/'``)
 
     Args:
-        filename (str): path to parquet file
+        filename (str | Path): path to parquet file
         sep (str): Character used to separate multiindex labels in the parquet file. (default: ``'/'``)
 
     Returns:

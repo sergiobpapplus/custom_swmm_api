@@ -86,3 +86,22 @@ def conduit_to_orifice(inp, label, orientation, offset, discharge_coefficient, h
     inp[ORIFICES].add_obj(Orifice(name=label, from_node=c.from_node, to_node=c.to_node,
                                   orientation=orientation, offset=offset, discharge_coefficient=discharge_coefficient,
                                   has_flap_gate=has_flap_gate, hours_to_open=hours_to_open))
+
+
+def storage_to_outfall(inp, label, *args, **kwargs):
+    """
+    convert :class:`~swmm_api.input_file.inp_sections.node.Storage` to
+    :class:`~swmm_api.input_file.inp_sections.node.Outfall`
+
+    and add it to the OUTFALLS section
+
+    Args:
+        inp (SwmmInput): inp-file data
+        label (str): label of the storage node
+        *args: argument of the :class:`~swmm_api.input_file.inp_sections.node.Outfall`-class
+        **kwargs: keyword arguments of the :class:`~swmm_api.input_file.inp_sections.node.Outfall`-class
+    """
+    j = inp[STORAGE].pop(label)  # type: Storage
+    if OUTFALLS not in inp:
+        inp[OUTFALLS] = Outfall.create_section()
+    inp[OUTFALLS].add_obj(Outfall(name=label, elevation=j.elevation, *args, **kwargs))

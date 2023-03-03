@@ -59,7 +59,7 @@ class SwmmOutput(SwmmOutExtract):
         Read a SWMM-output-file (___.out).
 
         Args:
-            filename(str): Path to the output-file (.out).
+            filename(str | Path): Path to the output-file (.out).
             encoding (str): Encoding of the text in the binary-file (None -> auto-detect encoding ... takes a few seconds | '' -> use default = 'utf-8')
         """
         SwmmOutExtract.__init__(self, filename, skip_init=skip_init, encoding=encoding)

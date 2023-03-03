@@ -206,6 +206,12 @@ def _upstream_nodes(graph: DiGraph, node: str, node_list=None) -> list:
     return node_list
 
 
+def subcatchments_connected(inp, node: str, graph=None):
+    if graph is None:
+        graph = inp_to_graph(inp, add_subcatchments=True)
+    return [inp.SUBCATCHMENTS[k] for k in graph.predecessors(node) if k in inp.SUBCATCHMENTS]
+
+
 def get_network_forks(inp):
     # pd.DataFrame.from_dict(forks, orient='index')
     g = inp_to_graph(inp)
@@ -238,6 +244,8 @@ def split_network(inp, keep_node, split_at_node=None, keep_split_node=True, grap
     if graph is None:
         graph = inp_to_graph(inp)
 
+    n_nodes_before = len(graph.nodes)
+
     if split_at_node is not None:
         if isinstance(split_at_node, str):
             graph.remove_node(split_at_node)
@@ -249,9 +257,6 @@ def split_network(inp, keep_node, split_at_node=None, keep_split_node=True, grap
         graph = graph.to_undirected()
     sub = subgraph(graph, node_connected_component(graph, keep_node))
 
-    if init_print:
-        print(f'Reduced Network from {len(graph.nodes)} nodes to {len(sub.nodes)} nodes.')
-
     # _______________
     final_nodes = list(sub.nodes)
     if split_at_node is not None and keep_split_node:
@@ -260,6 +265,9 @@ def split_network(inp, keep_node, split_at_node=None, keep_split_node=True, grap
         else:
             final_nodes += list(split_at_node)
     final_nodes = set(final_nodes)
+
+    if init_print:
+        print(f'Reduced Network from {n_nodes_before} nodes to {len(final_nodes)} nodes.')
 
     # _______________
     return create_sub_inp(inp, final_nodes)

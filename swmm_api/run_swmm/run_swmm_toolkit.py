@@ -15,9 +15,9 @@ def swmm5_run_owa(fn_inp, fn_rpt=None, fn_out=None):
     Opens SWMM input file, reads in network data, runs, and closes
 
     Args:
-        fn_inp (str): pointer to name of input file (must exist)
-        fn_rpt (str): pointer to name of report file (to be created)
-        fn_out (str): pointer to name of binary output file (to be created)
+        fn_inp (str | Path): pointer to name of input file (must exist)
+        fn_rpt (str | Path): pointer to name of report file (to be created)
+        fn_out (str | Path): pointer to name of binary output file (to be created)
     """
     fn_rpt_default, fn_out_default = get_result_filenames(fn_inp)
     if fn_rpt is None:
@@ -49,4 +49,4 @@ def get_swmm_version_owa():
     except ModuleNotFoundError as e:
         raise (e, SWMMRunError('to run SWMM with OWA-SWMM you have to install the swmm-toolkit package (pip install swmm-toolkit).'))
 
-    return '.'.join(solver.swmm_version_info())
+    return solver.swmm_version_info()
