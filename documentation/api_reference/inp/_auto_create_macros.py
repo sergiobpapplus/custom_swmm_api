@@ -1,13 +1,18 @@
-import inspect
 import ast
 from pathlib import Path
+
+working_dir = Path(__file__).parent
+
+import sys
+sys.path.append(str(working_dir.parent.parent.parent))
+
 from swmm_api.input_file import macros
 
 
 def main():
     # module = dir(macros)
     # print(dir(macros))
-    working_dir = Path(__file__).parent
+
     with open(working_dir / 'macros.rst', 'w') as f:
 
         _header = 'Input File Manipulation - Macros'

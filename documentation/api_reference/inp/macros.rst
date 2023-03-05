@@ -58,11 +58,11 @@ Convert object
 .. autosummary::
     :toctree: macros/
 
-    junction_to_storage
-    junction_to_outfall
     junction_to_divider
-    conduit_to_orifice
+    junction_to_outfall
+    junction_to_storage
     storage_to_outfall
+    conduit_to_orifice
 
 Cross section curve
 ~~~~~~~~~~~~~~~~~~~
