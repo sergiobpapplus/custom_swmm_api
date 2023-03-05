@@ -2,6 +2,15 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.4 (2023-03-03)
+### Fix
+* Added macro `subcatchments_connected` ([`8fa7dc9`](https://gitlab.com/markuspichler/swmm_api/-/commit/8fa7dc94e96a97f940fc8fd3769b288547c48982))
+
+### Documentation
+* Minor doc fixes ([`081205d`](https://gitlab.com/markuspichler/swmm_api/-/commit/081205d454901b5e2a41d0c6ee2e22a91ea047d6))
+* Minor doc fixes ([`059902c`](https://gitlab.com/markuspichler/swmm_api/-/commit/059902c5d0fa06b73354354958fd87ca1706d027))
+* Enhanced doc build ([`ff09a2d`](https://gitlab.com/markuspichler/swmm_api/-/commit/ff09a2deef68f94590675f84e92ae75af09e50df))
+
 ## v0.4.3 (2023-02-24)
 ### Fix
 * Added setter to OptionSection ([`3d927ce`](https://gitlab.com/markuspichler/swmm_api/-/commit/3d927cec2e85333e36fea6a20986b67f491aec79))
