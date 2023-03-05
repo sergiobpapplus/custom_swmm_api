@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.5 (2023-03-05)
+### Fix
+* Add gis_decimals to swmm-api-config ([`c85aeba`](https://gitlab.com/markuspichler/swmm_api/-/commit/c85aeba364bc14ff730c01461b1478a01a829904))
+
+### Documentation
+* Fixed doc creation ([`d32cde3`](https://gitlab.com/markuspichler/swmm_api/-/commit/d32cde3184e098055a025b55d03932e561199050))
+
 ## v0.4.4 (2023-03-03)
 ### Fix
 * Added macro `subcatchments_connected` ([`8fa7dc9`](https://gitlab.com/markuspichler/swmm_api/-/commit/8fa7dc94e96a97f940fc8fd3769b288547c48982))
