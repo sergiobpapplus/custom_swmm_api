@@ -183,7 +183,7 @@ class InpMacros(SwmmInput):
         elif isinstance(new_obj, list):
             pass
         else:
-            raise NotImplementedError('Type: {} not implemented!'.format(type(new_obj)))
+            raise NotImplementedError(f'Type: {type(new_obj)} not implemented!')
 
         old_obj = self[sec.REPORT][obj_kind]
         if isinstance(old_obj, str):
@@ -195,7 +195,7 @@ class InpMacros(SwmmInput):
         elif old_obj is None:
             old_obj = []
         else:
-            raise NotImplementedError('Type: {} not implemented!'.format(type(old_obj)))
+            raise NotImplementedError(f'Type: {type(new_obj)} not implemented!')
 
         self[sec.REPORT][obj_kind] = old_obj + new_obj
 

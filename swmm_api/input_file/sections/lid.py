@@ -334,9 +334,9 @@ class LIDControl(BaseSectionObject):
         _dict = {x._LABEL: x for x in (Surface, Soil, Pavement, Storage, Drain, Drainmat, Removals)}
 
     def to_inp_line(self):
-        s = '{} {}\n'.format(self.name, self.lid_kind)
+        s = f'{self.name} {self.lid_kind}\n'
         for layer, l in self.layer_dict.items():
-            s += '{} {:<8} '.format(self.name, layer) + l.to_inp_line() + '\n'
+            s += f'{self.name} {layer:<8} {l.to_inp_line()}\n'
         return s
 
 

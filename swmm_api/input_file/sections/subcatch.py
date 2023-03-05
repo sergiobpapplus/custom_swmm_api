@@ -3,7 +3,7 @@ import warnings
 from numpy import NaN
 from pandas import DataFrame
 
-from .._type_converter import GIS_FLOAT_FORMAT
+from .._type_converter import get_gis_inp_decimals
 from ..helpers import BaseSectionObject, SWMM_VERSION, InpSectionGeo
 from ._identifiers import IDENTIFIERS
 from ..section_labels import SUBCATCHMENTS, SUBAREAS, INFILTRATION, POLYGONS, LOADINGS, COVERAGES, GWF, GROUNDWATER
@@ -416,8 +416,7 @@ class Polygon(BaseSectionObject):
         return DataFrame.from_records(self.polygon, columns=['x', 'y'])
 
     def to_inp_line(self):
-        GIS_FLOAT_FORMAT = '0.1f'
-        return '\n'.join([f'{self.subcatchment}  {x:{GIS_FLOAT_FORMAT}} {y:{GIS_FLOAT_FORMAT}}' for x, y in self.polygon])
+        return '\n'.join([f'{self.subcatchment}  {x:0.{get_gis_inp_decimals()}f} {y:0.{get_gis_inp_decimals()}f}' for x, y in self.polygon])
 
     @property
     def geo(self):
@@ -558,7 +557,7 @@ class Loading(BaseSectionObject):
         return DataFrame.from_dict(self.pollutant_buildup_dict, columns=['pollutant', 'initial buildup'])
 
     def to_inp_line(self):
-        return '\n'.join(['{}  {} {}'.format(self.subcatchment, p, b) for p, b in self.pollutant_buildup_dict.items()])
+        return '\n'.join([f'{self.subcatchment}  {p} {b}' for p, b in self.pollutant_buildup_dict.items()])
 
 
 class Coverage(BaseSectionObject):
@@ -638,7 +637,7 @@ class Coverage(BaseSectionObject):
         return DataFrame.from_dict(self.land_use_dict, columns=['land_use', 'percent'])
 
     def to_inp_line(self):
-        return '\n'.join(['{}  {} {}'.format(self.subcatchment, p, b) for p, b in self.land_use_dict.items()])
+        return '\n'.join([f'{self.subcatchment}  {lu} {pct}' for lu, pct in self.land_use_dict.items()])
 
 
 class GroundwaterFlow(BaseSectionObject):

@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from pandas.tseries.frequencies import to_offset
 
+from .._io_helpers import CONFIG
+
 
 def to_bool(x):
     if isinstance(x, bool):
@@ -182,7 +184,7 @@ def delta2str(d):
     """
     hours, remainder = divmod(d.total_seconds(), 3600)
     minutes, seconds = divmod(remainder, 60)
-    return '{:02.0f}:{:02.0f}:{:02.0f}'.format(hours, minutes, seconds)
+    return f'{hours:02.0f}:{minutes:02.0f}:{seconds:02.0f}'
 
 
 def type2str(x):
@@ -212,7 +214,7 @@ def type2str(x):
             return ''
         if x == 0.0:
             return '0'
-        return '{:0.7G}'.format(x)  # .rstrip('0').rstrip('.')
+        return f'{x:0.7G}'  # .rstrip('0').rstrip('.')
     elif isinstance(x, datetime.date):
         return x.strftime('%m/%d/%Y')
     elif isinstance(x, datetime.time):
@@ -244,7 +246,13 @@ def convert_string(x) -> str:
     return s
 
 
-GIS_FLOAT_FORMAT = '0.3f'
+def get_gis_inp_decimals():
+    return CONFIG['gis_decimals']
+
+
+def format_inp_geo_number(x):
+    return f'{x:0.{get_gis_inp_decimals()}f}'
+
 
 _SECTION_PATTERN = re.compile(r'^[ \t]*([^;\n]+)[ \t]*;?[^\n]*$', flags=re.M)
 
@@ -266,8 +274,8 @@ def txt_to_lines(content):
         yield line.group().split()
 
 
-class CaseInsensitiveString(UserString):
-    pass
+# class CaseInsensitiveString(UserString):
+#     pass
 
 
-cistr = CaseInsensitiveString
+# cistr = CaseInsensitiveString

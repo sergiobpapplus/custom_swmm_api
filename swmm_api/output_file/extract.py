@@ -40,7 +40,7 @@ _LINK_TYPES = ['CONDUIT', 'PUMP', 'ORIFICE', 'WEIR', 'OUTLET']
 
 class SwmmExtractValueError(Exception):
     def __init__(self, message):
-        super().__init__("\n*\n*   {}\n*\n".format(message))
+        super().__init__(f'\n*\n*   {message}\n*\n')
 
 
 class SwmmOutExtractWarning(UserWarning):

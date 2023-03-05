@@ -8,14 +8,11 @@ Check
 .. autosummary::
     :toctree: macros/
 
-    check_for_nodes_old
     check_for_nodes
-    check_for_duplicate_nodes
-    check_for_duplicate_links
     check_for_duplicates
-    check_for_subcatchment_outlets_old
+    check_for_duplicate_links
+    check_for_duplicate_nodes
     check_for_subcatchment_outlets
-    check_for_curves
     check_outfall_connections
 
 Collection
@@ -25,9 +22,9 @@ Collection
 .. autosummary::
     :toctree: macros/
 
+    links_dict
     nodes_dict
     nodes_subcatchments_dict
-    links_dict
     subcatchments_per_node_dict
 
 Compare
@@ -37,34 +34,23 @@ Compare
 .. autosummary::
     :toctree: macros/
 
-    compare_sections
     compare_inp_files
-    compare_inp_objects
+    compare_sections
     inp_version_control
 
-Convert model
-~~~~~~~~~~~~~
-
-.. currentmodule:: swmm_api.input_file.macros.convert_model
-.. autosummary::
-    :toctree: macros/
-
-    to_kinematic_wave
-
-Convert object
-~~~~~~~~~~~~~~
+Convert Objects
+~~~~~~~~~~~~~~~
 
 .. currentmodule:: swmm_api.input_file.macros.convert_object
 .. autosummary::
     :toctree: macros/
 
-    junction_to_storage
-    junction_to_outfall
-    junction_to_divider
     conduit_to_orifice
-    storage_to_outfall
+    junction_to_outfall
+    junction_to_storage
+    junction_to_divider
 
-Cross section curve
+Cross-Section Curve
 ~~~~~~~~~~~~~~~~~~~
 
 .. currentmodule:: swmm_api.input_file.macros.cross_section_curve
@@ -91,23 +77,21 @@ Edit
 .. autosummary::
     :toctree: macros/
 
-    delete_node
-    move_flows
-    reconnect_subcatchments
-    delete_link
-    delete_subcatchment
-    split_conduit
-    combine_vertices
     combine_conduits
     combine_conduits_keep_slope
+    combine_vertices
+    delete_link
+    delete_node
+    delete_subcatchment
     dissolve_conduit
-    rename_node
+    flip_link_direction
+    move_flows
+    remove_quality_model
     rename_link
+    rename_node
     rename_subcatchment
     rename_timeseries
-    flip_link_direction
-    remove_quality_model
-    delete_pollutant
+    split_conduit
 
 Filter
 ~~~~~~
@@ -116,12 +100,12 @@ Filter
 .. autosummary::
     :toctree: macros/
 
-    filter_tags
-    filter_nodes
-    filter_links_within_nodes
-    filter_links
-    filter_subcatchments
     create_sub_inp
+    filter_links
+    filter_links_within_nodes
+    filter_nodes
+    filter_subcatchments
+    filter_tags
 
 Geo
 ~~~
@@ -130,14 +114,14 @@ Geo
 .. autosummary::
     :toctree: macros/
 
-    transform_coordinates
     complete_link_vertices
     complete_vertices
     reduce_vertices
     simplify_link_vertices
     simplify_vertices
+    transform_coordinates
 
-Gis
+GIS
 ~~~
 
 .. currentmodule:: swmm_api.input_file.macros.gis
@@ -146,13 +130,12 @@ Gis
 
     set_crs
     convert_inp_to_geo_package
-    write_geo_package
     get_subcatchment_connectors
+    gpkg_to_swmm
     links_geo_data_frame
     nodes_geo_data_frame
-    gpkg_to_swmm
     update_length
-    update_area
+    write_geo_package
 
 Graph
 ~~~~~
@@ -161,48 +144,46 @@ Graph
 .. autosummary::
     :toctree: macros/
 
-    inp_to_graph
+    conduit_iter_over_inp
+    downstream_nodes
+    get_network_forks
     get_path
     get_path_subgraph
-    next_nodes
-    previous_nodes
-    next_links_labels
-    next_links
-    previous_links_labels
-    previous_links
+    inp_to_graph
     links_connected
+    next_links
+    next_links_labels
+    next_nodes
     number_in_out
-    downstream_nodes
-    upstream_nodes
-    subcatchments_connected
-    get_network_forks
+    previous_links
+    previous_links_labels
+    previous_nodes
     split_network
-    conduit_iter_over_inp
+    upstream_nodes
 
-Macros
-~~~~~~
+Other Macros
+~~~~~~~~~~~~
 
 .. currentmodule:: swmm_api.input_file.macros.macros
 .. autosummary::
     :toctree: macros/
 
-    find_node
-    find_link
     calc_slope
+    combined_nodes_frame
+    combined_subcatchment_frame
     conduit_slopes
     conduits_are_equal
-    update_no_duplicates
-    increase_max_node_depth
-    set_times
-    combined_subcatchment_frame
-    combined_nodes_frame
-    nodes_data_frame
-    iter_sections
     delete_sections
-    set_absolute_file_paths
+    find_link
+    find_node
+    increase_max_node_depth
+    iter_sections
+    nodes_data_frame
+    set_times
+    update_no_duplicates
 
-Plotting longitudinal
-~~~~~~~~~~~~~~~~~~~~~
+Plotting
+~~~~~~~~
 
 .. currentmodule:: swmm_api.input_file.macros.plotting_longitudinal
 .. autosummary::
@@ -215,10 +196,6 @@ Plotting longitudinal
     get_node_station
     set_zero_node
     plot_longitudinal
-    animated_plot_longitudinal
-
-Plotting map
-~~~~~~~~~~~~
 
 .. currentmodule:: swmm_api.input_file.macros.plotting_map
 .. autosummary::
@@ -239,39 +216,30 @@ Plotting map
     add_custom_legend
     add_backdrop
 
-Reduce unneeded
+Reduce Unneeded
 ~~~~~~~~~~~~~~~
 
 .. currentmodule:: swmm_api.input_file.macros.reduce_unneeded
 .. autosummary::
     :toctree: macros/
 
+    reduce_controls
     reduce_curves
     reduce_pattern
-    reduce_controls
-    simplify_curves
     reduce_raingages
     remove_empty_sections
+    simplify_curves
     reduce_timeseries
 
-Split inp file
-~~~~~~~~~~~~~~
+Split the inp File
+~~~~~~~~~~~~~~~~~~
 
 .. currentmodule:: swmm_api.input_file.macros.split_inp_file
 .. autosummary::
     :toctree: macros/
 
-    split_inp_to_files
     read_split_inp_file
-
-Summarize
-~~~~~~~~~
-
-.. currentmodule:: swmm_api.input_file.macros.summarize
-.. autosummary::
-    :toctree: macros/
-
-    print_summary
+    split_inp_to_files
 
 Tags
 ~~~~
@@ -280,8 +248,8 @@ Tags
 .. autosummary::
     :toctree: macros/
 
-    get_node_tags
-    get_link_tags
-    get_subcatchment_tags
-    filter_tags
     delete_tag_group
+    filter_tags
+    get_link_tags
+    get_node_tags
+    get_subcatchment_tags

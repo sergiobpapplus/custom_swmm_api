@@ -206,5 +206,5 @@ def check_swmm_errors(fn_rpt, shell_output):
 
     if msgs['REPORT'] != 'No Errors.':
         sep = '\n' + '_' * 100 + '\n'
-        error_msg = sep + sep.join('{}:\n  {}'.format(k, v) for k, v in msgs.items())
+        error_msg = sep + sep.join(f'{k}:\n  {v}' for k, v in msgs.items())
         raise SWMMRunError(error_msg)

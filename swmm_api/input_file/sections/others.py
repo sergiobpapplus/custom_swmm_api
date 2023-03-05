@@ -1074,10 +1074,10 @@ class Curve(BaseSectionObject):
     def to_inp_line(self):
         points = iter(self.points)
         x, y = next(points)
-        f = '{}  {} {:7.4f} {:7.4f}\n'.format(self.name, self.kind, x, y)
-        Type = ' ' * len(self.kind)
+        f = f'{self.name}  {self.kind} {x:7.4f} {y:7.4f}\n'
+        empty_space = ' ' * len(self.kind)
         for x, y in points:  # [(x,y), (x,y), ...]
-            f += '{}  {} {:7.4f} {:7.4f}\n'.format(self.name, Type, x, y)
+            f += f'{self.name}  {empty_space} {x:7.4f} {y:7.4f}\n'
         return f
 
 
@@ -1891,7 +1891,7 @@ class Hydrograph(BaseSectionObject):
                 self.depth_init = depth_init
 
     def to_inp_line(self):
-        s = '{} {}\n'.format(self.name, self.rain_gage)
+        s = f'{self.name} {self.rain_gage}\n'
         for hyd in self.monthly_parameters:
             s += hyd.to_inp_line() + '\n'
         return s

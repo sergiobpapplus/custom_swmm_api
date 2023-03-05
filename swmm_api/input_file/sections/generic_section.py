@@ -585,8 +585,7 @@ class ReportSection(InpSectionGeneric):
         max_len = len(max(self.keys(), key=len)) + 2
 
         def _dict_format(key, value):
-            return '{key}{value}'.format(key=key.ljust(max_len),
-                                         value=type2str(value) + '\n')
+            return f'{key:<{max_len}}{type2str(value)}\n'
 
         for sub in self:
             value = self[sub]

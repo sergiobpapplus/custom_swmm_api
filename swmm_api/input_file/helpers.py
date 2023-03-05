@@ -1054,7 +1054,7 @@ def section_to_string(section, fast=True, sort_objects_alphabetical=False):
         max_len = len(max(section.keys(), key=len)) + 2
         f = ''
         for sub in section:
-            f += '{key}{value}'.format(key=sub.ljust(max_len), value=type2str(section[sub]) + '\n')
+            f += f'{sub:<{max_len}}{type2str(section[sub])}\n'  # format(key=sub.ljust(max_len), value=type2str(section[sub]) + '\n')
         return f
 
     # ----------------------
@@ -1088,7 +1088,7 @@ def iter_section_lines(section, sort_objects_alphabetical=False):
     elif isinstance(section, dict):  # V2
         max_len = len(max(section.keys(), key=len)) + 2
         for sub in section:
-            yield'{key}{value}'.format(key=sub.ljust(max_len), value=type2str(section[sub]) + '\n')
+            yield f'{sub:<{max_len}}{type2str(section[sub])}\n'
 
     # ----------------------
     elif isinstance(section, (DataFrame, Series)):  # V3

@@ -6,7 +6,7 @@ from pandas import DataFrame
 
 from ._identifiers import IDENTIFIERS
 from ..helpers import BaseSectionObject, InpSectionGeo
-from .._type_converter import to_bool, GIS_FLOAT_FORMAT
+from .._type_converter import to_bool, get_gis_inp_decimals
 from ..section_labels import XSECTIONS, LOSSES, VERTICES
 
 
@@ -286,8 +286,7 @@ class Vertices(BaseSectionObject):
             yield cls(last, vertices)
 
     def to_inp_line(self):
-        global GIS_FLOAT_FORMAT
-        return '\n'.join([f'{self.link} {x:{GIS_FLOAT_FORMAT}} {y:{GIS_FLOAT_FORMAT}}' for x, y in self.vertices])
+        return '\n'.join([f'{self.link} {x:0.{get_gis_inp_decimals()}f} {y:0.{get_gis_inp_decimals()}f}' for x, y in self.vertices])
 
     @property
     def frame(self):

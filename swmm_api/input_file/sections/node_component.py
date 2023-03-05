@@ -1,7 +1,7 @@
 from numpy import NaN, isnan
 
 from ._identifiers import IDENTIFIERS
-from .._type_converter import convert_string, GIS_FLOAT_FORMAT
+from .._type_converter import convert_string, get_gis_inp_decimals
 from ..helpers import BaseSectionObject, InpSectionGeo
 from ..section_labels import DWF, INFLOWS, COORDINATES, RDII, TREATMENT
 
@@ -184,8 +184,7 @@ class Coordinate(BaseSectionObject):
 
     def to_inp_line(self):
         # separate function to keep accuracy
-        global GIS_FLOAT_FORMAT
-        return f'{self.node} {self.x:{GIS_FLOAT_FORMAT}} {self.y:{GIS_FLOAT_FORMAT}}'
+        return f'{self.node} {self.x:0.{get_gis_inp_decimals()}f} {self.y:0.{get_gis_inp_decimals()}f}'
 
     @property
     def geo(self):

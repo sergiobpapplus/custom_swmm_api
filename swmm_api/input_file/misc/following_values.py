@@ -64,6 +64,6 @@ def remove_following_duplicates(data):
         bool_series = following_numbers_bool(data) | following_nans_bool(data)
     # ________________________________
     else:
-        raise NotImplementedError('"{}" not implemented'.format(type(data)))
+        raise NotImplementedError(f'"{type(data)}" not implemented')
     # ________________________________
     return data.loc[bool_series].copy()
