@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.6 (2023-03-07)
+### Fix
+* Added config for path to default swmm exe ([`2807d8f`](https://gitlab.com/markuspichler/swmm_api/-/commit/2807d8f68842fcddbd397614c39411dee088b81d))
+* Raise FileNotFoundError when file is not available ([`4ae6dd1`](https://gitlab.com/markuspichler/swmm_api/-/commit/4ae6dd15f733051f7099309445298b616f9e9967))
+
 ## v0.4.5 (2023-03-05)
 ### Fix
 * Add gis_decimals to swmm-api-config ([`c85aeba`](https://gitlab.com/markuspichler/swmm_api/-/commit/c85aeba364bc14ff730c01461b1478a01a829904))
