@@ -84,7 +84,7 @@ class SwmmOutExtract(BinaryReader):
         filename (str): Path to the .out-file.
         encoding (str): Encoding of the text in the binary-file (None -> auto-detect encoding ... takes a few seconds | '' -> use default = 'utf-8')
     """
-    filename: str | Path
+    filename: str or Path
 
     def __init__(self, filename, skip_init=False, encoding=''):
         super().__init__(filename, encoding)

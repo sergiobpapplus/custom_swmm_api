@@ -131,9 +131,6 @@ class SwmmReport:
         Returns:
             dict[str, str]: dictionary of parts of the report file
         """
-        if not self.is_file():
-            return
-
         self._encoding = get_default_encoding(encoding, self._filename)
 
         txt = read_txt_file(self._filename, encoding=self._encoding)
