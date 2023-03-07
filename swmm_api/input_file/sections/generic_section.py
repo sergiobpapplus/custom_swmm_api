@@ -416,7 +416,7 @@ class OptionSection(InpSectionGeneric):
     # def set_dry_step(self, value):
     #     self['___'] = value
 
-    def set_routing_step(self, value:float|int|timedelta=600):
+    def set_routing_step(self, value=600):
         """
         ROUTING_STEP is the time step length in seconds used for routing flows and water quality constituents through the conveyance system.
         The default is 600 sec (5 minutes) which should be reduced if using dynamic wave routing.

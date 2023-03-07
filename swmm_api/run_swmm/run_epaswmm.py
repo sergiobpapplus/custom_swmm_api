@@ -8,15 +8,17 @@ __license__ = "MIT"
 
 import os
 import subprocess
+from pathlib import Path
 from sys import platform as _platform
 
 from ._run_helpers import SWMMRunError, get_report_errors
+from .._io_helpers import CONFIG
 
 SWMM_PATH = None
 
 
 def get_swmm_command_line(swmm_path, inp, rpt, out):
-    cmd = (swmm_path, inp, rpt, out)
+    cmd = (str(swmm_path), str(inp), str(rpt), str(out))
     return cmd, inp, rpt, out
 
 
@@ -31,22 +33,25 @@ def infer_swmm_path():
 
     # WINDOWS
     if _platform.startswith("win"):
-        sys_path = os.environ['PATH'].split(';')
-        possible_exe = [fn
-                        for pth in sys_path if os.path.isdir(pth)
-                        for fn in os.listdir(pth) if 'swmm' in fn and fn.endswith('.exe') and fn.lower() != 'epaswmm5.exe']
+        if CONFIG['exe_path'] is not None:
+            swmm_path = CONFIG['exe_path']
+        else:
+            sys_path = os.environ['PATH'].split(';')
+            possible_exe = [fn
+                            for pth in sys_path if os.path.isdir(pth)
+                            for fn in os.listdir(pth) if (('swmm' in fn) and fn.endswith('.exe') and (fn.lower() != 'epaswmm5.exe'))]
 
-        swmm_path = None
-        # script_path = '???/swmm5.exe'
-        for program_files in ('PROGRAMFILES', 'PROGRAMFILES(X86)'):
-            for version in ('5.1', '5.1.015', '5.1.014', '5.1.013', '5.2.0', '5.2.0 (64-bit)'):
-                for fn_exe in ('runswmm.exe', 'swmm5.exe'):
-                    script_path = os.path.join(os.environ[program_files], 'EPA SWMM {}'.format(version), fn_exe)
-                    if os.path.isfile(script_path):
-                        swmm_path = script_path
-                        break
-            if swmm_path is not None:
-                break
+            swmm_path = None
+            # script_path = '???/swmm5.exe'
+            for program_files in ('PROGRAMFILES', 'PROGRAMFILES(X86)'):
+                for version in ('5.1', '5.1.015', '5.1.014', '5.1.013', '5.2.0', '5.2.0 (64-bit)'):
+                    for fn_exe in ('runswmm.exe', 'swmm5.exe'):
+                        script_path = os.path.join(os.environ[program_files], 'EPA SWMM {}'.format(version), fn_exe)
+                        if os.path.isfile(script_path):
+                            swmm_path = script_path
+                            break
+                if swmm_path is not None:
+                    break
 
     try:
         get_swmm_version_base(swmm_path)
@@ -57,9 +62,12 @@ def infer_swmm_path():
     return swmm_path
 
 
-def get_swmm_command_line_auto(inp, rpt_dir=None, out_dir=None, create_out=True, swmm_path=None):
-    base_filename = os.path.basename(inp).replace('.inp', '')
-    inp_dir = os.path.dirname(inp)
+def get_swmm_command_line_auto(fn_inp, rpt_dir=None, out_dir=None, create_out=True, swmm_path=None):
+    if isinstance(fn_inp, str):
+        fn_inp = Path(fn_inp)
+
+    base_filename = fn_inp.stem
+    inp_dir = fn_inp.parent
 
     # -----------------------
     if rpt_dir is None:
@@ -80,7 +88,7 @@ def get_swmm_command_line_auto(inp, rpt_dir=None, out_dir=None, create_out=True,
     if swmm_path is None:
         swmm_path = infer_swmm_path()
 
-    return get_swmm_command_line(swmm_path, inp, rpt, out)
+    return get_swmm_command_line(swmm_path, fn_inp, rpt, out)
 
 
 def run_swmm_stdout(command_line, sep='_' * 100):
