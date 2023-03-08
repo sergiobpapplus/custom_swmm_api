@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.7 (2023-03-08)
+### Fix
+* Added lost swmm 5.2 sections to input converter ([`7249f72`](https://gitlab.com/markuspichler/swmm_api/-/commit/7249f72eeb6eb934fc53ad760818feaf9243c5aa))
+
 ## v0.4.6 (2023-03-07)
 ### Fix
 * Added config for path to default swmm exe ([`2807d8f`](https://gitlab.com/markuspichler/swmm_api/-/commit/2807d8f68842fcddbd397614c39411dee088b81d))
