@@ -65,5 +65,9 @@ SECTION_TYPES = {
     # -----
     LID_CONTROLS: LIDControl,
     LID_USAGE: LIDUsage,
+    # -----
+    STREET: Street,
+    INLETS: Inlet,
+    INLET_USAGE: InletUsage,
 }
 """objects or section class for a section in the inp-file"""

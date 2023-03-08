@@ -24,8 +24,7 @@ classifiers = [
     "Intended Audience :: Science/Research",
 ]
 dependencies = [
-    "numpy",
-    "pandas",
+    "pandas",  # and its requirement "numpy"
     "tqdm"
 ]
 dynamic = ["version"]
