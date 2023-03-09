@@ -1110,7 +1110,7 @@ class Street(BaseSectionObject):
     """
     _identifier = IDENTIFIERS.name
     _table_inp_export = True
-    _section_label = STREET
+    _section_label = STREETS
 
     def __init__(self, name, width_crown, height_curb, slope, n_road, depth_gutter=0, width_gutter=0, sides=2,
                  width_backing=0, slope_backing=0, n_backing=0):
@@ -1218,8 +1218,7 @@ class Inlet(BaseSectionObject):
             ; A custom inlet using Curve1 as its capture curve
             InletType3 CUSTOM Curve1
     """
-    _identifier = IDENTIFIERS.name
-    _table_inp_export = False
+    _identifier = (IDENTIFIERS.name, 'kind')
     _section_label = INLETS
 
     class TYPES:
@@ -1241,47 +1240,50 @@ class Inlet(BaseSectionObject):
         """Design data for storm drain inlets."""
         self.name = name
         self.kind = kind
-        # self.length = length
-        # self.width = width
-        # self.height = height
-        # self.grate_type = grate_type
-        # self.area_open = area_open
-        # self.velocity_splash = velocity_splash
-        # self.throat_angle = throat_angle
 
-    # def __new__(cls, *args, **kwargs):
-    #     pass
+    @classmethod
+    def from_inp_line(cls, name, kind, *line_args):
+        return _INLET_DICT[kind].from_inp_line(name, kind, *line_args)
 
 
 class InletGrate(Inlet):
     def __init__(self, name, kind=Inlet.TYPES.GRATE, length=None, width=None, grate_type=None, area_open=NaN,
                  velocity_splash=NaN):
         super().__init__(name, kind)
-        self.length = length
-        self.width = width
-        self.grate_type = grate_type
+        self.length = float(length)
+        self.width = float(width)
+        self.grate_type = str(grate_type)
         self.area_open = area_open
         self.velocity_splash = velocity_splash
 
 
 class InletCurb(Inlet):
-    def __init__(self, name, kind=Inlet.TYPES.CURB, length=None, height=None):
+    def __init__(self, name, kind=Inlet.TYPES.CURB, length=None, height=None, throat_angle=NaN):
         super().__init__(name, kind)
-        self.length = length
-        self.height = height
+        self.length = float(length)
+        self.height = float(height)
+        self.throat_angle = throat_angle
 
 
 class InletSlotted(Inlet):
     def __init__(self, name, kind=Inlet.TYPES.SLOTTED, length=None, width=None):
         super().__init__(name, kind)
-        self.length = length
-        self.width = width
+        self.length = float(length)
+        self.width = float(width)
 
 
 class InletCustom(Inlet):
     def __init__(self, name, kind=Inlet.TYPES.CUSTOM, curve=None):
         super().__init__(name, kind)
         self.curve = curve
+
+
+_INLET_DICT = {
+    Inlet.TYPES.GRATE  : InletGrate,
+    Inlet.TYPES.CURB   : InletCurb,
+    Inlet.TYPES.SLOTTED: InletSlotted,
+    Inlet.TYPES.CUSTOM : InletCustom,
+}
 
 
 class InletUsage(BaseSectionObject):
