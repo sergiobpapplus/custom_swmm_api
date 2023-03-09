@@ -16,22 +16,19 @@ from ._type_converter import type2str, is_equal, txt_to_lines
 from .section_labels import *
 from .section_lists import LINK_SECTIONS, NODE_SECTIONS
 
-SWMM_VERSION = '5.1.015'
-
 COMMENT_STR = ';;'
+
 SEP_INP = COMMENT_STR + "_" * 100
 COMMENT_EMPTY_SECTION = COMMENT_STR + ' No Data'
 
+_TYPES_NO_COPY = (int, float, str, datetime.date, datetime.time)
 
-class SwmmInputWarning(UserWarning):
-    pass
+
+class SwmmInputWarning(UserWarning): ...
 
 
 def head_to_str(head):
     return f'\n\n{SEP_INP}\n[{head}]\n'
-
-
-_TYPES_NO_COPY = (int, float, str, datetime.date, datetime.time)
 
 
 ########################################################################################################################
@@ -39,7 +36,7 @@ class CustomDict:
     """
     Custom implementation of dict.
 
-    Used for SwmmInput, InpSection and InpSectionGeneric.
+    Used for SwmmInput, InpSectionABC (InpSection and InpSectionGeneric).
 
     Imitates :class:`collections.UserDict` (:term:`dict-like <mapping>`), but operations only effect ``self._data``.
     """
@@ -115,11 +112,11 @@ class CustomDict:
     # def id(self):
     #     return id(self)
 
-
-########################################################################################################################
-class InpSectionGeneric(CustomDict):
+class InpSectionABC(ABC, CustomDict):
     """
-    abstract class for ``.inp``-file sections without objects
+    Abstract class for ``.inp``-file sections without objects.
+
+    Abstract Class to define common functions
 
     Notes:
         Acts :term:`dict-like <mapping>`
@@ -130,9 +127,85 @@ class InpSectionGeneric(CustomDict):
     _label = ''
     """str: label of the section"""
 
+    @abc.abstractmethod
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._inp = None
+
+    def set_parent_inp(self, inp):
+        """
+        Set inp-data object related to this section.
+
+        Args:
+            inp (SwmmInput): inp-data object related to this section.
+        """
+        self._inp = inp
+
+    def get_parent_inp(self):
+        """
+        Get inp-data object related to this section.
+
+        Returns:
+            SwmmInput: inp-data object related to this section.
+        """
+        return self._inp
+
+    @classmethod
+    @abc.abstractmethod
+    def from_inp_lines(cls, lines, section_class=None):
+        """
+        Read ``.inp``-file lines and create a new section.
+
+        Args:
+            lines (str | list[list[str]]): Lines in the section of the ``.inp``-file
+
+        Returns:
+            InpSectionABC: New section.
+        """
+        ...
+
+    @abc.abstractmethod
+    def to_inp_lines(self, fast=False, sort_objects_alphabetical=False):
+        """
+        Convert the section to ``.inp``-file.lines.
+
+        Args:
+            fast (bool): speeding up conversion
+
+                - :obj:`True`: If no special formation of the input file is needed.
+                - :obj:`False`: Section is converted into a table to prettify string output (slower).
+
+            sort_objects_alphabetical (bool): if objects in a section should be sorted alphabetical |
+                default: use order of the read inp-file and append new objects
+
+        Returns:
+            str: Lines of the ``.inp``-file section.
+        """
+        ...
+
+    def create_new_empty(self):
+        """
+        Create a new empty section of this kind of section.
+
+        Returns:
+            InpSectionABC: New empty section.
+        """
+        return type(self)()
+
+
+########################################################################################################################
+class InpSectionGeneric(InpSectionABC, ABC):
+    """
+    Abstract class for ``.inp``-file sections without objects.
+
+    Notes:
+        Acts :term:`dict-like <mapping>`
+
+    Attributes:
+        _label (str): label of the section
+    """
+    def __init__(self, *args, **kwargs):
+        InpSectionABC.__init__(self, *args, **kwargs)
 
     def __setitem__(self, key, item):
         super().__setitem__(key, item)
@@ -144,37 +217,6 @@ class InpSectionGeneric(CustomDict):
             super().__delattr__(key)
         super().__delitem__(key)
 
-    def set_parent_inp(self, inp):
-        """
-        Set inp-data object related to this section.
-
-        Args:
-            inp (SwmmInput): inp-data object related to this section.
-        """
-        self._inp = inp
-
-    def get_parent_inp(self):
-        """
-        Get inp-data object related to this section.
-
-        Returns:
-            SwmmInput: inp-data object related to this section.
-        """
-        return self._inp
-
-    @classmethod
-    def from_inp_lines(cls, lines):
-        """
-        Read ``.inp``-file lines and create a new section.
-
-        Args:
-            lines (str | list[list[str]]): Lines in the section of the ``.inp``-file
-
-        Returns:
-            InpSectionGeneric: New section.
-        """
-        pass
-
     def to_inp_lines(self, fast=False, sort_objects_alphabetical=False):
         """
         Convert the section to ``.inp``-file.lines.
@@ -185,6 +227,9 @@ class InpSectionGeneric(CustomDict):
                 - :obj:`True`: If no special formation of the input file is needed.
                 - :obj:`False`: Section is converted into a table to prettify string output (slower).
 
+            sort_objects_alphabetical (bool): if objects in a section should be sorted alphabetical |
+                default: use order of the read inp-file and append new objects
+
         Returns:
             str: Lines of the ``.inp``-file section.
         """
@@ -192,53 +237,22 @@ class InpSectionGeneric(CustomDict):
         max_len = len(max(self.keys(), key=len))
         return '\n'.join(f'{(key if isinstance(key, str) else " ".join(key)).ljust(max_len)}  {type2str(value)}' for key, value in self.items())
 
-    @classmethod
-    def create_section(cls):
-        """
-        Create a new empty section.
-
-        Returns:
-            cls(): Empty section.
-        """
-        return cls()
-
 
 ########################################################################################################################
-class InpSection(CustomDict):
-    """
-    class for ``.inp``-file sections with objects (i.e. nodes, links, subcatchments, raingages, ...)
-    """
+class InpSection(InpSectionABC):
+    """Class for ``.inp``-file sections with objects (i.e. nodes, links, subcatchments, raingages, ...)."""
 
     def __init__(self, section_object):
         """
         create an object for ``.inp``-file sections with objects (i.e. nodes, links, subcatchments, raingages, ...)
 
         Args:
-            section_object (BaseSectionObject-like): object class which is stored in this section.
+            section_object (type[BaseSectionObject]): object class which is stored in this section.
                 This information is used to set the index of the section and
                 to decide if the section can be exported (converted to a string) as a table.
         """
         super().__init__()
         self._section_object = section_object
-        self._inp = None
-
-    def set_parent_inp(self, inp):
-        """
-        Set inp-data object related to this section.
-
-        Args:
-            inp (SwmmInput): inp-data object related to this section.
-        """
-        self._inp = inp
-
-    def get_parent_inp(self):
-        """
-        Get inp-data object related to this section.
-
-        Returns:
-            SwmmInput: inp-data object related to this section.
-        """
-        return self._inp
 
     # def __repr__(self):
     #     # return CustomDict.__repr__(self)
@@ -455,7 +469,7 @@ class InpSection(CustomDict):
         Returns:
             InpSection: new empty section
         """
-        return type(self)(self._section_object)
+        return type(self)(self._section_object)  # similar to `self._section_object.create_section()`
 
     def copy(self):
         """
@@ -781,7 +795,7 @@ class BaseSectionObject(ABC):
         An empty section will be created when no lines are given.
 
         Args:
-            lines (list[list] | optional): lines of values for multiple objects in this section
+            lines (list[list] or str or optional): lines of values for multiple objects in this section
 
         Returns:
             InpSection: new section of this object type
@@ -814,7 +828,7 @@ class BaseSectionObject(ABC):
         Create a new section for the ``.inp``-file of this object and adds objects described in `lines`
 
         Args:
-            lines (list[list]): lines of values for multiple objects in this section
+            lines (list[list] or str or optional): lines of values for multiple objects in this section
 
         Returns:
             InpSection: new section of this object type
@@ -840,7 +854,7 @@ class BaseSectionObject(ABC):
 
 
 ########################################################################################################################
-def dataframe_to_inp_string(df):
+def dataframe_to_inp_string(df, index=True):
     """
     Convert a data-frame into a multi-line tabular string for inp-file creation.
 
@@ -848,6 +862,7 @@ def dataframe_to_inp_string(df):
 
     Args:
         df (pandas.DataFrame): section table
+        index (bool): add index to string
 
     Returns:
         str: .inp file conform string for one section
@@ -876,11 +891,15 @@ def dataframe_to_inp_string(df):
                 # because pandas 1.0
                 # c.index.levels[0].name = f';{c.index.names[0].name}'
 
+    if not index:
+        c.columns = [COMMENT_STR + c.columns[0]] + list(c.columns)[1:]
+
     return c.applymap(type2str).to_string(sparsify=False,
                                           line_width=999999,
                                           max_rows=999999,
                                           max_cols=999999,
-                                          max_colwidth=999999)
+                                          max_colwidth=999999,
+                                          index=index)
 
 
 ########################################################################################################################
@@ -906,12 +925,18 @@ def convert_section(head, lines, converter):
             try:
                 return section_.from_inp_lines(lines)
             except ValueError as e:
-                raise SwmmInputWarning(str(e) + f'\n{head}\n{section_}')
+                raise SwmmInputWarning(str(e) + f'\nClass ({section_}) for Section "{head}" has wrong implementation of the function "from_inp_lines". Section will not be converted.')
 
         else:
-            warnings.warn(f'Type of converter ({type(section_)}) for Section "{head}" not implemented. Section will not be converted.', SwmmInputWarning)
+            # warnings.warn(f'Type of converter ({type(section_)}) for Section "{head}" not implemented. Section will not be converted.', SwmmInputWarning)
+            warnings.warn(f'Type of converter ({type(section_)}) for Section "{head}" not implemented. Section will be converted using the DummySectionObject.', SwmmInputWarning)
+            from swmm_api.input_file.helpers_dummy import DummySectionObject
+            return DummySectionObject.from_inp_lines(lines)
     else:
-        warnings.warn(f'Section "{head}" not implemented. Section will not be converted.', SwmmInputWarning)
+        # warnings.warn(f'Section "{head}" not implemented. Section will not be converted.', SwmmInputWarning)
+        warnings.warn(f'Section "{head}" not implemented. Section will be converted using the DummySectionObject.', SwmmInputWarning)
+        from swmm_api.input_file.helpers_dummy import DummySectionObject
+        return DummySectionObject.from_inp_lines(lines)
 
     return lines.replace(SEP_INP, '').strip()
 
@@ -934,6 +959,9 @@ SECTIONS_ORDER_MP = ([
 
                          LOSSES,
                          XSECTIONS,
+                         STREETS,
+                         INLETS,
+                         INLET_USAGE,
                          TRANSECTS,
 
                          CURVES,
@@ -974,6 +1002,9 @@ SECTION_ORDER_DEFAULT = [TITLE,
                          WEIRS,
                          OUTLETS,
                          XSECTIONS,
+                         STREETS,
+                         INLETS,
+                         INLET_USAGE,
                          TRANSECTS,
                          LOSSES,
                          CONTROLS,
@@ -1097,6 +1128,7 @@ def iter_section_lines(section, sort_objects_alphabetical=False):
     # ----------------------
     elif isinstance(section, InpSectionGeneric):
         yield section.to_inp_lines(fast=True)
+
     elif isinstance(section, InpSection):  # V4
         for line in section.iter_inp_lines(sort_objects_alphabetical=sort_objects_alphabetical):
             yield line

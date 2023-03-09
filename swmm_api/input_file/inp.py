@@ -324,33 +324,36 @@ class SwmmInput(CustomDict):
             for line in iter_section_lines(self._data[head], sort_objects_alphabetical=False):
                 print(line)
 
-    def check_for_section(self, obj):
+    def check_for_section(self, section_class):
         """
         Check if a section is in the inp-data, and create it if not present.
 
         Args:
-            obj (BaseSectionObject or InpSectionGeneric): section object
+            section_class(type[BaseSectionObject] or type[InpSectionGeneric]): section object class.
 
         Returns:
             swmm_api.input_file.helpers.InpSection | swmm_api.input_file.helpers.InpSectionGeneric: section of inp
         """
-        if hasattr(obj, '_section_label'):
-            sec = obj._section_label
-        elif hasattr(obj, '_label'):
-            sec = obj._label
+        if hasattr(section_class, '_section_label'):  # BaseSectionObject
+            section_label = section_class._section_label
+            new_empty_section = section_class.create_new_empty()
+        elif hasattr(section_class, '_label'):  # InpSectionGeneric
+            section_label = section_class._label
+            new_empty_section = section_class()
         else:
-            warnings.warn(f'Unknown Section Object type "{type(obj)}"', SwmmInputWarning)
+            warnings.warn(f'Unknown Section Object type "{type(section_class)}" for function "check_for_section". -> Ignore', SwmmInputWarning)
+            return
 
-        if sec not in self:
-            self[sec] = obj.create_section()
-        return self[sec]
+        if section_label not in self:
+            self[section_label] = new_empty_section
+        return self[section_label]
 
     def add_new_section(self, section):
         """
         Add new section to the inp-data.
 
         Args:
-            section (InpSection, InpSectionGeneric):
+            section (InpSectionABC or InpSection or InpSectionGeneric):
 
         .. Important::
             works inplace
@@ -942,6 +945,39 @@ class SwmmInput(CustomDict):
         """
         if LID_USAGE in self:
             return self[LID_USAGE]
+
+    @property
+    def STREETS(self):
+        """
+        STREETS section
+
+        Returns:
+            dict[str, Street] | InpSection: Street section
+        """
+        if STREETS in self:
+            return self[STREETS]
+
+    @property
+    def INLETS(self):
+        """
+        INLETS section
+
+        Returns:
+            dict[str, Inlet] | InpSection: Inlet section
+        """
+        if INLETS in self:
+            return self[INLETS]
+
+    @property
+    def INLET_USAGE(self):
+        """
+        INLET_USAGE section
+
+        Returns:
+            dict[str, InletUsage] | InpSection: InletUsage section
+        """
+        if INLET_USAGE in self:
+            return self[INLET_USAGE]
 
 
 read_inp_file = SwmmInput.read_file
