@@ -13,7 +13,6 @@ import datetime
 from io import SEEK_END, SEEK_SET
 from pathlib import Path
 
-from tqdm.auto import tqdm
 from warnings import warn
 
 from .definitions import OBJECTS, VARIABLES
@@ -269,7 +268,7 @@ class SwmmOutExtract(BinaryReader):
         _bytes_per_period *= _RECORDSIZE
         return _bytes_per_period
 
-    def _get_selective_results(self, columns, processes=1):
+    def _get_selective_results(self, columns, processes=1, show_progress=True):
         """
         get results of selective columns in .out-file
 
@@ -278,6 +277,8 @@ class SwmmOutExtract(BinaryReader):
 
         Args:
             columns (list[tuple]): list of column identifier tuple with [(kind, label, variable), ...]
+            processes (int): number of parallel processes.
+            show_progress (bool): show a progress bar.
 
         Returns:
             dict[str, list]: dictionary where keys are the column names ('/' as separator) and values are the list of result values
@@ -339,6 +340,11 @@ class SwmmOutExtract(BinaryReader):
         # -------------
         from functools import partial
         from itertools import cycle
+
+        if show_progress:
+            from tqdm.auto import tqdm
+        else:
+            tqdm = lambda _, desc=None: _
 
         if processes == 1:
             for period_offset in tqdm(variable, desc=f'{repr(self)}.get_selective_results(n_cols={len(columns)})'):

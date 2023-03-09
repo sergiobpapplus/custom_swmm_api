@@ -9,7 +9,7 @@ import datetime
 import warnings
 from itertools import product
 from numpy import dtype, fromfile, frombuffer
-from pandas import date_range, DataFrame, MultiIndex
+from pandas import date_range, DataFrame, MultiIndex, Index
 from pandas._libs import OutOfBoundsDatetime
 
 from .extract import SwmmOutExtract
@@ -74,7 +74,7 @@ class SwmmOutput(SwmmOutExtract):
         try:
             self.index = date_range(self.start_date, periods=self.n_periods, freq=self.report_interval)
         except OutOfBoundsDatetime:
-            self.index = [self.start_date * i for i in range(self.n_periods)]
+            self.index = Index([self.start_date + self.report_interval * i for i in range(self.n_periods)])
 
     def __repr__(self):
         return f'SwmmOutput(file="{self.filename}")'
@@ -147,7 +147,7 @@ class SwmmOutput(SwmmOutExtract):
             del self._frame['datetime']
         return self._frame
 
-    def get_part(self, kind=None, label=None, variable=None, slim=False, processes=1):
+    def get_part(self, kind=None, label=None, variable=None, slim=False, processes=1, show_progress=True):
         """
         Get specific columns of the data.
 
@@ -200,6 +200,8 @@ class SwmmOutput(SwmmOutExtract):
                     - ``PET`` or :attr:`~swmm_api.output_file.definitions.SYSTEM_VARIABLES.PET`
 
             slim (bool): set to ``True`` to speedup the code if there are a lot of objects and just few time-steps in the out-file.
+            processes (int): number of parallel processes for the slim-reading.
+            show_progress (bool): show a progress bar for the slim-reading.
 
         Returns:
             pandas.DataFrame | pandas.Series: Filtered data.
@@ -207,7 +209,7 @@ class SwmmOutput(SwmmOutExtract):
         """
         columns = self._filter_part_columns(kind, label, variable)
         if slim:
-            values = self._get_selective_results(columns, processes=processes)
+            values = self._get_selective_results(columns, processes=processes, show_progress=show_progress)
         else:
             values = self.to_numpy()[list(map('/'.join, columns))]
 
