@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.8 (2023-03-09)
+### Fix
+* Added InpSectionDummy and DummySectionObject classes for unknown sections in the inp-file ([`1949f6a`](https://gitlab.com/markuspichler/swmm_api/-/commit/1949f6ac43e4e445e2e229c78aba64562f3115bc))
+* Added setter for OPTIONS section ([`d361916`](https://gitlab.com/markuspichler/swmm_api/-/commit/d361916f5249da5dd32ad74ec5d12d7e647eb72c))
+* Inlet object was broken in the reader ([`9a08149`](https://gitlab.com/markuspichler/swmm_api/-/commit/9a08149c1565a68055a2b84c49c9b5661f7dc6e5))
+* Added swmm-version to CONFIG for syntax differences in inp-file creation ([`8c08851`](https://gitlab.com/markuspichler/swmm_api/-/commit/8c0885109eda84e31b5664a5a633b2f82b4d8a63))
+
+### Documentation
+* Added example for custom inp section ([`f797dac`](https://gitlab.com/markuspichler/swmm_api/-/commit/f797dac6bbe25018c264a81ef2fc357db8be8110))
+
 ## v0.4.7 (2023-03-08)
 ### Fix
 * Added lost swmm 5.2 sections to input converter ([`7249f72`](https://gitlab.com/markuspichler/swmm_api/-/commit/7249f72eeb6eb934fc53ad760818feaf9243c5aa))
