@@ -53,7 +53,7 @@ CONSTANT         12
 DRY_ONLY         NO
 
 [TEMPERATURE]
-;;Data Element     Values     
+;;Data Element     Values
 WINDSPEED MONTHLY  1 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
 SNOWMELT           2 0.5 0.6 0.0 50.0 0.0
 ADC IMPERVIOUS     .5 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
@@ -155,7 +155,7 @@ S_IT_4           0.2        0.2        6.5        7          0
 asd              BC
 asd              SURFACE    0.0        0.0        0.1        1.0        5         
 asd              SOIL       12         0.5        0.2        0.1        0.5        10.0       3.5       
-asd              STORAGE    1          0.75       0.5        0         
+asd              STORAGE    1          0.75       0.5        0          NO        
 asd              DRAIN      0          0.5        6          6          0          0                    
 
 [LID_USAGE]
@@ -213,9 +213,9 @@ J_out            4954       0          0          0          0
 O2               4954       FREE                        NO                       
 
 [STORAGE]
-;;Name           Elev.    MaxDepth   InitDepth  Shape      Curve Name/Params            N/A      Fevap    Psi      Ksat     IMD     
-;;-------------- -------- ---------- ----------- ---------- ---------------------------- -------- --------          -------- --------
-SU2              4956     6          0          TABULAR    SU2                          0        0       
+;;Name           Elev.    MaxDepth   InitDepth  Shape      Curve Type/Params            SurDepth  Fevap    Psi      Ksat     IMD     
+;;-------------- -------- ---------- ----------- ---------- ---------------------------- --------- --------          -------- --------
+SU2              4956     6          0          TABULAR    SU2                          0         0       
 
 [CONDUITS]
 ;;Name           From Node        To Node          Length     Roughness  InOffset   OutOffset  InitFlow   MaxFlow   
@@ -234,7 +234,7 @@ C11              J11              SU2              89.00      0.016      0      
 C12              J12              J1               281.7      0.05       0          0          0          0         
 C13              J14              J13              275.7      0.016      0          0          0          0         
 C14              J13              J2               157.48     0.016      0          0          0          0         
-C15              J15              J3               444.75     0.05       0          0          0          0         
+Street1          J15              J3               444.75     0.05       0          0          0          0         
 C16              J17              J5               200.16     0.05       0          0          0          0         
 C17              J16              J7               300.42     0.016      0          0          0          0         
 C_out            J_out            O2               100        0.01       0          0          0          0         
@@ -277,13 +277,29 @@ C11              CIRCULAR     4.75             0          0          0          
 C12              TRAPEZOIDAL  3                5          5          5          1                    
 C13              TRAPEZOIDAL  1.5              0          0.0001     25         1                    
 C14              TRAPEZOIDAL  1.5              0          0.0001     25         1                    
-C15              TRAPEZOIDAL  3                5          5          5          1                    
+Street1          STREET       StreetQS        
 C16              TRAPEZOIDAL  3                5          5          5          1                    
 C17              TRAPEZOIDAL  1.5              0          0.0001     25         1                    
 C_out            CIRCULAR     4.75             0          0          0          1                    
 Or1              RECT_CLOSED  0.16             0.25       0          0
 Or2              RECT_CLOSED  0.5              2.25       0          0
 W1               RECT_OPEN    2.72             1.6        0          0         
+
+[STREETS]
+;;Name           Tcrown   Hcurb    Sx       nRoad    a        W        Sides    Tback    Sback    nBack   
+;;-------------- -------- -------- -------- -------- -------- -------- -------- -------- -------- --------
+StreetQS         20       0.5      4        0.016    0        0        1        20       4        0.016   
+
+[INLETS]
+;;Name           Type             Parameters:
+;;-------------- ---------------- -----------
+ComboInlet       GRATE            2        2        P_BAR-50        
+ComboInlet       CURB             2        0.5      HORIZONTAL
+
+[INLET_USAGE]
+;;Conduit        Inlet            Node             Number    %Clogged  Qmax      aLocal    wLocal    Placement
+;;-------------- ---------------- ---------------- --------- --------- --------- --------- --------- --------- ---------
+Street1          ComboInlet       J1               1         0         0         0         0        
 
 [TRANSECTS]
 ;;Transect Data in HEC-2 format
@@ -302,6 +318,7 @@ RULE PUMP1A
 IF NODE J1 DEPTH >= 4
 THEN PUMP PUMP1 status = ON
 PRIORITY 1
+
 
 
 
@@ -378,7 +395,7 @@ J8               FLOW             ""               FLOW     1.0      1.0      1
 [DWF]
 ;;Node           Constituent      Baseline   Patterns  
 ;;-------------- ---------------- ---------- ----------
-J8               FLOW             2          ""
+J8               FLOW             2         
 
 [HYDROGRAPHS]
 ;;Hydrograph     Rain Gage/Month  Response R        T        K        Dmax     Drecov   Dinit   
@@ -535,12 +552,12 @@ Null                        0          0
 0.23-in                     1:45       0.033     
 0.23-in                     1:50       0.031     
 0.23-in                     1:55       0.031     
-
-Year3000                 01/01/3000 0:00      0.068
-Year3000                 01/01/3000 0:05      0.078
-Year3000                 01/01/3000 0:10      0.089
-Year3000                 01/01/3000 0:15      0.150
-Year3000                 01/01/3000 0:20      0.190
+;
+Year3000         01/01/3000 0:00       0.068     
+Year3000         01/01/3000 0:05       0.078     
+Year3000         01/01/3000 0:10       0.089     
+Year3000         01/01/3000 0:15       0.150     
+Year3000         01/01/3000 0:20       0.190     
 
 [PATTERNS]
 ;;Name           Type       Multipliers
@@ -576,13 +593,13 @@ Link       C11              Culvert
 Link       C12              Swale           
 Link       C13              Gutter          
 Link       C14              Gutter          
-Link       C15              Swale           
+Link       Street1          Swale           
 Link       C16              Swale           
 Link       C17              Gutter          
 Link       C_out            Culvert         
 
 [MAP]
-DIMENSIONS -0.123 0.000 1423.123 1475.000
+DIMENSIONS -262.777 -70.372 1644.373 1517.866
 Units      Feet
 
 [COORDINATES]
@@ -635,12 +652,12 @@ C9               1233.357           721.111
 C9               1238.532           715.936           
 C9               1235.082           674.532           
 C9               1247.158           646.930           
-C15              146.515            676.257           
-C15              208.620            726.287           
-C15              239.673            793.567           
-C15              251.749            876.374           
-C15              291.427            912.602           
-C15              355.257            929.854           
+Street1          146.515            676.257           
+Street1          208.620            726.287           
+Street1          239.673            793.567           
+Street1          251.749            876.374           
+Street1          291.427            912.602           
+Street1          355.257            929.854           
 C16              553.343            778.096           
 C17              793.538            615.711           
 C17              849.358            695.212           
@@ -959,6 +976,9 @@ S_IT_4           930.539            1049.216
 S_IT_4           810.975            1032.292          
 S_IT_4           679.947            1033.384          
 
+;;Storage Node   X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+
 [SYMBOLS]
 ;;Gage           X-Coord            Y-Coord           
 ;;-------------- ------------------ ------------------
@@ -986,7 +1006,7 @@ Null             -176.088           1104.094
 
 
 [BACKDROP]
-FILE       "Z:\home\markus\PycharmProjects\swmm_api\examples\epaswmm5_apps_manual\Site-Post.jpg"
+FILE       "C:\Users\mp\PycharmProjects\swmm_api\examples\epaswmm5_apps_manual\Site-Post.jpg"
 DIMENSIONS -0.123 0.000 1423.123 1475.000
 
 [PROFILES]

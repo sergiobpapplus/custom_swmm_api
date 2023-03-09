@@ -14,3 +14,4 @@ Examples
    hotstart_file_reader
    gis_data_to_swmm
    how_to_add_control_rules
+   custom_inp_sections

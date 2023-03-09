@@ -6,6 +6,7 @@ cp ../examples/out_file_reader.ipynb ./examples/out_file_reader.ipynb
 cp ../examples/inp_file_macros.ipynb ./examples/inp_file_macros.ipynb
 cp ../examples/inp_file_structure.ipynb ./examples/inp_file_structure.ipynb
 cp ../examples/hotstart_file_reader.ipynb ./examples/hotstart_file_reader.ipynb
+cp ../examples/custom_inp_sections.ipynb ./examples/custom_inp_sections.ipynb
 
 cp ../README.md ./README.md
 cp ../CHANGES.md ./CHANGES.md
