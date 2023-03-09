@@ -202,18 +202,20 @@ def set_times(inp, start, end, head=None, tail=None):
     else:
         sim_start = start - head
 
-    if tail is None:
-        end = end
-    else:
-        end = end + tail
+    if tail is not None:
+        end += tail
 
     report_start = start
-    inp[OPTIONS]['START_DATE'] = sim_start.date()
-    inp[OPTIONS]['START_TIME'] = sim_start.time()
-    inp[OPTIONS]['REPORT_START_DATE'] = report_start.date()
-    inp[OPTIONS]['REPORT_START_TIME'] = report_start.time()
-    inp[OPTIONS]['END_DATE'] = end.date()
-    inp[OPTIONS]['END_TIME'] = end.time()
+
+    inp.OPTIONS.set_start(sim_start)
+    inp.OPTIONS.set_report_start(report_start)
+    inp.OPTIONS.set_end(end)
+    # inp[OPTIONS]['START_DATE'] = sim_start.date()
+    # inp[OPTIONS]['START_TIME'] = sim_start.time()
+    # inp[OPTIONS]['REPORT_START_DATE'] = report_start.date()
+    # inp[OPTIONS]['REPORT_START_TIME'] = report_start.time()
+    # inp[OPTIONS]['END_DATE'] = end.date()
+    # inp[OPTIONS]['END_TIME'] = end.time()
     return inp
 
 

@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime
 from typing import Literal
 
 from .._type_converter import infer_type, type2str
@@ -174,7 +174,6 @@ class OptionSection(InpSectionGeneric):
 
         ALLOW_PONDING determines whether excess water is allowed to collect atop nodes
         and be re-introduced into the system as conditions permit. The default is NO ponding.
-
         In order for ponding to actually occur at a particular node, a non-zero value for its
         Ponded Area attribute must be used.
 
@@ -200,6 +199,7 @@ class OptionSection(InpSectionGeneric):
         default is 12 midnight (0:00:00).
 
         END_DATE is the date when the simulation is to end. The default is the start date.
+        
         END_TIME is the time of day on the ending date when the simulation will end. The
         default is 24:00:00.
 
@@ -305,6 +305,7 @@ class OptionSection(InpSectionGeneric):
             data[key] = infer_type(line[0])
         return data
 
+    # getter and setter #######################################################################################################################
     def set_flow_units(self, value:Literal['CFS', 'GPM', 'MGD', 'CMS', 'LPS', 'MLD']='CFS'):
         """
         Makes a choice of flow units.
@@ -323,118 +324,418 @@ class OptionSection(InpSectionGeneric):
 
         Args:
             value (str): Model for computing infiltration of rainfall into the upper soil zone of subcatchments.
-
-        Returns:
-
-        """
+"""
         self['INFILTRATION'] = value
 
     def set_flow_routing(self, value: Literal['STEADY', 'KINWAVE', 'DYNWAVE']='KINWAVE'):
         """
-        Determines which method is used to route flows through the
-        drainage system. STEADY refers to sequential steady state routing (i.e. hydrograph
-        translation), KINWAVE to kinematic wave routing, DYNWAVE to dynamic wave routing.
-        The default routing method is KINWAVE.
+        Determines which method is used to route flows through the drainage system. 
+        
+        `STEADY` refers to sequential steady state routing (i.e. hydrograph translation), 
+        `KINWAVE` to kinematic wave routing, 
+        `DYNWAVE` to dynamic wave routing.
+        
+        The default routing method is `KINWAVE`.
 
         Args:
             value:
-
-        Returns:
-
         """
         self['FLOW_ROUTING'] = value
 
-    # def set_link_offsets(self, value):
-    #     self['___'] = value
-    #
-    # def set_force_main_equation(self, value):
-    #     self['___'] = value
-    #
-    # def set_ignore_rainfall(self, value):
-    #     self['___'] = value
-    #
-    # def set_ignore_snowmelt(self, value):
-    #     self['___'] = value
-    #
-    # def set_ignore_groundwater(self, value):
-    #     self['___'] = value
-    #
-    # def set_ignore_rdii(self, value):
-    #     self['___'] = value
-    #
-    # def set_ignore_routing(self, value):
-    #     self['___'] = value
-    #
-    # def set_ignore_quality(self, value):
-    #     self['___'] = value
-    #
-    # def set_allow_ponding(self, value):
-    #     self['___'] = value
-    #
-    # def set_skip_steady_state(self, value):
-    #     self['___'] = value
-    #
-    # def set_sys_flow_tol(self, value):
-    #     self['___'] = value
-    #
-    # def set_lat_flow_tol(self, value):
-    #     self['___'] = value
-    #
-    # def set_start_date(self, value):
-    #     self['___'] = value
-    #
-    # def set_start_time(self, value):
-    #     self['___'] = value
-    #
-    # def set_end_date(self, value):
-    #     self['___'] = value
-    #
-    # def set_end_time(self, value):
-    #     self['___'] = value
-    #
-    # def set_report_start_date(self, value):
-    #     self['___'] = value
-    #
-    # def set_report_start_time(self, value):
-    #     self['___'] = value
-    #
-    # def set_sweep_start(self, value):
-    #     self['___'] = value
-    #
-    # def set_sweep_end(self, value):
-    #     self['___'] = value
-    #
-    # def set_dry_days(self, value):
-    #     self['___'] = value
-    #
-    # def set_report_step(self, value):
-    #     self['___'] = value
-    #
-    # def set_wet_step(self, value):
-    #     self['___'] = value
-    #
-    # def set_dry_step(self, value):
-    #     self['___'] = value
+    def set_link_offsets(self, value: Literal['DEPTH', 'ELEVATION']='DEPTH'):
+        """
+        LINK_OFFSETS determines the convention used to specify the position of a link offset above the invert of its connecting node. 
+        
+        DEPTH indicates that offsets are expressed as the distance between the node invert and the link while 
+        ELEVATION indicates that the absolute elevation of the offset is used.
+        
+        The default is DEPTH.
+
+        Args:
+            value (str): 
+        """
+        self['LINK_OFFSETS'] = value
+
+    def set_force_main_equation(self, value: Literal['H-W', 'D-W']='H-W'):
+        """
+        FORCE_MAIN_EQUATION establishes whether 
+        - the Hazen-Williams (H-W) or 
+        - the Darcy-Weisbach (D-W) 
+        equation will be used to compute friction losses for pressurized flow in conduits that have been assigned a Circular Force Main cross- section shape. 
+        
+        The default is H-W.
+        
+        Args:
+            value (str): FORCE_MAIN_EQUATION
+        """
+        self['FORCE_MAIN_EQUATION'] = value
+
+    def set_ignore_rainfall(self, value=False):
+        """
+        IGNORE_RAINFALL is set to YES (True) if all rainfall data and runoff calculations should be ignored.
+        
+        In this case SWMM only performs flow and pollutant routing based on user-supplied direct and dry weather inflows.
+        
+        The default is NO (False).
+
+        Args:
+            value (bool): 
+        """
+        self['IGNORE_RAINFALL'] = value
+
+    def set_ignore_snowmelt(self, value=False):
+        """
+        IGNORE_SNOWMELT is set to YES if snowmelt calculations should be ignored when a project file contains snow pack objects.
+
+        The default is NO.
+        
+        Args:
+            value: 
+         """
+        self['IGNORE_SNOWMELT'] = value
+
+    def set_ignore_groundwater(self, value=False):
+        """
+        IGNORE_GROUNDWATER is set to YES if groundwater calculations should be ignored when a project file contains aquifer objects.
+
+        The default is NO.
+        
+        Args:
+            value: 
+         """
+        self['IGNORE_GROUNDWATER'] = value
+
+    def set_ignore_rdii(self, value=False):
+        """
+        IGNORE_RDII is set to YES if rainfall dependent inflow/infiltration should be ignored when RDII unit hydrographs and RDII inflows have been supplied to a project file.
+
+        The default is NO.
+        
+        Args:
+            value: 
+         """
+        self['IGNORE_RDII'] = value
+
+    def set_ignore_routing(self, value=False):
+        """
+        IGNORE_ROUTING is set to YES if only runoff should be computed even if the project contains drainage system links and nodes.
+
+        The default is NO.
+        
+        Args:
+            value: 
+         """
+        self['IGNORE_ROUTING'] = value
+
+    def set_ignore_quality(self, value=False):
+        """
+        IGNORE_QUALITY is set to YES if pollutant washoff, routing, and treatment should be ignored in a project that has pollutants defined.
+
+        The default is NO.
+        
+        Args:
+            value: 
+         """
+        self['IGNORE_QUALITY'] = value
+
+    def set_allow_ponding(self, value=False):
+        """
+        ALLOW_PONDING determines whether excess water is allowed to collect atop nodes and be re-introduced into the system as conditions permit. 
+        
+        The default is NO ponding.
+        
+        In order for ponding to actually occur at a particular node, a non-zero value for its Ponded Area attribute must be used.
+        
+        Args:
+            value: 
+         """
+        self['ALLOW_PONDING'] = value
+
+    def set_skip_steady_state(self, value=False):
+        """
+        SKIP_STEADY_STATE should be set to YES if flow routing computations should be skipped during steady state periods of a simulation during which the last set of computed flows will be used.
+
+        A time step is considered to be in steady state if the percent difference between total system inflow and total system outflow is below the SYS_FLOW_TOL and the percent difference between current and previous lateral inflows are below the LAT_FLOW_TOL.
+
+        The default for this option is NO.
+        
+        Args:
+            value: 
+         """
+        self['SKIP_STEADY_STATE'] = value
+
+    def set_sys_flow_tol(self, value=5):
+        """
+        SYS_FLOW_TOL is the maximum percent difference between total system inflow and total system outflow which can occur in order for the SKIP_STEADY_STATE option to take effect.
+
+        The default is 5 percent.
+        
+        Args:
+            value: 
+         """
+        self['SYS_FLOW_TOL'] = value
+
+    def set_lat_flow_tol(self, value=5):
+        """
+        LAT_FLOW_TOL is the maximum percent difference between the current and previous lateral inflow at all nodes in the conveyance system in order for the SKIP_STEADY_STATE option to take effect.
+
+        The default is 5 percent.
+        
+        Args:
+            value: 
+         """
+        self['LAT_FLOW_TOL'] = value
+
+    def set_start_date(self, value):
+        """
+        START_DATE is the date when the simulation begins. 
+        
+        If not supplied, a date of 1/1/2002 is used.
+        
+        Args:
+            value: 
+         """
+        self['START_DATE'] = value
+
+    def set_start_time(self, value):
+        """
+        START_TIME is the time of day on the starting date when the simulation begins.
+
+        The default is 12 midnight (0:00:00).
+        
+        Args:
+            value: 
+         """
+        self['START_TIME'] = value
+
+    def set_end_date(self, value):
+        """
+        END_DATE is the date when the simulation is to end.
+
+        The default is the start date.
+        
+        Args:
+            value: 
+         """
+        self['END_DATE'] = value
+
+    def set_end_time(self, value):
+        """
+        END_TIME is the time of day on the ending date when the simulation will end. 
+        
+        The default is 24:00:00.
+        
+        Args:
+            value: 
+         """
+        self['END_TIME'] = value
+
+    def set_report_start_date(self, value):
+        """
+        REPORT_START_DATE is the date when reporting of results is to begin. 
+        
+        The default is the simulation start date.
+        
+        Args:
+            value: 
+         """
+        self['REPORT_START_DATE'] = value
+
+    def set_report_start_time(self, value):
+        """
+        
+        REPORT_START_TIME is the time of day on the report starting date when reporting is to begin. 
+        
+        The default is the simulation start time of day.
+        
+        Args:
+            value: 
+         """
+        self['REPORT_START_TIME'] = value
+
+    def set_sweep_start(self, value):
+        """
+        SWEEP_START is the day of the year (month/day) when street sweeping operations begin. 
+        
+        The default is 1/1.
+        
+        Args:
+            value: 
+         """
+        self['SWEEP_START'] = value
+
+    def set_sweep_end(self, value):
+        """
+        SWEEP_END is the day of the year (month/day) when street sweeping operations end.
+        
+        The default is 12/31.
+        
+        Args:
+            value: 
+         """
+        self['SWEEP_END'] = value
+
+    def set_dry_days(self, value):
+        """
+        DRY_DAYS is the number of days with no rainfall prior to the start of the simulation.
+        
+        The default is 0.
+        
+        Args:
+            value: 
+        """
+        self['DRY_DAYS'] = value
+
+    def set_report_step(self, value):
+        """
+        REPORT_STEP is the time interval for reporting of computed results. 
+        
+        The default is 0:15:00.
+        
+        Args:
+            value: 
+        """
+        self['REPORT_STEP'] = value
+
+    def set_wet_step(self, value):
+        """
+        WET_STEP is the time step length used to compute runoff from subcatchments during periods of rainfall or when ponded water still remains on the surface. 
+        
+        The default is 0:05:00.
+        
+        Args:
+            value: 
+        """
+        self['WET_STEP'] = value
+
+    def set_dry_step(self, value):
+        """
+        DRY_STEP is the time step length used for runoff computations (consisting essentially of pollutant buildup) during periods when there is no rainfall and no ponded water.
+        
+        The default is 1:00:00.
+        
+        Args:
+            value: 
+        """
+        self['DRY_STEP'] = value
 
     def set_routing_step(self, value=600):
         """
         ROUTING_STEP is the time step length in seconds used for routing flows and water quality constituents through the conveyance system.
+        
         The default is 600 sec (5 minutes) which should be reduced if using dynamic wave routing.
+        
         Fractional values (e.g., 2.5) are permissible as are values entered in hours:minutes:seconds format.
 
         Args:
-            value (float | int | timedelta): routing step in seconds
+            value (float | int | datetime.timedelta): routing step in seconds
         """
         self['ROUTING_STEP'] = value
 
-    # def set_lengthening_step(self, value):
-    #     self['___'] = value
-    #
-    # def set_variable_step(self, value):
-    #     self['___'] = value
-    #
-    # def set_minimum_step(self, value):
-    #     self['___'] = value
+    def set_lengthening_step(self, value=0):
+        """
+        LENGTHENING_STEP is a time step, in seconds, used to lengthen conduits under dynamic wave routing, so that they meet the Courant stability criterion under full-flow conditions (i.e., the travel time of a wave will not be smaller than the specified conduit lengthening time step). 
+        
+        As this value is decreased, fewer conduits will require lengthening. 
+        
+        A value of 0 (the default) means that no conduits will be lengthened.
+        
+        Args:
+            value (int): 
+        """
+        self['LENGTHENING_STEP'] = value
+
+    def set_variable_step(self, value=0):
+        """
+        VARIABLE_STEP is a safety factor applied to a variable time step computed for each time period under dynamic wave flow routing.
+
+        The variable time step is computed so as to satisfy the Courant stability criterion for each conduit and yet not exceed the ROUTING_STEP value. 
+        
+        If the safety factor is 0 (the default), then no variable time step is used.
+        
+        Args:
+            value (int): 
+        """
+        self['VARIABLE_STEP'] = value
+
+    def set_minimum_step(self, value=0.5):
+        """
+        MINIMUM_STEP is the smallest time step allowed when variable time steps are used for dynamic wave flow routing. 
+        
+        The default value is 0.5 seconds.
+        
+        Args:
+            value (float): 
+        """
+        self['MINIMUM_STEP'] = value
+
+    def set_min_surfarea(self, value):
+        """
+        MIN_SURFAREA is a minimum surface area used at nodes when computing changes in water depth under dynamic wave routing. 
+        
+        If 0 is entered, then the default value of 12.566 ft2 (i.e., the area of a 4-ft diameter manhole) is used.
+        
+        Args:
+            value: 
+        """
+        self['MIN_SURFAREA'] = value
+        
+    def set_min_slope(self, value=0):
+        """
+        MIN_SLOPE is the minimum value allowed for a conduit’s slope (%). 
+        
+        If zero (the default) then no minimum is imposed (although SWMM uses a lower limit on elevation drop of 0.001 ft (0.00035 m) when computing a conduit slope).
+        
+        Args:
+            value (int or float): 
+        """
+        self['MIN_SLOPE'] = value
+        
+    def set_max_trials(self, value=8):
+        """
+        MAX_TRIALS is the maximum number of trials allowed during a time step to reach convergence when updating hydraulic heads at the conveyance system’s nodes. 
+        
+        The default value is 8.
+        
+        Args:
+            value (int): 
+        """
+        self['MAX_TRIALS'] = value
+        
+    def set_head_tolerance(self, value):
+        """
+        HEAD_TOLERANCE is the difference in computed head at each node between successive trials below which the flow solution for the current time step is assumed to have converged.
+        
+        The default tolerance is 0.005 ft (0.0015 m).
+        
+        Args:
+            value (float): 
+        """
+        self['HEAD_TOLERANCE'] = value
+        
+    def set_threads(self, value=1):
+        """
+        THREADS is the number of parallel computing threads to use for dynamic wave flow routing on machines equipped with multi-core processors. 
+        
+        The default is 1.
+        
+        Args:
+            value (int): 
+        """
+        self['THREADS'] = value
+        
+    def set_tempdir(self, value):
+        """
+        TEMPDIR provides the name of a file directory (or folder) where SWMM writes its temporary files.
+
+        If the directory name contains spaces then it should be placed within double quotes.
+
+        If no directory is specified, then the temporary files are written to the current directory that the user is working in.
+        
+        Args:
+            value (str):
+        """
+        self['TEMPDIR'] = value
 
     def set_inertial_damping(self, value:Literal['NONE', 'PARTIAL', 'FULL']):
         """
@@ -465,6 +766,7 @@ class OptionSection(InpSectionGeneric):
     def set_normal_flow_limited(self, value:Literal['SLOPE', 'FROUDE', 'BOTH']='BOTH'):
         """
         Specifies which condition is checked to determine if flow in a conduit is supercritical and should thus be limited to the normal flow.
+        
         Use `SLOPE` to check if the water surface slope is greater than the conduit slope,
         `FROUDE` to check if the Froude number is greater than 1.0, or
         `BOTH` to check both conditions.
@@ -474,6 +776,72 @@ class OptionSection(InpSectionGeneric):
             value (str):
         """
         self['NORMAL_FLOW_LIMITED'] = value
+
+    # start section macros #######################################################################################################################
+    def set_start(self, dt):
+        """
+        Set the date and time when the simulation begins.
+
+        Args:
+            dt (datetime.datetime): date and the time when the simulation begins.
+        """
+        self.set_start_date(dt.date())
+        self.set_start_time(dt.time())
+        
+    def set_end(self, dt):
+        """
+        Set the date and time when the simulation is to end.
+
+        Args:
+            dt (datetime.datetime): date and time when the simulation is to end.
+        """
+        self.set_end_date(dt.date())
+        self.set_end_time(dt.time())
+
+    def set_report_start(self, dt):
+        """
+        Set the date and time when reporting of results is to begin.
+
+        Args:
+            dt (datetime.datetime): date and time when reporting of results is to begin.
+        """
+        self.set_report_start_date(dt.date())
+        self.set_report_start_time(dt.time())
+
+    def get_start(self):
+        """
+        Get the date and time when the simulation begins.
+
+        Returns:
+            datetime.datetime: date and the time when the simulation begins.
+        """
+        return datetime.datetime.combine(self['START_DATE'], self['START_TIME'])
+
+    def get_end(self):
+        """
+        Get the date and time when the simulation is to end.
+
+        Returns:
+            datetime.datetime: date and time when the simulation is to end.
+        """
+        return datetime.datetime.combine(self['END_DATE'], self['END_TIME'])
+
+    def get_report_start(self):
+        """
+        Get the date and time when reporting of results is to begin.
+
+        Returns:
+            datetime.datetime: date and time when reporting of results is to begin.
+        """
+        return datetime.datetime.combine(self['REPORT_START_DATE'], self['REPORT_START_TIME'])
+
+    def set_simulation_duration(self, td: datetime.timedelta):
+        """Set the simulation end based of the duration of the simulation and the set start."""
+        self.set_end(self.get_start() + td)
+
+    def set_head_of_report_start(self, td: datetime.timedelta):
+        """Set the simulation start based of the report start and a minimum simulation head time before report start."""
+        self.set_start(self.get_report_start() - td)
 
 
 class ReportSection(InpSectionGeneric):
@@ -647,9 +1015,9 @@ class EvaporationSection(InpSectionGeneric):
         patID
              name of a monthly time pattern.
 
-        Use only one of the above formats (CONSTANT, MONTHLY, TIMESERIES,
-        TEMPERATURE, or FILE). If no [EVAPORATION] section appears, then evaporation is
-        assumed to be 0.
+        Use only one of the above formats (CONSTANT, MONTHLY, TIMESERIES, TEMPERATURE, or FILE).
+
+        If no [EVAPORATION] section appears, then evaporation is assumed to be 0.
 
         TEMPERATURE indicates that evaporation rates will be computed from the daily air
         temperatures contained in an external climate file whose name is provided in the
@@ -666,6 +1034,7 @@ class EvaporationSection(InpSectionGeneric):
         to this period, then the actual recovery rate would be 0.8%.
 
         DRY_ONLY determines if evaporation only occurs during periods with no precipitation.
+
         The default is NO.
 
     Attributes:
