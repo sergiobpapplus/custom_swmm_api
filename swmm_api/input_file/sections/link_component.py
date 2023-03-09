@@ -148,7 +148,7 @@ class CrossSection(BaseSectionObject):
         """
         ``CUSTOM`` shape is a closed conduit whose width versus height is described by a user-supplied Shape Curve.
         """
-        return cls(link, CrossSection.SHAPES.CUSTOM, height=height, curve=curve)
+        return cls(link, CrossSection.SHAPES.CUSTOM, height=height, curve_name=curve)
 
     @classmethod
     def irregular(cls, link, transect):
