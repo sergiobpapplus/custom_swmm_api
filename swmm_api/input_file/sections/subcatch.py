@@ -4,9 +4,10 @@ from numpy import NaN
 from pandas import DataFrame
 
 from .._type_converter import get_gis_inp_decimals
-from ..helpers import BaseSectionObject, SWMM_VERSION, InpSectionGeo
+from ..helpers import BaseSectionObject, InpSectionGeo
 from ._identifiers import IDENTIFIERS
 from ..section_labels import SUBCATCHMENTS, SUBAREAS, INFILTRATION, POLYGONS, LOADINGS, COVERAGES, GWF, GROUNDWATER
+from ..._io_helpers import CONFIG
 
 
 class SubCatchment(BaseSectionObject):
@@ -185,31 +186,31 @@ class Infiltration(BaseSectionObject):
         Returns:
             BaseSectionObject: object of the ``.inp``-file section
         """
-        subcls = cls
+        sub_cls = cls
 
         # n_args = len(args) + len(kwargs.keys()) + 1
         # if n_args == 6:  # hortn
-        #     subcls = InfiltrationHorton
+        #     sub_cls = InfiltrationHorton
         # elif n_args == 4:
-        #     subcls = cls
+        #     sub_cls = cls
 
         # _____________________________________
         sub_class_id = None
-        if SWMM_VERSION == '5.1.015':
+        if (CONFIG['swmm_version'] == '5.1.015') or CONFIG['swmm_version'].startswith('5.2.'):
             # NEU in swmm 5.1.015
             last_arg = args[-1]
             if last_arg in INFILTRATION_DICT:
                 sub_class_id = last_arg
-                subcls = INFILTRATION_DICT[last_arg]
+                sub_cls = INFILTRATION_DICT[last_arg]
                 # args = args[:-1]
 
-        if subcls != InfiltrationHorton:
-            args = args[:3]
+        if sub_cls != InfiltrationHorton:
+            args = args[:3]  # sometimes there is an additional 0 in the line, which is ignored by swmm and the EPA GUI.
 
         # _____________________________________
-        o = subcls(subcatchment, *args, **kwargs)
+        o = sub_cls(subcatchment, *args, **kwargs)
         # _____________________________________
-        if sub_class_id is not None:
+        if sub_class_id is not None:  # swmm version > 5.1.015
             o.kind = sub_class_id
         return o
 

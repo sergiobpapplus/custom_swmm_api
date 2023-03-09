@@ -277,7 +277,7 @@ class Storage(_Node):
         _possible = (CYLINDRICAL, CONICAL, PARABOLOID, PYRAMIDAL)
 
     def __init__(self, name, elevation, depth_max, depth_init, kind, *args, data=None,
-                 depth_surcharge=0, frac_evaporation=0,
+                 depth_surcharge=0., frac_evaporation=0.,
                  suction_head=NaN, hydraulic_conductivity=NaN, moisture_deficit_init=NaN):
         """
         Storage node information.
@@ -375,7 +375,7 @@ class Storage(_Node):
         self.data = infer_type([L, W, Z])
         self._optional_args(*args, **kwargs)
 
-    def _optional_args(self, depth_surcharge=0, frac_evaporation=0, *exfiltration_args, **exfiltration_kwargs):
+    def _optional_args(self, depth_surcharge=0., frac_evaporation=0., *exfiltration_args, **exfiltration_kwargs):
         """
         for the optional arguemts
 
