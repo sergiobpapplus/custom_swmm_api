@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.9 (2023-03-09)
+### Fix
+* Added option to not show progressbar in selective out-file reader ([`ea8b666`](https://gitlab.com/markuspichler/swmm_api/-/commit/ea8b6667f1ebb8944f10db9056e19f90a3e86910))
+
 ## v0.4.8 (2023-03-09)
 ### Fix
 * Added InpSectionDummy and DummySectionObject classes for unknown sections in the inp-file ([`1949f6a`](https://gitlab.com/markuspichler/swmm_api/-/commit/1949f6ac43e4e445e2e229c78aba64562f3115bc))
