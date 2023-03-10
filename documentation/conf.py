@@ -267,4 +267,4 @@ intersphinx_mapping = {'https://docs.python.org/3/': None,
 
 # -------------------------------------
 # https://nbsphinx.readthedocs.io/en/latest/never-execute.html
-nbsphinx_execute = 'always'
+nbsphinx_execute = 'never'  # always auto
