@@ -31,7 +31,7 @@ from .others import (
     Symbol,
     Curve,
     Street,
-    Inlet, InletCurb, InletCustom, InletGrate,
+    Inlet, InletGrate, InletCurb, InletSlotted, InletCustom,
     InletUsage,
     Timeseries, TimeseriesFile, TimeseriesData,
     Tag,
