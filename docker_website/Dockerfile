@@ -20,7 +20,8 @@ RUN pip3 install Shapely
 RUN pip3 install pyproj
 RUN pip3 install Rtree
 RUN pip3 install geopandas
-RUN pip3 install ipython
+RUN pip3 install ipython!=8.7.0  # jupyter syntax highlighting
+RUN pip3 install ipykernel  # jupyter autorun for docs
 RUN pip3 install sphinx
 RUN pip3 install nbsphinx
 RUN pip3 install myst-parser  # recommonmark  # markdown

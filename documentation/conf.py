@@ -264,3 +264,7 @@ intersphinx_mapping = {'https://docs.python.org/3/': None,
                        'networkx': ('https://networkx.org/documentation/stable/', 'https://networkx.org/documentation/stable/objects.inv'),
                        'pyproj': ('https://pyproj4.github.io/pyproj/stable/', None)
                        }
+
+# -------------------------------------
+# https://nbsphinx.readthedocs.io/en/latest/never-execute.html
+nbsphinx_execute = 'always'

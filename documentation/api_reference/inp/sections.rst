@@ -99,6 +99,10 @@ Other Object-based Sections
     Curve
     Street
     Inlet
+    InletGrate
+    InletCurb
+    InletSlotted
+    InletCustom
     InletUsage
     Timeseries
     TimeseriesFile
