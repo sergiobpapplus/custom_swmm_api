@@ -336,7 +336,7 @@ class SwmmInput(CustomDict):
         """
         if hasattr(section_class, '_section_label'):  # BaseSectionObject
             section_label = section_class._section_label
-            new_empty_section = section_class.create_new_empty()
+            new_empty_section = section_class.create_section()
         elif hasattr(section_class, '_label'):  # InpSectionGeneric
             section_label = section_class._label
             new_empty_section = section_class()
