@@ -838,6 +838,8 @@ class OptionSection(InpSectionGeneric):
     def set_simulation_duration(self, td: datetime.timedelta):
         """Set the simulation end based of the duration of the simulation and the set start."""
         self.set_end(self.get_start() + td)
+        if self.get_end() < self.get_report_start():
+            self.set_report_start(self.get_start())
 
     def set_head_of_report_start(self, td: datetime.timedelta):
         """Set the simulation start based of the report start and a minimum simulation head time before report start."""
@@ -971,6 +973,98 @@ class ReportSection(InpSectionGeneric):
                 f += _dict_format(key=sub, value=value)
 
         return f
+
+    def set_input(self, value=False):
+        """
+        Specifies whether a summary of the input data should be provided in the output report.
+
+        The default is NO.
+
+        Args:
+            value (bool):
+        """
+        self[self.KEYS.INPUT] = value
+
+    def set_continuity(self, value=True):
+        """
+        Specifies whether continuity checks should be reported or not.
+
+        The default is YES.
+
+        Args:
+            value (bool):
+        """
+        self[self.KEYS.CONTINUITY] = value
+
+    def set_flowstats(self, value=True):
+        """
+        Specifies whether summary flow statistics should be reported or not.
+
+        The default is YES.
+
+        Args:
+            value (bool):
+        """
+        self[self.KEYS.FLOWSTATS] = value
+
+    def set_controls(self, value):
+        """
+        Specifies whether all control actions taken during a simulation should be listed or not.
+
+        The default is NO.
+
+        Args:
+            value (bool):
+        """
+        self[self.KEYS.CONTROLS] = value
+
+    def set_subcatchments(self, value=None):
+        """
+        Gives a list of subcatchments whose results are to be reported.
+
+        The default is NONE.
+
+        Args:
+            value (str or list[str]):
+        """
+        self[self.KEYS.SUBCATCHMENTS] = value
+
+    def set_nodes(self, value=None):
+        """
+        Gives a list of nodes whose results are to be reported.
+
+        The default is NONE.
+
+        Args:
+            value (str or list[str]):
+        """
+        self[self.KEYS.NODES] = value
+
+    def set_links(self, value=None):
+        """
+        Gives a list of links whose results are to be reported.
+
+        The default is NONE.
+
+        Args:
+            value (str or list[str]):
+        """
+        self[self.KEYS.LINKS] = value
+
+    def set_subcatchments_none(self):
+        """Remove subcatchments from report."""
+        if self.KEYS.SUBCATCHMENTS in self:
+            del self[self.KEYS.SUBCATCHMENTS]
+
+    def set_nodes_none(self):
+        """Remove nodes from report."""
+        if self.KEYS.NODES in self:
+            del self[self.KEYS.NODES]
+
+    def set_links_none(self):
+        """Remove links from report."""
+        if self.KEYS.LINKS in self:
+            del self[self.KEYS.LINKS]
 
 
 class EvaporationSection(InpSectionGeneric):

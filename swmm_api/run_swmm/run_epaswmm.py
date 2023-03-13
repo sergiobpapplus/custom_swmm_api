@@ -114,9 +114,9 @@ def swmm5_run_epa(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=
     The default working directory is the input-file directory.
 
     Args:
-        inp (str): path to input file
-        rpt_dir (str): directory in which the report-file is written.
-        out_dir (str): directory in which the output-file is written.
+        inp (str or Path): path to input file
+        rpt_dir (str or Path): directory in which the report-file is written.
+        out_dir (str or Path): directory in which the output-file is written.
         init_print (bool): if the default commandline output should be printed
         create_out (bool): if the out-file should be created
         swmm_path (str): custom path to the command line swmm executable. i.e. ``C:\\Program Files\\EPA SWMM 5.2.0 (64-bit)\\runswmm.exe``.
