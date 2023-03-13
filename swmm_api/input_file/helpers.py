@@ -8,7 +8,6 @@ import warnings
 
 import pandas as pd
 from numpy import isnan
-from pandas import DataFrame, Series
 from tqdm.auto import tqdm
 from pprint import pformat
 
@@ -456,8 +455,8 @@ class InpSection(InpSectionABC):
             pandas.DataFrame: section as table
         """
         if not self:  # if empty
-            return DataFrame()
-        df = DataFrame([i.to_dict_() for i in self.get_objects(sort_objects_alphabetical)])
+            return pd.DataFrame()
+        df = pd.DataFrame([i.to_dict_() for i in self.get_objects(sort_objects_alphabetical)])
         if set_index:
             df = df.set_index(self._index_labels)
         return df
@@ -812,6 +811,8 @@ class BaseSectionObject(ABC):
                     lines_iter = tqdm(txt_to_lines(lines), desc=cls.__name__, total=n_lines, postfix='Read')
                 else:
                     lines_iter = txt_to_lines(lines)
+            elif isinstance(lines, pd.DataFrame):
+                lines_iter = lines.values
             else:
                 lines_iter = lines
 
@@ -870,7 +871,7 @@ def dataframe_to_inp_string(df, index=True):
     if df.empty:
         return COMMENT_EMPTY_SECTION
 
-    if isinstance(df, Series):
+    if isinstance(df, pd.Series):
         return df.apply(type2str).to_string()
 
     c = df.copy()
@@ -1089,7 +1090,7 @@ def section_to_string(section, fast=True, sort_objects_alphabetical=False):
         return f
 
     # ----------------------
-    elif isinstance(section, (DataFrame, Series)):  # V3
+    elif isinstance(section, (pd.DataFrame, pd.Series)):  # V3
         return dataframe_to_inp_string(section)
 
     # ----------------------
@@ -1122,7 +1123,7 @@ def iter_section_lines(section, sort_objects_alphabetical=False):
             yield f'{sub:<{max_len}}{type2str(section[sub])}\n'
 
     # ----------------------
-    elif isinstance(section, (DataFrame, Series)):  # V3
+    elif isinstance(section, (pd.DataFrame, pd.Series)):  # V3
         yield dataframe_to_inp_string(section)
 
     # ----------------------
