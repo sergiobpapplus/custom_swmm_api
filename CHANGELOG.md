@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.10 (2023-03-13)
+### Fix
+* Error with function SwmmInput.check_for_section [Issue #6](https://gitlab.com/markuspichler/swmm_api/-/issues/6) ([`ddeb730`](https://gitlab.com/markuspichler/swmm_api/-/commit/ddeb730d4782b999653c445e3f39e6a638c3a50f))
+
 ## v0.4.9 (2023-03-09)
 ### Fix
 * Added option to not show progressbar in selective out-file reader ([`ea8b666`](https://gitlab.com/markuspichler/swmm_api/-/commit/ea8b6667f1ebb8944f10db9056e19f90a3e86910))
