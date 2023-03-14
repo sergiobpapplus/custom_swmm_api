@@ -6,19 +6,22 @@ from tqdm.auto import tqdm
 
 import warnings
 
-from swmm_api import SwmmInput, SwmmReport, SwmmOutput
+from swmm_api import SwmmInput, SwmmReport, SwmmOutput, CONFIG
 from swmm_api.input_file import SEC
 from swmm_api.input_file.helpers import SwmmInputWarning
 from swmm_api.input_file.macros import write_geo_package
 from swmm_api.input_file.sections import Timeseries
 # from swmm_api.run_swmm.run_swmm_toolkit import get_swmm_version_owa, run
 from swmm_api.run_swmm import get_result_filenames, SWMMRunError
-from swmm_api.run_swmm.run_epaswmm import get_swmm_version_epa, swmm5_run as run
+from swmm_api.run_swmm.run_epaswmm import get_swmm_version_epa, swmm5_run_epa as run
 
 # t = Timeseries.create_section("""KOSTRA 01-01-2021 00:00 0.0
 # KOSTRA 01-01-2021 00:05 1.9999999999999982
 # KOSTRA 01-01-2021 00:10 2.8000000000000007""")
 # exit()
+
+CONFIG['exe_path'] = r"C:\Program Files\EPA SWMM 5.2.3 (64-bit)\runswmm.exe"
+CONFIG['encoding'] = 'ISO-8859-1'
 
 warnings.filterwarnings('ignore', category=SwmmInputWarning)
 
