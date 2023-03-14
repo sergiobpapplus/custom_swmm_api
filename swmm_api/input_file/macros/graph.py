@@ -177,6 +177,12 @@ def _downstream_nodes(graph: DiGraph, node: str, node_list=None) -> list:
     return node_list
 
 
+# def _downstream_nodes2(graph: DiGraph, node: str):
+#     yield node
+#     for n in graph.successors(node):
+#         yield from _downstream_nodes2(graph, n)
+
+
 def upstream_nodes(graph, node):
     """
     get all nodes upstream of the node given
@@ -190,7 +196,7 @@ def upstream_nodes(graph, node):
     Returns:
         list[str]: list of nodes upstream of the given node
     """
-    return _upstream_nodes(graph,  node)
+    return _upstream_nodes(graph, node)
 
 
 def _upstream_nodes(graph: DiGraph, node: str, node_list=None) -> list:
@@ -204,6 +210,12 @@ def _upstream_nodes(graph: DiGraph, node: str, node_list=None) -> list:
                 continue
             node_list = _upstream_nodes(graph, n, node_list)
     return node_list
+
+
+# def _upstream_nodes2(graph: DiGraph, node: str):
+#     yield node
+#     for n in graph.predecessors(node):
+#         yield from _upstream_nodes2(graph, n)
 
 
 def subcatchments_connected(inp, node: str, graph=None):
@@ -318,3 +330,11 @@ def conduit_iter_over_inp(inp, start, end):
     #             break
     #     if not found or (node is not None and (node == end)):
     #         break
+
+
+def get_downstream_path(graph: DiGraph, node: str) -> list[str]:
+    node_list = []
+    while graph.out_degree[node] >= 1:
+        node_list.append(node)
+        node = list(graph.successors(node))[0]
+    return node_list
