@@ -1,5 +1,6 @@
 import datetime
 import re
+import locale
 # from collections import UserString
 
 import numpy as np
@@ -7,6 +8,7 @@ import pandas as pd
 from pandas.tseries.frequencies import to_offset
 
 from .._io_helpers import CONFIG
+
 
 
 def to_bool(x):
@@ -116,6 +118,8 @@ def str_to_datetime(date=None, time=None, str_only=False):
                 # time_format = '%H:%M'
                 time += ':00'
             elif time.count(':') == 2:
+                # if len(time) == 7:
+                #     time = '0'+ time
                 pass
                 # time_format = '%H:%M:%S'
             elif time.count(':') == 0:
@@ -136,7 +140,14 @@ def str_to_datetime(date=None, time=None, str_only=False):
     if str_only:
         return f'{date} {time}'
     else:
-        return datetime.datetime.strptime(f'{date} {time}', f'{month_format}{date_format2} {time_format}')
+        try:
+            dt = datetime.datetime.strptime(f'{date} {time}', f'{month_format}{date_format2} {time_format}')
+        except ValueError:  # ValueError: time data 'May/01/2020 0:00:10' does not match format '%b/%d/%Y %H:%M:%S'
+            loc = locale.getlocale()
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')  # use default locale for SWMM dates
+            dt = datetime.datetime.strptime(f'{date} {time}', f'{month_format}{date_format2} {time_format}')
+            locale.setlocale(locale.LC_TIME, loc)  # restore saved locale
+        return dt
 
 
 def datetime_to_str(dt):

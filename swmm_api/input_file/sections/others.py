@@ -1,4 +1,5 @@
 import datetime
+import locale
 import warnings
 from typing import Literal
 
@@ -1243,7 +1244,7 @@ class Inlet(BaseSectionObject):
 
     @classmethod
     def from_inp_line(cls, name, kind, *line_args):
-        return _INLET_DICT[kind].from_inp_line(name, kind, *line_args)
+        return _INLET_DICT[kind](name, kind, *line_args)
 
 
 class InletGrate(Inlet):
@@ -1583,6 +1584,9 @@ class TimeseriesData(Timeseries):
         else:
             str_only = False
         try:
+            loc = locale.getlocale()
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')  # use default locale for SWMM dates
+
             for dt in date_time:
                 if isinstance(dt, (pd.Timestamp, datetime.datetime)):
                     date_time_new.append(dt)
@@ -1599,6 +1603,7 @@ class TimeseriesData(Timeseries):
             if str_only:
                 date_time_new = pd.to_datetime(date_time_new, format='%m/%d/%Y %H:%M:%S')
 
+            locale.setlocale(locale.LC_TIME, loc)  # restore saved locale
             self.data = list(zip(date_time_new, values))
         except:
             # if the conversion doesn't work - skip it
