@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.11 (2023-03-14)
+### Fix
+* Timeseries conversion when locale is not english ([`1cd934e`](https://gitlab.com/markuspichler/swmm_api/-/commit/1cd934ef29507112d93ee2feeee78c7b9f3e0c23))
+* Wrong identifies in Groundwater object ([`347b0a2`](https://gitlab.com/markuspichler/swmm_api/-/commit/347b0a20f922540d5a2e727b4d6c7198ddd63c77))
+* Added function swmm_api.input_file.macros.get_downstream_path ([`dca930b`](https://gitlab.com/markuspichler/swmm_api/-/commit/dca930b7a7906e08c8fe5b6d962d2174d6be99b5))
+
+### Documentation
+* Extended gis to swmm example ([`4051127`](https://gitlab.com/markuspichler/swmm_api/-/commit/4051127550eff2c750e2c6a26d0a36e6125678af))
+* Swmm5_run_epa function: paths as string or Path ([`0e7eceb`](https://gitlab.com/markuspichler/swmm_api/-/commit/0e7eceb91a250c094c2987c6b4bceccf88210d01))
+* Extended gis to swmm example ([`202dab8`](https://gitlab.com/markuspichler/swmm_api/-/commit/202dab87e478f89719deff861c622ae1e2d86c21))
+
 ## v0.4.10 (2023-03-13)
 ### Fix
 * Error with function SwmmInput.check_for_section [Issue #6](https://gitlab.com/markuspichler/swmm_api/-/issues/6) ([`ddeb730`](https://gitlab.com/markuspichler/swmm_api/-/commit/ddeb730d4782b999653c445e3f39e6a638c3a50f))
