@@ -774,7 +774,7 @@ class Groundwater(BaseSectionObject):
             - H_sw = height of surface water at receiving node above aquifer bottom (ft or m),
             - H_cb = height of channel bottom above aquifer bottom (ft or m).
     """
-    _identifier = (IDENTIFIERS.subcatchment, 'Aquifer', IDENTIFIERS.node)
+    _identifier = (IDENTIFIERS.subcatchment, 'aquifer', IDENTIFIERS.node)
     _section_label = GROUNDWATER
 
     def __init__(self, subcatchment, aquifer, node, Esurf, A1, B1, A2, B2, A3, Dsw, Egwt=NaN, Ebot=NaN, Egw=NaN, Umc=NaN):
