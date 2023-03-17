@@ -67,7 +67,7 @@ def write(data, filename, compression='brotli', sep='/'):
         and separated with the character defined by ``sep`` (default: ``'/'``)
 
     Args:
-        data (pandas.DataFrame):
+        data (pandas.DataFrame or pandas.Series):
         filename (str | Path): path to resulting file
         compression (str): Used compression. See :meth:`pandas.DataFrame.to_parquet`
         sep (str): Character used to separate multiindex labels in the parquet file. (default: ``'/'``)
@@ -93,7 +93,7 @@ def _index_to_multiindex(index, sep='/'):
     Returns:
         pandas.MultiIndex: new index with multiple levels
     """
-    if (index.dtype == np.object) and index.str.contains(sep).all():
+    if (index.dtype == 'object') and index.str.contains(sep).all():
         # old_name = index.name
         index = pd.MultiIndex.from_tuples([col.split(sep) for col in index])
         # if isinstance(old_name, str):
