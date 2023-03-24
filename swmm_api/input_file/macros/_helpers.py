@@ -1,4 +1,9 @@
+import warnings
+
 from ..section_labels import STORAGE, OUTFALLS, OUTLETS, PUMPS, XSECTIONS
+
+
+class SwmmApiInputMacrosWarning(UserWarning): ...
 
 
 def get_used_curves(inp):
@@ -20,3 +25,7 @@ def get_used_curves(inp):
                         continue
                     used_curves.add(inp[section][name].curve_name)
     return used_curves
+
+
+def print_warning(message):
+    warnings.warn(message, SwmmApiInputMacrosWarning)

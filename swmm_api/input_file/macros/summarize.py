@@ -18,3 +18,8 @@ def print_summary(inp):
         print(f'SUBCATCHMENTS: {len(inp.SUBAREAS.keys()):_d}')
     if SEC.POLLUTANTS in inp:
         print(f'POLLUTANTS: {len(inp.POLLUTANTS.keys()):_d}')
+
+
+def short_status(inp):
+    for section in inp:
+        print(f'{section}: {len(inp[section])}')

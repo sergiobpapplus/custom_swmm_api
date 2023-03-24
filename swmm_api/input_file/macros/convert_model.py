@@ -1,3 +1,4 @@
+from ._helpers import print_warning
 from .collection import nodes_dict
 from .convert_object import junction_to_divider, junction_to_storage
 from .graph import inp_to_graph, next_links_labels, next_links, previous_nodes, next_nodes, previous_links
@@ -55,7 +56,7 @@ def to_kinematic_wave(inp):
                 node_out.elevation = node_in.elevation
                 print(f'   {node_out._short_debug_string}.elevation = {node_in._short_debug_string}.elevation = {node_in.elevation}')
             else:
-                print('   No solution found.')
+                print_warning('   No solution found.')
 
     # -----------------
     # Für jedes Wehr -> gibt es eine abzweigung? mach einen

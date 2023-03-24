@@ -29,11 +29,6 @@ def group_edit(inp):
     pass
 
 
-def short_status(inp):
-    for section in inp:
-        print(f'{section}: {len(inp[section])}')
-
-
 """PCSWMM Simplify network tool 
 Criteria
 

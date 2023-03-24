@@ -241,4 +241,4 @@ def inp_version_control(inp_v1, inp_v2):
     # Link wurde konvertiert
     for link in set(links1.keys()) & set(links2.keys()):
         if type(links1[link]) != type(links2[link]):
-            print(f'Für Knoten "{link}" hat sich der Objekt-Typ geändert: "{type(links1[link])}" zu "{type(links2[link])}"')
+            print(f'Für Haltung "{link}" hat sich der Objekt-Typ geändert: "{type(links1[link])}" zu "{type(links2[link])}"')

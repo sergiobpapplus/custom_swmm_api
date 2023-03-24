@@ -177,10 +177,16 @@ def _downstream_nodes(graph: DiGraph, node: str, node_list=None) -> list:
     return node_list
 
 
-# def _downstream_nodes2(graph: DiGraph, node: str):
+# def _downstream_nodes2(graph: DiGraph, node: str): # SLOWER - maybe because of recursion
 #     yield node
 #     for n in graph.successors(node):
 #         yield from _downstream_nodes2(graph, n)
+
+
+# def _downstream_nodes3(graph: DiGraph, node: str) -> list[str]: NOT WORING
+#     while graph.out_degree[node] >= 1:
+#         yield node
+#         node = list(graph.successors(node))[0]
 
 
 def upstream_nodes(graph, node):
@@ -278,7 +284,9 @@ def split_network(inp, keep_node, split_at_node=None, keep_split_node=True, grap
             final_nodes += list(split_at_node)
     final_nodes = set(final_nodes)
 
-    if init_print:
+    if callable(init_print):
+        init_print(f'Reduced Network from {n_nodes_before} nodes to {len(final_nodes)} nodes.')
+    elif init_print:
         print(f'Reduced Network from {n_nodes_before} nodes to {len(final_nodes)} nodes.')
 
     # _______________
@@ -287,9 +295,10 @@ def split_network(inp, keep_node, split_at_node=None, keep_split_node=True, grap
 
 def conduit_iter_over_inp(inp, start, end):
     """
-    iterate of the inp-file data
+    Iterate of the inp-file data.
 
-    only correct when FromNode and ToNode are in the correct direction
+    Only correct when FromNode and ToNode are in the correct direction
+
     doesn't look backwards if split node
 
     Args:
@@ -337,4 +346,5 @@ def get_downstream_path(graph: DiGraph, node: str) -> list[str]:
     while graph.out_degree[node] >= 1:
         node_list.append(node)
         node = list(graph.successors(node))[0]
+    node_list.append(node)
     return node_list

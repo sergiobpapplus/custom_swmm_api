@@ -1,3 +1,4 @@
+from ._helpers import print_warning
 from .. import SEC
 from ..sections import CrossSection
 from ..inp import SwmmInput
@@ -32,7 +33,8 @@ def to_cross_section_maker(xs: CrossSection, inp: SwmmInput = None):
                                                      RectangularRound, RectangularTriangular, Triangular, Parabolic,
                                                      Power, Trapezoidal)
     except ImportError as e:
-        print('Missing package: pip install SWMM-xsections-shape-generator')
+        print_warning('Missing package: pip install SWMM-xsections-shape-generator')
+        return
 
     if xs.shape == CrossSection.SHAPES.CUSTOM:
         curve = inp.CURVES[xs.curve_name]

@@ -21,7 +21,8 @@ try:
     from .gis import (convert_inp_to_geo_package, write_geo_package, get_subcatchment_connectors,
                       links_geo_data_frame, nodes_geo_data_frame, gpkg_to_swmm, update_length, set_crs, update_area)
 except ImportError as e:
-    print('Needed Packages: pyproj, fiona, geopandas, shapely')
+    from ._helpers import print_warning
+    print_warning('Needed Packages: pyproj, fiona, geopandas, shapely')
     print(e)
     pass
 
@@ -39,7 +40,7 @@ from .reduce_unneeded import (reduce_curves, reduce_controls, simplify_curves, r
                               remove_empty_sections, reduce_timeseries, reduce_pattern)
 from .split_inp_file import split_inp_to_files, read_split_inp_file
 from .summarize import print_summary
-from ._helpers import get_used_curves
+from ._helpers import get_used_curves, print_warning
 from .tags import get_node_tags, get_link_tags, get_subcatchment_tags, filter_tags, delete_tag_group
 
 from .cross_section_curve import (get_cross_section_maker, profil_area, to_cross_section_maker)
