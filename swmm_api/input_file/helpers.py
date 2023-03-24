@@ -331,7 +331,10 @@ class InpSection(InpSectionABC):
         if (len(items) == 1) and isinstance(items[0], types.GeneratorType):
             items = items[0]
         for obj in items:
-            self.add_obj(obj)
+            try:
+                self.add_obj(obj)
+            except:
+                print()
 
     def add_obj(self, obj):
         """
@@ -770,7 +773,7 @@ class BaseSectionObject(ABC):
         """
         try:
             return cls(*line_args)
-        except TypeError as e:
+        except (TypeError, ValueError) as e:
             raise TypeError(f'{e} | {cls.__name__}{line_args}\n\n__init__{signature(cls.__init__)}\n\n{getdoc(cls.__init__)}')
 
     def copy(self):

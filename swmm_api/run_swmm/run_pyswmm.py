@@ -9,7 +9,7 @@ def swmm5_run_progress(fn_inp, fn_rpt=None, fn_out=None, n_total=100, swmm_lib_p
     Run a simulation with OWA-SWMM (PySWMM package) and adding a progress bar.
 
     Args:
-        fn_inp (str): pointer to name of input file (must exist)
+        fn_inp (str or pathlib.Path): pointer to name of input file (must exist)
         fn_rpt (str): pointer to name of report file (to be created)
         fn_out (str): pointer to name of binary output file (to be created)
         n_total (int): Number of progress bar iterations.

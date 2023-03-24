@@ -14,11 +14,11 @@ def swmm5_run(fn_inp, fn_rpt=None, fn_out=None, progress_size=None, swmm_lib_pat
     If none of them are installed -> searching for epa-swmm path.
 
     Args:
-        fn_inp (str): pointer to name of input file (must exist)
-        fn_rpt (str): pointer to name of report file (to be created)
-        fn_out (str): pointer to name of binary output file (to be created)
+        fn_inp (str or pathlib.Path): pointer to name of input file (must exist)
+        fn_rpt (str or pathlib.Path): pointer to name of report file (to be created)
+        fn_out (str or pathlib.Path): pointer to name of binary output file (to be created)
         progress_size (int):  Number of progress bar iterations.
-        swmm_lib_path (str): custom path to the command line swmm executable. i.e. 'C:\\Program Files\\EPA SWMM 5.2.0 (64-bit)\\runswmm.exe'.
+        swmm_lib_path (str or pathlib.Path): custom path to the command line swmm executable. i.e. 'C:\\Program Files\\EPA SWMM 5.2.0 (64-bit)\\runswmm.exe'.
                 UNIX users should place the path to the swmm executable in the system path and name the file 'swmm5'.
                 Default: the api will search in the standard paths for the swmm exe.
                 Be aware that the 'epaswmm5.exe' is the graphical user interface and will not work for this api.

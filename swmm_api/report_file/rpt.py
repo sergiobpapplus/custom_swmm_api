@@ -27,7 +27,7 @@ class SwmmReport:
         Read a SWMM-report-file (___.rpt).
 
         Args:
-            filename (str): Path to  the rpt file.
+            filename (str or pathlib.Path): Path to  the rpt file.
             encoding (str): Encoding of the text-file (``None`` -> auto-detect encoding ... takes a few seconds | ``''`` -> use default = ``'utf-8'``).
 
         Notes:

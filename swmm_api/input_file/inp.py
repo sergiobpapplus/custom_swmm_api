@@ -4,7 +4,7 @@ import os
 import re
 import warnings
 
-from .helpers import (section_to_string, CustomDict, convert_section, InpSection,
+from .helpers import (section_to_string, CustomDict, convert_section, InpSection, InpSectionGeo,
                       InpSectionGeneric, SECTION_ORDER_DEFAULT, check_order, SECTIONS_ORDER_MP, head_to_str,
                       iter_section_lines, SwmmInputWarning, BaseSectionObject, )
 from .._io_helpers import get_default_encoding, read_txt_file
@@ -501,7 +501,7 @@ class SwmmInput(CustomDict):
         POLYGONS section
 
         Returns:
-            dict[str, Polygon] | InpSectionGeo: Polygon section
+            dict[str, Polygon] or InpSectionGeo: Polygon section
         """
         if POLYGONS in self:
             return self[POLYGONS]
