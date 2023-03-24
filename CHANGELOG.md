@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.12 (2023-03-24)
+### Fix
+* Input_file.macros.move_flows now takes the pattern of the dominant node ([`bf6612a`](https://gitlab.com/markuspichler/swmm_api/-/commit/bf6612a98f400346017a266fe7dcd699448c7eee))
+
 ## v0.4.11 (2023-03-14)
 ### Fix
 * Timeseries conversion when locale is not english ([`1cd934e`](https://gitlab.com/markuspichler/swmm_api/-/commit/1cd934ef29507112d93ee2feeee78c7b9f3e0c23))
