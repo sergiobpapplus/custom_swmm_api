@@ -2,13 +2,15 @@ from typing import Literal
 
 from numpy import interp, mean, ceil
 
+from ._helpers import print_warning
 from .collection import nodes_dict, links_dict, subcatchments_per_node_dict
 from .graph import next_links_labels, previous_links, previous_links_labels, links_connected, _previous_links_labels
 from .macros import calc_slope, find_link, delete_sections
+from .._type_converter import is_equal
 from ..inp import SwmmInput
 from ..section_labels import *
 from ..section_lists import NODE_SECTIONS, LINK_SECTIONS, SUBCATCHMENT_SECTIONS, POLLUTANT_SECTIONS
-from ..sections import Tag, DryWeatherFlow, Junction, Coordinate, Conduit, Loss, Vertices, EvaporationSection
+from ..sections import Tag, DryWeatherFlow, Junction, Coordinate, Conduit, Loss, Vertices, EvaporationSection, Inflow
 from ..sections._identifiers import IDENTIFIERS
 
 
@@ -73,6 +75,19 @@ def delete_node(inp, node_label, graph=None, alt_node=None):
         reconnect_subcatchments(inp, node_label, alt_node, graph, connected_subcatchments)
 
 
+def _mean_dwf_flow(inp, node):
+    """Calculate the annual mean dry weather flow of a node."""
+    from math import prod
+    if isinstance(node, tuple):
+        obj = inp.DWF[node]
+    elif isinstance(node, DryWeatherFlow):
+        obj = node
+    else:
+        return
+    attributes_pattern = ['pattern1', 'pattern2', 'pattern3', 'pattern4']
+    return obj.base_value * prod(mean(inp.PATTERNS[obj[p]].factors) for p in attributes_pattern if isinstance(obj[p], str))
+
+
 def move_flows(inp: SwmmInput, from_node, to_node, only_constituent=None):
     """
     move flow (INFLOWS or DWF) from one node to another
@@ -106,24 +121,38 @@ def move_flows(inp: SwmmInput, from_node, to_node, only_constituent=None):
                     inp[section].add_obj(obj)
 
                 elif section == DWF:
+                    obj: DryWeatherFlow
+
+                    attributes_pattern = ['pattern1', 'pattern2', 'pattern3', 'pattern4']
+
                     # DryWeatherFlow can be easily added when Patterns are equal
+                    if not all(is_equal(obj[p], inp[section][index_new][p]) for p in attributes_pattern):
+                        w = f'`move_flows` from "{from_node}" to "{to_node}". DWF patterns don\'t match!\n'
+
+                        if _mean_dwf_flow(inp, obj) > _mean_dwf_flow(inp, index_new):
+                            print_warning(w+f'mean DWF of node {from_node} is bigger -> using patterns {obj.get(attributes_pattern)}')
+                            for p in attributes_pattern:
+                                inp[section][index_new][p] = obj[p]
+                        else:
+                            print_warning(w+f'mean DWF of node {to_node} is bigger -> using patterns {inp[section][index_new].get(attributes_pattern)}')
+
+                        # using dominant flow pattern
+                        # mean pattern factor * base_value
+
                     inp[section][index_new].base_value += obj.base_value
 
-                    # if not all([old[p] == new[p] for p in ['pattern1', 'pattern2', 'pattern3', 'pattern4']]):
-                    #     print(f'WARNING: move_flows  from "{from_node}" to "{to_node}". DWF patterns don\'t
-                    #     match!')
-
                 elif section == INFLOWS:
+                    obj: Inflow
                     # Inflows can't be added due to the multiplication factor / timeseries
                     # if (TimeSeries, Type, Mfactor, Sfactor,Pattern) are equal then sum(Baseline)
-                    if all(obj[k] == inp[section][index_new][k] for k in ['constituent', 'time_series', 'kind', 'mass_unit_factor', 'scale_factor', 'pattern']):
+                    if all(is_equal(obj[k], inp[section][index_new][k], precision=5) for k in ['constituent', 'time_series', 'kind', 'mass_unit_factor', 'scale_factor', 'pattern']):
                         inp[section][index_new].base_value += obj.base_value
 
                     else:
-                        print(f'WARNING: in `move_flows` from "{from_node}" to "{to_node}". {section} Already Exists! -> Ignoring')
+                        print_warning(f'in `move_flows` from "{from_node}" to "{to_node}". {section} Already Exists! -> Ignoring')
 
             # else:
-            #     print(f'Nothing to move from "{from_node}" [{section}]')
+            #     print_warning(f'Nothing to move from "{from_node}" [{section}]')
 
 
 def reconnect_subcatchments(inp: SwmmInput, from_node, to_node, graph=None, connected_subcatchments=None):
@@ -354,7 +383,7 @@ def combine_conduits(inp, c1, c2, graph=None, reroute_flows_to: Literal['from_no
 
     # Loss
     if (LOSSES in inp) and (c_new.name in inp[LOSSES]):
-        print(f'combine_conduits {c1.name} and {c2.name}. BUT WHAT TO DO WITH LOSSES?')
+        print_warning(f'combine_conduits {c1.name} and {c2.name}. BUT WHAT TO DO WITH LOSSES?')
         # add losses
         pass
 
@@ -420,7 +449,7 @@ def dissolve_conduit(inp, c, graph=None):
 
         # Loss
         if LOSSES in inp and c_new.name in inp[LOSSES]:
-            print(f'dissolve_conduit {c.name} in {c_new.name}. BUT WHAT TO DO WITH LOSSES?')
+            print_warning(f'dissolve_conduit {c.name} in {c_new.name}. BUT WHAT TO DO WITH LOSSES?')
 
         if isinstance(c_new, Conduit):
             c_new.length = round(c.length + c_new.length, 1)
