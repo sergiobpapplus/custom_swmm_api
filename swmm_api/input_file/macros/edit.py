@@ -4,6 +4,7 @@ from numpy import interp, mean, ceil
 
 from ._helpers import print_warning
 from .collection import nodes_dict, links_dict, subcatchments_per_node_dict
+from .combine_dwf import combine_dwf
 from .graph import next_links_labels, previous_links, previous_links_labels, links_connected, _previous_links_labels
 from .macros import calc_slope, find_link, delete_sections
 from .._type_converter import is_equal
@@ -127,19 +128,21 @@ def move_flows(inp: SwmmInput, from_node, to_node, only_constituent=None):
 
                     # DryWeatherFlow can be easily added when Patterns are equal
                     if not all(is_equal(obj[p], inp[section][index_new][p]) for p in attributes_pattern):
-                        w = f'`move_flows` from "{from_node}" to "{to_node}". DWF patterns don\'t match!\n'
+                        print_warning(f'`move_flows` from "{from_node}" to "{to_node}". DWF patterns don\'t match!')
 
-                        if _mean_dwf_flow(inp, obj) > _mean_dwf_flow(inp, index_new):
-                            print_warning(w+f'mean DWF of node {from_node} is bigger -> using patterns {obj.get(attributes_pattern)}')
-                            for p in attributes_pattern:
-                                inp[section][index_new][p] = obj[p]
-                        else:
-                            print_warning(w+f'mean DWF of node {to_node} is bigger -> using patterns {inp[section][index_new].get(attributes_pattern)}')
+                        # combine flow to fit annual flow in the best possible way
+                        combine_dwf(inp, obj, to_node, constituent)
 
                         # using dominant flow pattern
                         # mean pattern factor * base_value
-
-                    inp[section][index_new].base_value += obj.base_value
+                        # if _mean_dwf_flow(inp, obj) > _mean_dwf_flow(inp, index_new):
+                        #     print_warning(w+f'mean DWF of node {from_node} is bigger -> using patterns {obj.get(attributes_pattern)}')
+                        #     for p in attributes_pattern:
+                        #         inp[section][index_new][p] = obj[p]
+                        # else:
+                        #     print_warning(w+f'mean DWF of node {to_node} is bigger -> using patterns {inp[section][index_new].get(attributes_pattern)}')
+                    else:
+                        inp[section][index_new].base_value += obj.base_value
 
                 elif section == INFLOWS:
                     obj: Inflow
