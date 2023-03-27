@@ -31,32 +31,34 @@ def infer_swmm_path():
     # UNIX
     swmm_path = 'swmm5'
 
+    if CONFIG['exe_path'] is not None:
+        swmm_path = CONFIG['exe_path']
     # WINDOWS
-    if _platform.startswith("win"):
-        if CONFIG['exe_path'] is not None:
-            swmm_path = CONFIG['exe_path']
-        else:
-            sys_path = os.environ['PATH'].split(';')
-            possible_exe = [fn
-                            for pth in sys_path if os.path.isdir(pth)
-                            for fn in os.listdir(pth) if (('swmm' in fn) and fn.endswith('.exe') and (fn.lower() != 'epaswmm5.exe'))]
+    elif _platform.startswith("win"):
+        sys_path = os.environ['PATH'].split(';')
+        possible_exe = [fn
+                        for pth in sys_path if os.path.isdir(pth)
+                        for fn in os.listdir(pth) if (('swmm' in fn) and fn.endswith('.exe') and (fn.lower() != 'epaswmm5.exe'))]
 
-            swmm_path = None
-            # script_path = '???/swmm5.exe'
-            for program_files in ('PROGRAMFILES', 'PROGRAMFILES(X86)'):
-                for version in ('5.1', '5.1.015', '5.1.014', '5.1.013', '5.2.0', '5.2.0 (64-bit)'):
-                    for fn_exe in ('runswmm.exe', 'swmm5.exe'):
-                        script_path = os.path.join(os.environ[program_files], 'EPA SWMM {}'.format(version), fn_exe)
-                        if os.path.isfile(script_path):
-                            swmm_path = script_path
-                            break
-                if swmm_path is not None:
-                    break
+        swmm_path = None
+        # script_path = '???/swmm5.exe'
+        for program_files in ('PROGRAMFILES', 'PROGRAMFILES(X86)'):
+            for version in ('5.1', '5.1.015', '5.1.014', '5.1.013', '5.2.0', '5.2.0 (64-bit)'):
+                for fn_exe in ('runswmm.exe', 'swmm5.exe'):
+                    script_path = os.path.join(os.environ[program_files], 'EPA SWMM {}'.format(version), fn_exe)
+                    if os.path.isfile(script_path):
+                        swmm_path = script_path
+                        break
+            if swmm_path is not None:
+                break
 
     try:
         get_swmm_version_base(swmm_path)
     except FileNotFoundError:
-        raise SWMMRunError('Path to SWMM command line executable not found. Pleas pass a custom path to the swmm5.exe using the "swmm_path" argument.')
+        try:
+            get_swmm_version_base(swmm_path := 'runswmm')
+        except FileNotFoundError:
+            raise SWMMRunError('Path to SWMM command line executable not found. Pleas pass a custom path to the swmm5.exe using the "swmm_path" argument.')
 
     SWMM_PATH = swmm_path
     return swmm_path
