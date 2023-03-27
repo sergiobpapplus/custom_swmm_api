@@ -1,3 +1,5 @@
+from itertools import groupby
+
 import pandas as pd
 import numpy as np
 
@@ -135,7 +137,6 @@ class PatternRegression:
 
         levels = [f'{MARKER.MONTH}{MARKER.SEP}%m_%b',
                   f'{MARKER.DAY}{MARKER.SEP}%w_%a',
-                  f'{MARKER.DAY}{MARKER.SEP}%w_%a',
                   f'{MARKER.HOURLY}{MARKER.SEP}%H',
                   f'{MARKER.WEEKEND}{MARKER.SEP}%H']
 
@@ -171,10 +172,13 @@ class PatternRegression:
         parameters_mul = pd.Series(index=parameters_add.index,
                                    name='params_MUL', dtype=float)
 
-        day_wd = parameters_add.xs(MARKER.DAY, level=0).loc[
-            ['1_Mon', '2_Tue', '3_Wed', '4_Thu', '5_Fri']].mean()
-        day_we = parameters_add.xs(MARKER.DAY, level=0).loc[
-            ['0_Sun', '6_Sat']].mean()
+        days_list = parameters_add.xs(MARKER.DAY, level=0).index.values
+        # index_wd = ['1_Mon', '2_Tue', '3_Wed', '4_Thu', '5_Fri']
+        # index_we = ['0_Sun', '6_Sat']
+        index_wd, index_we = ([list(g) for k, g in groupby(sorted(days_list, key=lambda i: i[0] in '06'), key=lambda i: i[0] in '06')])
+
+        day_wd = parameters_add.xs(MARKER.DAY, level=0).loc[index_wd].mean()
+        day_we = parameters_add.xs(MARKER.DAY, level=0).loc[index_we].mean()
         hour_we = parameters_add.xs(MARKER.WEEKEND, level=0).mean()
         hour_wd = parameters_add.xs(MARKER.HOURLY, level=0).mean()
 
@@ -183,9 +187,8 @@ class PatternRegression:
             if g in parameters_add.index.levels[0]:
                 g_values = parameters_add.xs(g, level=0).copy()
                 if g == MARKER.DAY:
-                    g_values.loc[['1_Mon', '2_Tue', '3_Wed', '4_Thu',
-                                  '5_Fri']] += hour_wd
-                    g_values.loc[['0_Sun', '6_Sat']] += hour_we
+                    g_values.loc[index_wd] += hour_wd
+                    g_values.loc[index_we] += hour_we
                 elif g == MARKER.WEEKEND:
                     g_values += day_we
                     g_base = hour_we + day_we
@@ -195,8 +198,7 @@ class PatternRegression:
                 else:
                     g_base = g_values.mean()
 
-                parameters_mul.loc[(g, g_values.index)] = (
-                            g_values - g_base).values
+                parameters_mul.loc[(g, g_values.index)] = (g_values - g_base).values
                 if g in (MARKER.DAY, MARKER.MONTH, MARKER.YEAR):
                     self.average_value += g_base
 
