@@ -73,7 +73,7 @@ def reduce_controls(inp):
     for label in list(inp.CONTROLS.keys()):
         control = inp.CONTROLS[label]
         # if unavailable object in condition: remove whole rule
-        for condition in control.conditions:
+        for condition in control.conditions:  # type: Control._Condition
             if condition.kind + 'S' in inp:
                 # CONDUIT PUMP ORIFICE WEIR OUTLET
                 if condition.label not in inp[condition.kind + 'S']:
@@ -95,7 +95,7 @@ def reduce_controls(inp):
             continue
 
         # if unavailable object in action: remove only this action
-        for action in list(control.actions):
+        for action in list(control.actions):  # type: Control._Action
             i = control.actions.index(action)
             if action.kind + 'S' in inp:
                 # CONDUIT PUMP ORIFICE WEIR OUTLET
