@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.13 (2023-03-27)
+### Fix
+* Finding correct swmm executable ([`3a8301f`](https://gitlab.com/markuspichler/swmm_api/-/commit/3a8301f713c789985ff918cf19924ea91c1b4569))
+* Setting locale with macOS for timeseries date format conversion ([`e55c1ff`](https://gitlab.com/markuspichler/swmm_api/-/commit/e55c1ff86752591f4b1cf1b3453a39d3c30f13c0))
+
 ## v0.4.12 (2023-03-24)
 ### Fix
 * Input_file.macros.move_flows now takes the pattern of the dominant node ([`bf6612a`](https://gitlab.com/markuspichler/swmm_api/-/commit/bf6612a98f400346017a266fe7dcd699448c7eee))
