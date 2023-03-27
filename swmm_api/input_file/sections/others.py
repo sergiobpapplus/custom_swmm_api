@@ -1585,7 +1585,12 @@ class TimeseriesData(Timeseries):
             str_only = False
         try:
             loc = locale.getlocale()
-            locale.setlocale(locale.LC_TIME, 'en_US.utf8')  # use default locale for SWMM dates
+
+            # use default locale for SWMM dates
+            try:
+                locale.setlocale(locale.LC_TIME, 'en_US.utf8')  # works for windows and linux
+            except locale.Error:
+                locale.setlocale(locale.LC_TIME, 'en_US.UTF-8')  # works for mac
 
             for dt in date_time:
                 if isinstance(dt, (pd.Timestamp, datetime.datetime)):
@@ -1605,8 +1610,9 @@ class TimeseriesData(Timeseries):
 
             locale.setlocale(locale.LC_TIME, loc)  # restore saved locale
             self.data = list(zip(date_time_new, values))
-        except:
+        except Exception as e:
             # if the conversion doesn't work - skip it
+            # maybe the locale is not available
             warnings.warn(f'Could not convert Data for Timeseries(Name={self.name}). First datetime = "{date_time[0]}"')
 
     @property
