@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.14 (2023-03-27)
+### Fix
+* Enhanced swmm exe search ([`1401b56`](https://gitlab.com/markuspichler/swmm_api/-/commit/1401b568599beaee9bfdae6ccd72089ed9c92f27))
+* Error due to locale in combine dw-flows ([`d118b3b`](https://gitlab.com/markuspichler/swmm_api/-/commit/d118b3be4e5e3dfe91b857231990d5ad4ce49d0f))
+
 ## v0.4.13 (2023-03-27)
 ### Fix
 * Finding correct swmm executable ([`3a8301f`](https://gitlab.com/markuspichler/swmm_api/-/commit/3a8301f713c789985ff918cf19924ea91c1b4569))
