@@ -686,3 +686,19 @@ def delete_pollutant(inp, label):
                 del inp[sec][(n, label)]
 
 
+def copy_link(inp_from: SwmmInput, inp_to: SwmmInput, link_label):
+    for s in LINK_SECTIONS + [XSECTIONS, LOSSES, VERTICES]:
+        if (s in inp_from) and (link_label in inp_from[s]):
+            inp_to.add_obj(inp_from[s][link_label].copy())
+
+    if (TAGS in inp_from) and ((Tag.TYPES.Link, link_label) in inp_from.TAGS):
+        inp_to.add_obj(inp_from[TAGS][(Tag.TYPES.Link, link_label)].copy())
+
+
+def copy_node(inp_from: SwmmInput, inp_to: SwmmInput, node_label):
+    for s in NODE_SECTIONS + [COORDINATES]:
+        if (s in inp_from) and (node_label in inp_from[s]):
+            inp_to.add_obj(inp_from[s][node_label].copy())
+
+    if (TAGS in inp_from) and ((Tag.TYPES.Node, node_label) in inp_from.TAGS):
+        inp_to.add_obj(inp_from[TAGS][(Tag.TYPES.Node, node_label)].copy())
