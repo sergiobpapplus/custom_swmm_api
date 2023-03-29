@@ -25,13 +25,16 @@ def write_swmm_timeseries_data(series, filename, drop_zeros=True):
     else:
         ts = series.dropna()
 
-    if not filename.endswith('.dat'):
-        filename += '.dat'
+    if isinstance(filename, Path):
+        filename = filename.with_suffix('.dat')
+    else:
+        if not filename.endswith('.dat'):
+            filename += '.dat'
 
     with open(filename, 'w') as file:
         file.write(';;EPA SWMM Time Series Data\n')
         ts.index.name = ';date      time'
-        ts.to_csv(file, sep='\t', index=True, header=True, date_format='%m/%d/%Y %H:%M', line_terminator='\n')
+        ts.to_csv(file, sep='\t', index=True, header=True, date_format='%m/%d/%Y %H:%M', lineterminator='\n')
 
 
 def read_swmm_timeseries_data(filename):
