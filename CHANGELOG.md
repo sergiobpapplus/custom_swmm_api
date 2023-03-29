@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.15 (2023-03-28)
+### Fix
+* Run swmm in temporary folder and get results ([`e79b355`](https://gitlab.com/markuspichler/swmm_api/-/commit/e79b355bff1732022e1aa3d36a8fa230ed66790a))
+
 ## v0.4.14 (2023-03-27)
 ### Fix
 * Enhanced swmm exe search ([`1401b56`](https://gitlab.com/markuspichler/swmm_api/-/commit/1401b568599beaee9bfdae6ccd72089ed9c92f27))
