@@ -388,6 +388,9 @@ class Polygon(BaseSectionObject):
         Args:
             subcatchment (str): Name of subcatchment.
             polygon (list[list[float,float]]): List of the polygon points as coordinate tuple (x, y) relative to origin in lower left of map.
+
+        Notes:
+            If a polygon has more than 1000 points,  it is cropped in the EPA user interface.
         """
         self.subcatchment = str(subcatchment)
         self.polygon = polygon
@@ -470,6 +473,7 @@ class Polygon(BaseSectionObject):
     def convert_shapely(polygon):
         """
         Convert a shapely polygon to a coordinate-pair-list.
+
         Args:
             polygon (shapely.geometry.Polygon):
 
