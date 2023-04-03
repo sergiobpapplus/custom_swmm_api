@@ -399,7 +399,6 @@ class SwmmReport:
         """
         if self._node_summary is None:
             p = self._get_converted_part('Node Summary')
-            # p = '-'*10 + '\n' + p
             self._node_summary = _part_to_frame(p)
         return self._node_summary
 
@@ -415,10 +414,7 @@ class SwmmReport:
             p = self._get_converted_part('Link Summary')
             if p is None:
                 return
-            # p = '-'*10 + '\n' + p
-            p = p.replace('From Node', 'FromNode')
-            p = p.replace('To Node', 'ToNode')
-            self._link_summary = _part_to_frame(p)
+            self._link_summary = _part_to_frame(p, replace_parts=(('From Node', 'FromNode'), ('To Node', 'ToNode')))
         return self._link_summary
 
     @property
@@ -431,7 +427,6 @@ class SwmmReport:
         """
         if self._rainfall_file_summary is None:
             p = self._get_converted_part('Rainfall File Summary')
-            # p = '-'*10 + '\n' + p
             # p = p.replace('Data Source', 'DataSource')
             self._rainfall_file_summary = _part_to_frame(p)
         return self._rainfall_file_summary
@@ -448,9 +443,7 @@ class SwmmReport:
             p = self._get_converted_part('Raingage Summary')
             if p is None:
                 return
-            # p = '-'*10 + '\n' + p
-            p = p.replace('Data Source', 'DataSource')
-            self._raingage_summary = _part_to_frame(p)
+            self._raingage_summary = _part_to_frame(p, replace_parts=('Data Source', 'DataSource'))
         return self._raingage_summary
 
     @property
@@ -465,9 +458,7 @@ class SwmmReport:
             p = self._get_converted_part('Subcatchment Summary')
             if p is None:
                 return
-            # p = '-'*10 + '\n' + p
-            p = p.replace('Rain Gage', 'RainGage')
-            self._subcatchment_summary = _part_to_frame(p)
+            self._subcatchment_summary = _part_to_frame(p, replace_parts=('Rain Gage', 'RainGage'))
         return self._subcatchment_summary
 
     @property
@@ -480,7 +471,6 @@ class SwmmReport:
         """
         if self._cross_section_summary is None:
             p = self._get_converted_part('Cross Section Summary')
-            # p = '-'*10 + '\n' + p
             self._cross_section_summary = _part_to_frame(p)
         return self._cross_section_summary
 
@@ -533,9 +523,6 @@ class SwmmReport:
         """
         if self._node_surcharge_summary is None:
             p = self._get_converted_part('Node Surcharge Summary')
-            # if 'No nodes were surcharged.' in p:
-            #     self._node_surcharge_summary = pd.DataFrame()
-            # else:
             self._node_surcharge_summary = _part_to_frame(p)
         return self._node_surcharge_summary
 
@@ -549,9 +536,6 @@ class SwmmReport:
         """
         if self._node_flooding_summary is None:
             p = self._get_converted_part('Node Flooding Summary')
-            # if 'No nodes were flooded.' in p:
-            #     self._node_flooding_summary = pd.DataFrame()
-            # else:
             self._node_flooding_summary = _part_to_frame(p)
         return self._node_flooding_summary
 
@@ -565,11 +549,7 @@ class SwmmReport:
         """
         if self._storage_volume_summary is None:
             p = self._get_converted_part('Storage Volume Summary')
-
-            # for reading the table and accepting names shorten than 8 characters
-            p = p.replace('Storage Unit', 'Storage_Unit')
-
-            self._storage_volume_summary = _part_to_frame(p)
+            self._storage_volume_summary = _part_to_frame(p, replace_parts=('Storage Unit', 'Storage_Unit'))
         return self._storage_volume_summary
 
     @property
@@ -582,7 +562,7 @@ class SwmmReport:
         """
         if self._outfall_loading_summary is None:
             p = self._get_converted_part('Outfall Loading Summary')
-            self._outfall_loading_summary = _part_to_frame(p.replace('Outfall Node', 'Outfall_Node'))
+            self._outfall_loading_summary = _part_to_frame(p, replace_parts=('Outfall Node', 'Outfall_Node'))
         return self._outfall_loading_summary
 
     @property
@@ -609,8 +589,7 @@ class SwmmReport:
         if self._flow_classification_summary is None:
             p = self._get_converted_part('Flow Classification Summary')
             t = '---------- Fraction of Time in Flow Class ----------'
-            p = p.replace(t, ' ' * len(t))
-            self._flow_classification_summary = _part_to_frame(p)
+            self._flow_classification_summary = _part_to_frame(p, replace_parts=(t, ' ' * len(t)))
         return self._flow_classification_summary
 
     @property
@@ -623,15 +602,8 @@ class SwmmReport:
         """
         if self._conduit_surcharge_summary is None:
             p = self._get_converted_part('Conduit Surcharge Summary')
-
-            # --------------------------------------------
-            # if 'No conduits were surcharged.' in p:
-            #     self._conduit_surcharge_summary = pd.DataFrame()
-            #
-            # else:
-            p = p.replace('--------- Hours Full -------- ', 'HoursFull Hours Full HoursFull')
-            p = p.replace('Both Ends', 'Both_Ends')
-            self._conduit_surcharge_summary = _part_to_frame(p)
+            self._conduit_surcharge_summary = _part_to_frame(p, replace_parts=(('--------- Hours Full -------- ', 'HoursFull Hours Full HoursFull'),
+                                                                               ('Both Ends', 'Both_Ends')))
         return self._conduit_surcharge_summary
 
     @property

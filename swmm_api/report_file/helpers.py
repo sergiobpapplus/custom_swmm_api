@@ -80,7 +80,7 @@ def _remove_lines(part, title=True, empty=False, sep=False):
     return '\n'.join(new_lines)
 
 
-def _part_to_frame(part):
+def _part_to_frame(part, replace_parts=None):
     """
     convert the table of a part of the report file to a dataframe
 
@@ -92,6 +92,16 @@ def _part_to_frame(part):
     """
     if part is None:
         return
+
+    # for reading the table and accepting names shorten than 8 characters
+    if replace_parts is not None:
+        # single
+        if isinstance(replace_parts[0], str):
+            part = part.replace(*replace_parts)
+        else:
+            for r in replace_parts:
+                part = part.replace(*r)
+
 
     subs = re.split(r"\s*-+\n", part)
     if len(subs) == 4:

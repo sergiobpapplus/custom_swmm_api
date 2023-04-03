@@ -24,8 +24,8 @@ def read_txt_file(filename, encoding):
 
     for e in (encoding, 'utf8', 'iso-8859-1', 'windows-1252'):
         try:
-            return binary.decode(encoding=e)
+            return binary.decode(encoding=e).replace('\r', '\n')
         except UnicodeDecodeError:
             continue
     warnings.warn(f'Could not find correct encoding (found "{encoding}", but is wrong) for file ("{filename}"). Please set encoding manually.')
-    return binary.decode()
+    return binary.decode().replace('\r', '\n')
