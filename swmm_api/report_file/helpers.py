@@ -90,6 +90,9 @@ def _part_to_frame(part):
     Returns:
         pandas.DataFrame: some kind of summary table
     """
+    if part is None:
+        return
+
     subs = re.split(r"\s*-+\n", part)
     if len(subs) == 4:
         notes, header, data, sytem = subs
@@ -148,8 +151,12 @@ def _part_to_frame(part):
 
 def _routing_part_to_dict(raw):
     elements = {}
+
+    if raw is None:
+        return
+
     if (raw.startswith('  All ') and raw.endswith('.')) or (raw.strip() == 'None') or (raw.strip() == ''):
-        return elements
+        return
 
     for line in raw.split('\n'):
         line = line.split()
@@ -159,7 +166,7 @@ def _routing_part_to_dict(raw):
 
 def _continuity_part_to_dict(raw):
     if raw is None:
-        return {}
+        return
 
     df = pd.read_fwf(StringIO(raw), index_col=0, header=[0, 1, 2])
 
@@ -178,7 +185,7 @@ def _continuity_part_to_dict(raw):
 
 def _quality_continuity_part_to_dict(raw):
     if raw is None:
-        return {}
+        return
     first_line = raw.split('\n')[0]
     for word in first_line.strip(' *').split():
         if len(word) > 14:

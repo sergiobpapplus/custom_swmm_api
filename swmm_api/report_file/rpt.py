@@ -165,7 +165,7 @@ class SwmmReport:
     def _get_converted_part(self, key):
         if key not in self._converted_parts:
             if key not in self._raw_parts:
-                return ''
+                return
             self._converted_parts[key] = _remove_lines(self._raw_parts[key], title=True, empty=False)
 
         return self._converted_parts[key]
@@ -253,6 +253,9 @@ class SwmmReport:
         """
         if self._element_count is None:
             p = self._get_converted_part('Element Count')
+
+            if p is None:
+                return
 
             res = {}
             last_key = None
@@ -410,6 +413,8 @@ class SwmmReport:
         """
         if self._link_summary is None:
             p = self._get_converted_part('Link Summary')
+            if p is None:
+                return
             # p = '-'*10 + '\n' + p
             p = p.replace('From Node', 'FromNode')
             p = p.replace('To Node', 'ToNode')
@@ -441,6 +446,8 @@ class SwmmReport:
         """
         if self._raingage_summary is None:
             p = self._get_converted_part('Raingage Summary')
+            if p is None:
+                return
             # p = '-'*10 + '\n' + p
             p = p.replace('Data Source', 'DataSource')
             self._raingage_summary = _part_to_frame(p)
@@ -456,6 +463,8 @@ class SwmmReport:
         """
         if self._subcatchment_summary is None:
             p = self._get_converted_part('Subcatchment Summary')
+            if p is None:
+                return
             # p = '-'*10 + '\n' + p
             p = p.replace('Rain Gage', 'RainGage')
             self._subcatchment_summary = _part_to_frame(p)
@@ -713,7 +722,9 @@ class SwmmReport:
             str: Node
         """
         if self._note is None:
-            self._note = ' '.join(self._get_converted_part('Note').strip(' *').split())
+            p = self._get_converted_part('Note')
+            if p:
+                self._note = ' '.join(p.strip(' *').split())
         return self._note
 
     @property
@@ -791,6 +802,8 @@ class SwmmReport:
         """
         if self._transect_summary is None:
             p = self._get_converted_part('Transect Summary')
+            if p is None:
+                return
             self._transect_summary = {}
             for transect in p.split('Transect')[1:]:
                 label, *data = transect.split()
@@ -821,10 +834,13 @@ class SwmmReport:
 
     def _convert_str_time(self, s):
         import locale
-        orig_locale = locale.getlocale()
-        locale.setlocale(locale.LC_ALL, 'en_US.utf8')
-        date_time = datetime.datetime.strptime(s.strip(), '%a %b %d %H:%M:%S %Y')
-        locale.setlocale(locale.LC_ALL, orig_locale)
+        orig_locale = locale.getlocale(locale.LC_TIME)
+        try:
+            locale.setlocale(locale.LC_TIME, 'C')
+            date_time = datetime.datetime.strptime(s.strip(), '%a %b %d %H:%M:%S %Y')
+        except locale.Error:
+            date_time = s
+        locale.setlocale(locale.LC_TIME, orig_locale)
         return date_time
 
     @property
