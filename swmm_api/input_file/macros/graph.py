@@ -1,5 +1,5 @@
-from networkx import DiGraph, all_simple_paths, subgraph, node_connected_component
-
+# from networkx import DiGraph, all_simple_paths, subgraph, node_connected_component
+import networkx as nx
 from .collection import nodes_dict, links_dict
 from .filter import create_sub_inp
 from ..inp import SwmmInput
@@ -18,7 +18,7 @@ def inp_to_graph(inp, add_subcatchments=False):
         networkx.DiGraph: networkx graph of the model
     """
     # g = nx.Graph()
-    g = DiGraph()
+    g = nx.DiGraph()
 
     # Add all nodes
     for node in nodes_dict(inp).values():
@@ -55,13 +55,13 @@ def inp_to_graph(inp, add_subcatchments=False):
 
 def get_path(g, start, end):
     # dijkstra_path(g, start, end)
-    return list(all_simple_paths(g, start, end))[0]
+    return list(nx.all_simple_paths(g, start, end))[0]
 
 
 def get_path_subgraph(base, start, end):
     g = inp_to_graph(base) if isinstance(base, SwmmInput) else base
     sub_list = get_path(g, start=start, end=end)
-    sub_graph = subgraph(g, sub_list)
+    sub_graph = nx.subgraph(g, sub_list)
     return sub_list, sub_graph
 
 
@@ -164,7 +164,7 @@ def downstream_nodes(graph, node):
     return _downstream_nodes(graph,  node)
 
 
-def _downstream_nodes(graph: DiGraph, node: str, node_list=None) -> list:
+def _downstream_nodes(graph: nx.DiGraph, node: str, node_list=None) -> list:
     if node_list is None:
         node_list = []
     node_list.append(node)
@@ -205,7 +205,7 @@ def upstream_nodes(graph, node):
     return _upstream_nodes(graph, node)
 
 
-def _upstream_nodes(graph: DiGraph, node: str, node_list=None) -> list:
+def _upstream_nodes(graph: nx.DiGraph, node: str, node_list=None) -> list:
     if node_list is None:
         node_list = []
     node_list.append(node)
@@ -271,9 +271,9 @@ def split_network(inp, keep_node, split_at_node=None, keep_split_node=True, grap
             for n in split_at_node:
                 graph.remove_node(n)
 
-    if isinstance(graph, DiGraph):
+    if isinstance(graph, nx.DiGraph):
         graph = graph.to_undirected()
-    sub = subgraph(graph, node_connected_component(graph, keep_node))
+    sub = nx.subgraph(graph, nx.node_connected_component(graph, keep_node))
 
     # _______________
     final_nodes = list(sub.nodes)
@@ -341,7 +341,7 @@ def conduit_iter_over_inp(inp, start, end):
     #         break
 
 
-def get_downstream_path(graph: DiGraph, node: str) -> list[str]:
+def get_downstream_path(graph: nx.DiGraph, node: str) -> list[str]:
     node_list = []
     while graph.out_degree[node] >= 1:
         node_list.append(node)
