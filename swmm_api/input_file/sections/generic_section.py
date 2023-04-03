@@ -73,6 +73,9 @@ class TitleSection(InpSectionGeneric):
     def __repr__(self):
         return self.txt
 
+    def __str__(self):
+        return self.txt
+
 
 class OptionSection(InpSectionGeneric):
     """
