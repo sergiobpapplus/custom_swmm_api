@@ -36,12 +36,12 @@ class SwmmResults:
 
 
 class swmm5_run_temporary:
-    def __init__(self, inp, cleanup=True, run=swmm5_run):
+    def __init__(self, inp, cleanup=True, run=swmm5_run, label='temp'):
         self.inp = inp
         self.cleanup = cleanup
         self.pth_temp = Path(tempfile.mkdtemp())
 
-        self.fn_inp = self.pth_temp / 'temp.inp'
+        self.fn_inp = self.pth_temp / f'{label}.inp'
 
         delete_sections(inp, GEO_SECTIONS + GUI_SECTIONS + [SEC.TAGS])
 
