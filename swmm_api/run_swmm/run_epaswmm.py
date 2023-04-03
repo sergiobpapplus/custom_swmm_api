@@ -105,7 +105,7 @@ def get_swmm_command_line_auto(fn_inp, rpt_dir=None, out_dir=None, create_out=Tr
 
 def run_swmm_stdout(command_line, sep='_' * 100):
     print(sep)
-    print(command_line)
+    print(*command_line, sep=' | ')
     subprocess.run(command_line)
     print(sep)
 
