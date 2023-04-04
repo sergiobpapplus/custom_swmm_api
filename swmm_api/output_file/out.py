@@ -8,8 +8,9 @@ __license__ = "MIT"
 import datetime
 import warnings
 from itertools import product
-from numpy import dtype, fromfile, frombuffer
-from pandas import date_range, DataFrame, MultiIndex, Index
+import numpy as np
+import pandas as pd
+
 from pandas._libs import OutOfBoundsDatetime
 
 from .extract import SwmmOutExtract
@@ -72,12 +73,15 @@ class SwmmOutput(SwmmOutExtract):
 
         # the main datetime index for the results
         try:
-            self.index = date_range(self.start_date, periods=self.n_periods, freq=self.report_interval)
+            self.index = pd.date_range(self.start_date, periods=self.n_periods, freq=self.report_interval)
         except OutOfBoundsDatetime:
-            self.index = Index([self.start_date + self.report_interval * i for i in range(self.n_periods)])
+            self.index = pd.Index([self.start_date + self.report_interval * i for i in range(self.n_periods)])
 
     def __repr__(self):
         return f'SwmmOutput(file="{self.filename}")'
+
+    def __enter__(self):
+        return self
 
     def _get_dtypes(self):
         """
@@ -122,13 +126,12 @@ class SwmmOutput(SwmmOutExtract):
             numpy.ndarray: all data
         """
         if self._data is None:
-            types = [('datetime', 'f8')]
-            types += list(map(lambda i: ('/'.join(i), 'f4'), self._columns_raw))
+            types = [('datetime', 'f8')] + [('/'.join(i), 'f4') for i in self._columns_raw]
             self.fp.seek(self._pos_start_output, 0)
             try:
-                self._data = fromfile(self.fp, dtype=dtype(types))
+                self._data = np.fromfile(self.fp, dtype=np.dtype(types))
             except:
-                self._data = frombuffer(self.fp.read1(), dtype=dtype(types), count=self.n_periods)
+                self._data = np.frombuffer(self.fp.read1(), dtype=np.dtype(types), count=self.n_periods)
         return self._data
 
     def to_frame(self):
@@ -265,22 +268,22 @@ class SwmmOutput(SwmmOutExtract):
         """
         if isinstance(data, dict):
             if not bool(data):
-                return DataFrame()
-            df = DataFrame.from_dict(data).set_index(self.index)
+                return pd.DataFrame()
+            df = pd.DataFrame.from_dict(data).set_index(self.index)
         else:
             if data.size == 0:
-                return DataFrame()
+                return pd.DataFrame()
 
             if data.shape[0] != self.index.size:
                 data = data[:self.index.size]
 
-            df = DataFrame(data, index=self.index, dtype=float)
+            df = pd.DataFrame(data, index=self.index, dtype=float)
 
         # -----------
         if df.columns.size == 1:
             return df.iloc[:, 0]
         # -----------
-        df.columns = MultiIndex.from_tuples([col.split('/') for col in df.columns])
+        df.columns = pd.MultiIndex.from_tuples([col.split('/') for col in df.columns])
         if drop_useless:
             df.columns = df.columns.droplevel([i for i, l in enumerate(df.columns.levshape) if l == 1])
 
@@ -297,6 +300,45 @@ class SwmmOutput(SwmmOutExtract):
         Read parquet files with :func:`swmm_api.output_file.parquet.read` to get the original column-name-structure.
         """
         parquet.write(self.to_frame(), self.filename.replace('.out', '.parquet'))
+
+    def to_parquet_chunks(self, fn, rows_at_a_time=1000, show_progress=True, kind=None, label=None, variable=None):
+        import pyarrow as pa
+        import pyarrow.parquet as pq
+
+        types = np.dtype([('datetime', 'f8')] + [('/'.join(i), 'f4') for i in self._columns_raw])
+        self.fp.seek(self._pos_start_output, 0)
+
+        parq_writer = None
+        columns = self._filter_part_columns(kind, label, variable)
+        use_columns = ['datetime'] + ['/'.join(c) for c in  columns]
+
+        # ---
+        if show_progress:
+            import tqdm
+            iterator = tqdm.trange(0, self.n_periods, rows_at_a_time)
+        else:
+            iterator = range(0, self.n_periods, rows_at_a_time)
+
+        # ---
+        for _ in iterator:
+            # print(self.fp.tell())
+            data = np.fromfile(self.fp, dtype=types, count=rows_at_a_time)[use_columns]
+            df = pd.DataFrame(data)
+
+            df.index = (pd.Timedelta(days=1) * df.pop('datetime') + self._base_date).dt.round('s')
+
+            table = pa.Table.from_pandas(df)
+
+            # for the first chunk of records
+            if parq_writer is None:
+                # create a parquet write object giving it an output file
+                parq_writer = pq.ParquetWriter(fn, table.schema, compression='brotli')
+            parq_writer.write_table(table)
+
+        # close the parquet writer
+        if parq_writer:
+            parq_writer.close()
+
 
     # def to_netcdf(self, fn_nc):
     #     import xarray as xr

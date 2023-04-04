@@ -216,7 +216,7 @@ class SwmmOutExtract(BinaryReader):
             return ErrorCode;
         }
         """
-        _base_date = datetime.datetime(1899, 12, 30)
+        self._base_date = datetime.datetime(1899, 12, 30)
         _offset_start_td = datetime.timedelta(days=self._next(dtype='d'))
         # self.start_date_ = _base_date + _offset_start_td
         self.report_interval = datetime.timedelta(seconds=self._next())
@@ -239,7 +239,7 @@ class SwmmOutExtract(BinaryReader):
         _factor = (_offset_first_index_td - _offset_start_td) / self.report_interval
 
         # get real start date of the timeseries
-        self.start_date = _base_date + _offset_start_td + self.report_interval * int(_factor)
+        self.start_date = self._base_date + _offset_start_td + self.report_interval * int(_factor)
 
         # ____
         self.n_periods = _n_periods
@@ -268,6 +268,39 @@ class SwmmOutExtract(BinaryReader):
         _bytes_per_period *= _RECORDSIZE
         return _bytes_per_period
 
+    def _get_labels_and_offsets(self, columns):
+        n_vars_subcatch = len(self.variables[OBJECTS.SUBCATCHMENT])
+        n_vars_node = len(self.variables[OBJECTS.NODE])
+        n_vars_link = len(self.variables[OBJECTS.LINK])
+
+        n_subcatch = len(self.labels[OBJECTS.SUBCATCHMENT])
+        n_nodes = len(self.labels[OBJECTS.NODE])
+        n_links = len(self.labels[OBJECTS.LINK])
+
+        offset_list = []
+        label_list = []
+
+        for kind, label, variable in columns:
+            label_list.append('/'.join([kind, label, variable]))
+
+            index_kind = OBJECTS.LIST_.index(kind)
+            index_variable = self.variables[kind].index(variable)
+            item_index = self.labels[kind].index(str(label))
+            offset_list.append((2 + index_variable + {
+                0: (item_index * n_vars_subcatch),
+                1: (n_subcatch * n_vars_subcatch +
+                    item_index * n_vars_node),
+                2: (n_subcatch * n_vars_subcatch +
+                    n_nodes * n_vars_node +
+                    item_index * n_vars_link),
+                4: (n_subcatch * n_vars_subcatch +
+                    n_nodes * n_vars_node +
+                    n_links * n_vars_link)
+            }[index_kind]) * _RECORDSIZE)
+
+        return label_list, offset_list
+
+
     def _get_selective_results(self, columns, processes=1, show_progress=True):
         """
         get results of selective columns in .out-file
@@ -283,45 +316,20 @@ class SwmmOutExtract(BinaryReader):
         Returns:
             dict[str, list]: dictionary where keys are the column names ('/' as separator) and values are the list of result values
         """
-        n_vars_subcatch = len(self.variables[OBJECTS.SUBCATCHMENT])
-        n_vars_node = len(self.variables[OBJECTS.NODE])
-        n_vars_link = len(self.variables[OBJECTS.LINK])
 
-        n_subcatch = len(self.labels[OBJECTS.SUBCATCHMENT])
-        n_nodes = len(self.labels[OBJECTS.NODE])
-        n_links = len(self.labels[OBJECTS.LINK])
-
-        offset_list = []
-        values = {}
-
-        for kind, label, variable in columns:
-            values['/'.join([kind, label, variable])] = []
-
-            index_kind = OBJECTS.LIST_.index(kind)
-            index_variable = self.variables[kind].index(variable)
-            item_index = self.labels[kind].index(str(label))
-            offset_list.append((2 + index_variable + {
-                0: (item_index * n_vars_subcatch),
-                1: (n_subcatch * n_vars_subcatch +
-                    item_index * n_vars_node),
-                2: (n_subcatch * n_vars_subcatch +
-                    n_nodes * n_vars_node +
-                    item_index * n_vars_link),
-                4: (n_subcatch * n_vars_subcatch +
-                    n_nodes * n_vars_node +
-                    n_links * n_vars_link)
-            }[index_kind])*_RECORDSIZE)
-
+        label_list, offset_list = self._get_labels_and_offsets(columns)
         # offset_list = [o*_RECORDSIZE for o in offset_list]
         # cols = list(values.keys())
         # cols_sorted = sorted(cols, key=lambda e: offset_list[cols.index(e)])
         # offset_sorted = sorted(offset_list)
         # iter_label_offset = tuple(zip(cols_sorted, offset_sorted))
-        iter_label_offset = tuple(zip(values.keys(), offset_list))
+        iter_label_offset = tuple(zip(label_list, offset_list))
 
         variable = range(self._pos_start_output,  # start
                          self._pos_start_output + self.n_periods * self._bytes_per_period,  # stop
                          self._bytes_per_period)
+
+        values = {col: [] for col in label_list}
 
         def func(out, period_offset):
             for label, offset in iter_label_offset:
