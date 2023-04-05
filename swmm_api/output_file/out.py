@@ -17,6 +17,7 @@ from .extract import SwmmOutExtract
 from .definitions import OBJECTS, VARIABLES
 
 from . import parquet_helpers as parquet
+from .helpers import drop_useless_column_levels
 
 
 class SwmmOutputWarning(UserWarning):
@@ -285,7 +286,7 @@ class SwmmOutput(SwmmOutExtract):
         # -----------
         df.columns = pd.MultiIndex.from_tuples([col.split('/') for col in df.columns])
         if drop_useless:
-            df.columns = df.columns.droplevel([i for i, l in enumerate(df.columns.levshape) if l == 1])
+            drop_useless_column_levels(df)
 
         return df
 
