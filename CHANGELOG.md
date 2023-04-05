@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.16 (2023-04-04)
+### Fix
+* Added to_parquet_chunks for SwmmOutput to write parquet files in chunks to prevent out of memory error for huge out files. ([`6ac200b`](https://gitlab.com/markuspichler/swmm_api/-/commit/6ac200b74b51f216d564adffaae3e8f52e994e66))
+
+### Documentation
+* Polygon size is limited in gui ([`68b84dc`](https://gitlab.com/markuspichler/swmm_api/-/commit/68b84dc20bd54bcef6ef97575845f5948f81e270))
+
 ## v0.4.15 (2023-03-28)
 ### Fix
 * Run swmm in temporary folder and get results ([`e79b355`](https://gitlab.com/markuspichler/swmm_api/-/commit/e79b355bff1732022e1aa3d36a8fa230ed66790a))
