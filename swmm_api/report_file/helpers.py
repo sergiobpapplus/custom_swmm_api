@@ -188,7 +188,8 @@ def _continuity_part_to_dict(raw):
     df.index = df.index.str.replace('.', '', regex=False).str.strip()
 
     res = df.to_dict(orient='index')
-    res['Continuity Error (%)'] = list(res['Continuity Error (%)'].values())[0]
+    if 'Continuity Error (%)' in res:
+        res['Continuity Error (%)'] = list(res['Continuity Error (%)'].values())[0]
 
     return res
 
@@ -212,6 +213,29 @@ def _quality_continuity_part_to_dict(raw):
 
     res = df.to_dict(orient='index')
     return res
+
+
+def _transect_street_shape_converter(raw, key):
+    if raw is None:
+        return
+    summary = {}
+    for transect in raw.split(key + ' ')[1:]:
+        label, *data = transect.split()
+        summary[label] = {}
+        sub = data[0][:-1]
+        d = []
+        for i in data[1:]:
+            if i.endswith(':'):
+                summary[label][sub] = d
+                sub = i[:-1]
+            else:
+                d.append(float(i))
+        summary[label][sub] = d
+
+        summary[label] = pd.DataFrame.from_dict(
+            summary[label])
+
+    return summary
 
 
 class ReportUnitConversion:
@@ -305,7 +329,6 @@ class ContinuityVariables:
         self.VOL_1e6L = f'Volume_10^6 {u.VOL2}'
         self.DEPTH_MM = f'Depth_{u.DEPTH1}'
 
-#
 
 def main():
     import pandas as pd

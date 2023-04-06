@@ -62,7 +62,7 @@ ADC PERVIOUS       1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
 [RAINGAGES]
 ;;Name           Format    Interval SCF      Source    
 ;;-------------- --------- ------ ------ ----------
-RainGage         INTENSITY 0:05     1.0      TIMESERIES 0.1-in          
+RainGage         INTENSITY 0:05     1.0      TIMESERIES 100-yr
 Null             INTENSITY 1:00     1.0      TIMESERIES Null            
 
 [SUBCATCHMENTS]
@@ -279,7 +279,7 @@ C13              TRAPEZOIDAL  1.5              0          0.0001     25         
 C14              TRAPEZOIDAL  1.5              0          0.0001     25         1                    
 Street1          STREET       StreetQS        
 C16              TRAPEZOIDAL  3                5          5          5          1                    
-C17              TRAPEZOIDAL  1.5              0          0.0001     25         1                    
+C17              CUSTOM 1.5 triangle 0 0
 C_out            CIRCULAR     4.75             0          0          0          1                    
 Or1              RECT_CLOSED  0.16             0.25       0          0
 Or2              RECT_CLOSED  0.5              2.25       0          0
@@ -420,7 +420,10 @@ pump_curve_1                1          0
 SU2              Storage    0          10368     
 SU2                         2.2        14512     
 SU2                         2.3        32000     
-SU2                         6          50000     
+SU2                         6          50000
+
+triangle shape 0 1
+triangle 0.5 0.5
 
 [TIMESERIES]
 ;;Name           Date       Time       Value     

@@ -10,8 +10,10 @@ import os.path
 
 import pandas as pd
 
-from .helpers import (_get_title_of_part, _remove_lines, _part_to_frame, _continuity_part_to_dict, ReportUnitConversion,
-                      _routing_part_to_dict, _quality_continuity_part_to_dict, )
+from .helpers import (_get_title_of_part, _remove_lines, _part_to_frame,
+                      _continuity_part_to_dict, ReportUnitConversion,
+                      _routing_part_to_dict, _quality_continuity_part_to_dict,
+                      _transect_street_shape_converter, )
 from .._io_helpers._encoding import get_default_encoding
 from .._io_helpers._read_txt import read_txt_file
 from ..input_file.helpers import natural_keys
@@ -63,12 +65,15 @@ class SwmmReport:
         self._link_summary = None
         self._cross_section_summary = None
         self._transect_summary = None
+        self._street_summary = None
+        self._shape_summary = None
 
         self._runoff_quantity_continuity = None
         self._flow_routing_continuity = None
         self._groundwater_continuity = None
         self._quality_routing_continuity = None
         self._runoff_quality_continuity = None
+        self._rainfall_dependent_ii = None
 
         self._highest_continuity_errors = None
         self._time_step_critical_elements = None
@@ -97,6 +102,8 @@ class SwmmReport:
         self._subcatchment_washoff_summary = None
 
         self._pumping_summary = None
+
+        self._street_flow_summary = None
 
         self._lid_control_summary = None
         self._lid_performance_summary = None
@@ -323,6 +330,19 @@ class SwmmReport:
             p = self._raw_parts.get('Groundwater Continuity', None)
             self._groundwater_continuity = _continuity_part_to_dict(p)
         return self._groundwater_continuity
+
+    @property
+    def rainfall_dependent_ii(self):
+        """
+        Rainfall Dependent I/I
+
+        Returns:
+            dict[str, dict[str, float]]: Rainfall Dependent I/I
+        """
+        if self._rainfall_dependent_ii is None:
+            p = self._raw_parts.get('Rainfall Dependent I/I', None)
+            self._rainfall_dependent_ii = _continuity_part_to_dict(p)
+        return self._rainfall_dependent_ii
 
     @property
     def quality_routing_continuity(self):
@@ -726,6 +746,19 @@ class SwmmReport:
         return self._pumping_summary
 
     @property
+    def street_flow_summary(self):
+        """
+        Street Flow Summary
+
+        Returns:
+            pandas.DataFrame: Street Flow Summary
+        """
+        if self._street_flow_summary is None:
+            p = self._get_converted_part('Street Flow Summary')
+            self._street_flow_summary = _part_to_frame(p, replace_parts=('Street Conduit', 'StreetConduit'))
+        return self._street_flow_summary
+
+    @property
     def routing_time_step_summary(self):
         """
         Routing Time Step Summary
@@ -774,24 +807,40 @@ class SwmmReport:
         """
         if self._transect_summary is None:
             p = self._get_converted_part('Transect Summary')
-            if p is None:
-                return
-            self._transect_summary = {}
-            for transect in p.split('Transect')[1:]:
-                label, *data = transect.split()
-                self._transect_summary[label] = {}
-                sub = data[0][:-1]
-                d = []
-                for i in data[1:]:
-                    if i.endswith(':'):
-                        self._transect_summary[label][sub] = d
-                        sub = i[:-1]
-                    else:
-                        d.append(float(i))
-                self._transect_summary[label][sub] = d
-
-                self._transect_summary[label] = pd.DataFrame.from_dict(self._transect_summary[label])
+            self._transect_summary = _transect_street_shape_converter(p, key='Transect')
         return self._transect_summary
+
+    @property
+    def shape_summary(self):
+        """
+        Shape Summary
+
+        Returns:
+            dict[pandas.DataFrame]: Shape Summary
+        """
+        if self._shape_summary is None:
+            p = self._get_converted_part('Shape Summary')
+            self._shape_summary = _transect_street_shape_converter(p, key='Shape')
+        return self._shape_summary
+
+    @property
+    def street_summary(self):
+        """
+        Street Summary
+
+        Returns:
+            dict[pandas.DataFrame]: Street Summary
+        """
+        if self._street_summary is None:
+            p = self._get_converted_part('Street Summary')
+            self._street_summary = _transect_street_shape_converter(p, key='Street')
+        return self._street_summary
+        pass
+
+    # @property
+    # def most_frequent_nonconverging_nodes(self):
+    #     'Most Frequent Nonconverging Nodes'
+    #     return
 
     def get_simulation_info(self):
         """
