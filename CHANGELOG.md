@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.17 (2023-04-06)
+### Fix
+* Added rainfall_dependent_ii, street_flow_summary, shape_summary and street_summary as property to the SwmmReport class ([`70ff5aa`](https://gitlab.com/markuspichler/swmm_api/-/commit/70ff5aa3b044a670447d1d8d754d65c8a062bbaf))
+
 ## v0.4.16 (2023-04-04)
 ### Fix
 * Added to_parquet_chunks for SwmmOutput to write parquet files in chunks to prevent out of memory error for huge out files. ([`6ac200b`](https://gitlab.com/markuspichler/swmm_api/-/commit/6ac200b74b51f216d564adffaae3e8f52e994e66))
