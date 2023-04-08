@@ -790,6 +790,22 @@ class BaseSectionObject(ABC):
             raise SwmmInputWarning(f'{e} | {self}')
 
     @classmethod
+    def _prepare_convert_lines(cls, lines):
+        # print(f'BYTES: {len(lines):>9_d}', )
+        if isinstance(lines, str):
+            if len(lines) > 10_000_000:
+                n_lines = lines.strip().count('\n') + 1
+                # to create a progressbar in the reading process
+                # only needed with big (> 200 MB) files
+                return tqdm(txt_to_lines(lines), desc=cls.__name__, total=n_lines, postfix='Read')
+            else:
+                return txt_to_lines(lines)
+        elif isinstance(lines, pd.DataFrame):
+            return lines.values
+        else:
+            return lines
+
+    @classmethod
     def create_section(cls, lines=None):
         """
         Create a new section for the ``.inp``-file of this object and adds objects described in `lines`
@@ -803,26 +819,14 @@ class BaseSectionObject(ABC):
             InpSection: new section of this object type
         """
         sec = cls._section_class(cls)
-        # import sys
-        if lines is not None:
-            # print(f'BYTES: {len(lines):>9_d}', )
-            if isinstance(lines, str):
-                if len(lines) > 10_000_000:
-                    n_lines = lines.strip().count('\n') + 1
-                    # to create a progressbar in the reading process
-                    # only needed with big (> 200 MB) files
-                    lines_iter = tqdm(txt_to_lines(lines), desc=cls.__name__, total=n_lines, postfix='Read')
-                else:
-                    lines_iter = txt_to_lines(lines)
-            elif isinstance(lines, pd.DataFrame):
-                lines_iter = lines.values
-            else:
-                lines_iter = lines
+        if lines is None:
+            return sec
 
-            sec.add_inp_lines(lines_iter)
+        lines_iter = cls._prepare_convert_lines(lines)
+        sec.add_inp_lines(lines_iter)
 
-            if isinstance(lines_iter, tqdm):
-                lines_iter.close()
+        if isinstance(lines_iter, tqdm):
+            lines_iter.close()
 
         return sec
 
