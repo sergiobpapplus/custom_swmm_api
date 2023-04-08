@@ -265,6 +265,7 @@ def format_inp_geo_number(x):
     return f'{x:0.{get_gis_inp_decimals()}f}'
 
 
+# ignore comments after a semicolon
 _SECTION_PATTERN = re.compile(r'^[ \t]*([^;\n]+)[ \t]*;?[^\n]*$', flags=re.M)
 
 

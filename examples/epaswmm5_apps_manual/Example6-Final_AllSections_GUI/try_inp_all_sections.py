@@ -7,7 +7,9 @@ from swmm_api.run_swmm import swmm5_run_owa, swmm5_run_epa
 # CONFIG['exe_path'] = r"C:\Program Files\EPA SWMM 5.2.3 (64-bit)\runswmm.exe"
 CONFIG['exe_path'] = "/Users/markus/.bin/runswmm"
 # CONFIG['encoding'] = 'ISO-8859-1'
-# swmm5_run_epa('Example6-Final_AllSections_GUI.inp')
+# swmm5_run_epa('Example6-Final_AllSections_GUI.inp', init_print=False)
+
+exit()
 
 inp = SwmmInput.read_file('Example6-Final_AllSections_GUI.inp')
 inp.force_convert_all()
