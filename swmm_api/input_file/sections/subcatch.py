@@ -1,7 +1,7 @@
 import warnings
-
-from numpy import NaN
-from pandas import DataFrame
+import io
+import numpy as np
+import pandas as pd
 
 from .._type_converter import get_gis_inp_decimals
 from ..helpers import BaseSectionObject, InpSectionGeo
@@ -35,7 +35,7 @@ class SubCatchment(BaseSectionObject):
     _identifier = IDENTIFIERS.name
     _section_label = SUBCATCHMENTS
 
-    def __init__(self, name, rain_gage, outlet, area, imperviousness, width, slope, curb_length=0, snow_pack=NaN):
+    def __init__(self, name, rain_gage, outlet, area, imperviousness, width, slope, curb_length=0, snow_pack=np.NaN):
         """
         Basic subcatchment information.
 
@@ -260,7 +260,7 @@ class InfiltrationHorton(Infiltration):
         self.decay = float(decay)
         self.time_dry = float(time_dry)
         self.volume_max = float(volume_max)
-        self.kind = NaN if kind is None else kind
+        self.kind = np.NaN if kind is None else kind
 
 
 class InfiltrationGreenAmpt(Infiltration):
@@ -302,7 +302,7 @@ class InfiltrationGreenAmpt(Infiltration):
         self.suction_head = float(suction_head)
         self.hydraulic_conductivity = float(hydraulic_conductivity)
         self.moisture_deficit_init = float(moisture_deficit_init)
-        self.kind = NaN if kind is None else kind
+        self.kind = np.NaN if kind is None else kind
 
 
 class InfiltrationCurveNumber(Infiltration):
@@ -346,7 +346,7 @@ class InfiltrationCurveNumber(Infiltration):
         self.curve_no = curve_no
         self.hydraulic_conductivity = float(hydraulic_conductivity)
         self.time_dry = float(time_dry)
-        self.kind = NaN if kind is None else kind
+        self.kind = np.NaN if kind is None else kind
 
 
 INFILTRATION_DICT = {
@@ -396,28 +396,42 @@ class Polygon(BaseSectionObject):
         self.polygon = polygon
 
     @classmethod
-    def _convert_lines(cls, multi_line_args):
-        polygon = []
-        last = None
+    def _prepare_convert_lines(cls, lines):
+        return lines
 
-        for line in multi_line_args:
-            Subcatch, x, y = line
-            x = float(x)
-            y = float(y)
-            if Subcatch == last:
-                polygon.append([x, y])
-            else:
-                if last is not None:
-                    yield cls(last, polygon)
-                last = Subcatch
-                polygon = [[x, y]]
-        # last
-        if last is not None:
-            yield cls(last, polygon)
+    @classmethod
+    def _convert_lines(cls, multi_line_args):
+        a = np.loadtxt(io.StringIO(multi_line_args), comments=';',
+                       dtype={'names': ('polygon', 'x', 'y'),
+                              'formats': ('O', 'f4', 'f4')})
+
+        _, unique_index = np.unique(a['polygon'], return_index=True)
+        unique_index_sorted = unique_index[unique_index.argsort()]
+
+        for sc in np.split(a, unique_index_sorted[1:]):
+            yield cls(sc['polygon'][0], sc[['x', 'y']].tolist())
+
+        # polygon = []
+        # last = None
+        #
+        # for line in multi_line_args:
+        #     Subcatch, x, y = line
+        #     x = float(x)
+        #     y = float(y)
+        #     if Subcatch == last:
+        #         polygon.append([x, y])
+        #     else:
+        #         if last is not None:
+        #             yield cls(last, polygon)
+        #         last = Subcatch
+        #         polygon = [[x, y]]
+        # # last
+        # if last is not None:
+        #     yield cls(last, polygon)
 
     @property
     def frame(self):
-        return DataFrame.from_records(self.polygon, columns=['x', 'y'])
+        return pd.DataFrame.from_records(self.polygon, columns=['x', 'y'])
 
     def to_inp_line(self):
         return '\n'.join([f'{self.subcatchment}  {x:0.{get_gis_inp_decimals()}f} {y:0.{get_gis_inp_decimals()}f}' for x, y in self.polygon])
@@ -559,7 +573,7 @@ class Loading(BaseSectionObject):
 
     @property
     def frame(self):
-        return DataFrame.from_dict(self.pollutant_buildup_dict, columns=['pollutant', 'initial buildup'])
+        return pd.DataFrame.from_dict(self.pollutant_buildup_dict, columns=['pollutant', 'initial buildup'])
 
     def to_inp_line(self):
         return '\n'.join([f'{self.subcatchment}  {p} {b}' for p, b in self.pollutant_buildup_dict.items()])
@@ -639,7 +653,7 @@ class Coverage(BaseSectionObject):
 
     @property
     def frame(self):
-        return DataFrame.from_dict(self.land_use_dict, columns=['land_use', 'percent'])
+        return pd.DataFrame.from_dict(self.land_use_dict, columns=['land_use', 'percent'])
 
     def to_inp_line(self):
         return '\n'.join([f'{self.subcatchment}  {lu} {pct}' for lu, pct in self.land_use_dict.items()])
@@ -781,7 +795,7 @@ class Groundwater(BaseSectionObject):
     _identifier = (IDENTIFIERS.subcatchment, 'aquifer', IDENTIFIERS.node)
     _section_label = GROUNDWATER
 
-    def __init__(self, subcatchment, aquifer, node, Esurf, A1, B1, A2, B2, A3, Dsw, Egwt=NaN, Ebot=NaN, Egw=NaN, Umc=NaN):
+    def __init__(self, subcatchment, aquifer, node, Esurf, A1, B1, A2, B2, A3, Dsw, Egwt=np.NaN, Ebot=np.NaN, Egw=np.NaN, Umc=np.NaN):
         """
         Subcatchment groundwater parameters.
 
