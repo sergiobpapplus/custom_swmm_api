@@ -943,17 +943,18 @@ class SwmmReport:
         Returns:
             dict[str, (str | bool | list[str])]: key is the error and value is a object label, a list of object-label or a bool
         """
-        t = self._raw_parts.get('Version+Title', None)
         di = {}
-        if t:
-            for line in t.split('\n'):
-                line = line.strip()
-                if line.startswith('ERROR'):
-                    label, txt = line.split(':', 1)
-                    if label in di:
-                        di[label].append(txt)
-                    else:
-                        di[label] = [txt]
+        for part in ('Version+Title', 'Analysis Options'):
+            t = self._raw_parts.get(part, None)
+            if t:
+                for line in t.split('\n'):
+                    line = line.strip()
+                    if line.startswith('ERROR'):
+                        label, txt = line.split(':', 1)
+                        if label in di:
+                            di[label].append(txt)
+                        else:
+                            di[label] = [txt]
         return di
 
     def print_errors(self):

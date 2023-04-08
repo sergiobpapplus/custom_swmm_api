@@ -209,7 +209,7 @@ def get_swmm_version_epa():
 def check_swmm_errors(fn_rpt, shell_output):
     msgs = {}
 
-    if isinstance(shell_output, str):
+    if isinstance(shell_output, str):  # init_print=True
         msgs['CALL'] = shell_output
 
     else:
@@ -222,9 +222,10 @@ def check_swmm_errors(fn_rpt, shell_output):
             'OUT'   : stdout,
         })
 
-    msgs['REPORT'] = get_report_errors(fn_rpt)
+    if isinstance(shell_output, str) or ('OUT' in msgs and 'error' in msgs['OUT']):
+        msgs['REPORT'] = get_report_errors(fn_rpt)
 
-    if msgs['REPORT'] != 'No Errors.':
+    if ('REPORT' in msgs) and ((msgs['REPORT'] != 'No Errors.') or (msgs['REPORT'] == 'NO Report file created!!!')):
         sep = '\n' + '_' * 100 + '\n'
         error_msg = sep + sep.join(f'{k}:\n  {v}' for k, v in msgs.items())
         raise SWMMRunError(error_msg)

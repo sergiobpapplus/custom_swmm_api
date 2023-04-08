@@ -22,7 +22,7 @@ def _get_title_of_part(part, alt):
     Returns:
         str: title of the part
     """
-    if 'EPA STORM WATER MANAGEMENT MODEL - VERSION' in part:
+    if 'STORM WATER MANAGEMENT MODEL - VERSION' in part:
         return 'Version+Title'
 
     elif 'NOTE:' in part:
