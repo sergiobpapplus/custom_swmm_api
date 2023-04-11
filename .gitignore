@@ -4,3 +4,5 @@ dist
 build
 */__pycache__/*
 examples/epaswmm5_apps_manual/Example6-Final_AllSections_GUI/Example6-Final_AllSections_python.*
+/docker_website/.cache/*
+/documentation_beta/*

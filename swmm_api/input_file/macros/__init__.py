@@ -28,7 +28,7 @@ except ImportError as e:
 
 from .graph import (inp_to_graph, get_path, get_path_subgraph, next_links, next_links_labels, next_nodes,
                     previous_links, previous_links_labels, previous_nodes, links_connected, number_in_out,
-                    downstream_nodes, upstream_nodes, get_network_forks, split_network, conduit_iter_over_inp,
+                    get_downstream_nodes, get_upstream_nodes, get_network_forks, split_network, conduit_iter_over_inp,
                     subcatchments_connected)
 from .macros import (find_node, find_link, calc_slope, conduit_slopes, conduits_are_equal, update_no_duplicates,
                      increase_max_node_depth, set_times, combined_subcatchment_frame, delete_sections,

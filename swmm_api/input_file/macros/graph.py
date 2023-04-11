@@ -148,9 +148,9 @@ def number_in_out(g, node):
     return g.in_degree(node), g.out_degree(node)
 
 
-def downstream_nodes(graph, node):
+def get_downstream_nodes(graph, node):
     """
-    get all nodes downstream of the node given
+    Get all nodes downstream of the node given.
 
     only the direction of links defined in the INP file counts (not the elevation)
 
@@ -189,7 +189,7 @@ def _downstream_nodes(graph: nx.DiGraph, node: str, node_list=None) -> list:
 #         node = list(graph.successors(node))[0]
 
 
-def upstream_nodes(graph, node):
+def get_upstream_nodes(graph, node):
     """
     Get all nodes upstream of the node given
 
