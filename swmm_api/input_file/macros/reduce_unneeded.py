@@ -166,7 +166,7 @@ def remove_empty_sections(inp):
         SwmmInput: cleaned inp-file data
     """
     for section in list(inp.keys()):
-        if not inp[section]:
+        if not inp._data[section]:
             del inp[section]
 
 
