@@ -191,7 +191,7 @@ def _downstream_nodes(graph: nx.DiGraph, node: str, node_list=None) -> list:
 
 def upstream_nodes(graph, node):
     """
-    get all nodes upstream of the node given
+    Get all nodes upstream of the node given
 
     only the direction of links defined in the INP file counts (not the elevation)
 
@@ -202,20 +202,18 @@ def upstream_nodes(graph, node):
     Returns:
         list[str]: list of nodes upstream of the given node
     """
-    return _upstream_nodes(graph, node)
+    return list(_upstream_nodes(graph, node))
 
 
-def _upstream_nodes(graph: nx.DiGraph, node: str, node_list=None) -> list:
-    if node_list is None:
-        node_list = []
-    node_list.append(node)
-    next_nodes = list(graph.predecessors(node))
-    if next_nodes:
-        for n in next_nodes:
-            if n in node_list:
-                continue
-            node_list = _upstream_nodes(graph, n, node_list)
-    return node_list
+def _upstream_nodes(graph: nx.DiGraph, node: str, nodes_list=None) -> set:
+    if nodes_list is None:
+        nodes_list = set()
+    nodes_list.add(node)
+    for n in graph.predecessors(node):
+        if n in nodes_list:
+            continue
+        nodes_list = _upstream_nodes(graph, n, nodes_list)
+    return nodes_list
 
 
 # def _upstream_nodes2(graph: DiGraph, node: str):
