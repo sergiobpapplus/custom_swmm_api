@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.18 (2023-04-08)
+### Fix
+* Raise error when swmm run failed with owa swmm ([`0aa9743`](https://gitlab.com/markuspichler/swmm_api/-/commit/0aa97438c32bcdb20358ebf8bc16dc5b7ff970b4))
+* Optimize polygon import for large models ([`52d1f53`](https://gitlab.com/markuspichler/swmm_api/-/commit/52d1f53c0bd5d99ce8a0bbf5a0006c2e6099b87f))
+
+### Documentation
+* Extended the testing swmm inp model ([`39c08f2`](https://gitlab.com/markuspichler/swmm_api/-/commit/39c08f23a72c6bf538dc030fb017b92a6d75ea1d))
+* Update out file example ([`cdbce04`](https://gitlab.com/markuspichler/swmm_api/-/commit/cdbce04384007dc6dba8d532fa0914c0d53360b0))
+* Update out file example ([`d746ce3`](https://gitlab.com/markuspichler/swmm_api/-/commit/d746ce39bab919273b42390e635d265febd504fb))
+
 ## v0.4.17 (2023-04-06)
 ### Fix
 * Added rainfall_dependent_ii, street_flow_summary, shape_summary and street_summary as property to the SwmmReport class ([`70ff5aa`](https://gitlab.com/markuspichler/swmm_api/-/commit/70ff5aa3b044a670447d1d8d754d65c8a062bbaf))
