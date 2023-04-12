@@ -6,9 +6,9 @@ from ..section_lists import NODE_SECTIONS, LINK_SECTIONS
 
 def nodes_dict(inp):
     """
-    get a dict of all nodes
+    Get a dict of all nodes.
 
-    the objects are referenced, so you can use it to modify too.
+    The objects are referenced, so you can use it to modify too.
 
     Args:
         inp (swmm_api.SwmmInput): inp-file data
@@ -16,18 +16,19 @@ def nodes_dict(inp):
     Returns:
         ChainMap[str, swmm_api.input_file.sections.node._Node]: dict of {labels: objects}
     """
-    nodes = ChainMap()
-    for section in NODE_SECTIONS:
-        if section in inp:
-            nodes.maps.append(inp[section])
-    return nodes
+    return ChainMap(*[inp[section] for section in NODE_SECTIONS if section in inp])
+    # nodes = ChainMap()
+    # for section in NODE_SECTIONS:
+    #     if section in inp:
+    #         nodes.maps.append(inp[section])
+    # return nodes
 
 
 def nodes_subcatchments_dict(inp):
     """
-    get a dict of all nodes and subcatchments
+    Get a dict of all nodes and subcatchments.
 
-    the objects are referenced, so you can use it to modify too.
+    The objects are referenced, so you can use it to modify too.
 
     Args:
         inp (swmm_api.SwmmInput): inp-file data
@@ -43,9 +44,9 @@ def nodes_subcatchments_dict(inp):
 
 def links_dict(inp):
     """
-    get a dict of all links
+    Get a dict of all links.
 
-    the objects are referenced, so you can use it to modify too.
+    The objects are referenced, so you can use it to modify too.
 
     Args:
         inp (swmm_api.SwmmInput): inp-file data
@@ -53,16 +54,12 @@ def links_dict(inp):
     Returns:
         ChainMap[str, swmm_api.input_file.sections.link._Link]: dict of {labels: objects}
     """
-    links = ChainMap()
-    for section in LINK_SECTIONS:
-        if section in inp:
-            links.maps.append(inp[section])
-    return links
+    return ChainMap(*[inp[section] for section in LINK_SECTIONS if section in inp])
 
 
 def subcatchments_per_node_dict(inp):
     """
-    get dict where key=node and value=list of subcatchment connected to the node (set as outlet)
+    Get dict where key=node and value=list of subcatchment connected to the node (set as outlet).
 
     Args:
         inp (swmm_api.SwmmInput): inp data
