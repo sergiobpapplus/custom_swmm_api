@@ -417,4 +417,4 @@ class Weir(_Link):
         self.discharge_coefficient_end = float(discharge_coefficient_end)
         self.can_surcharge = to_bool(can_surcharge)
         self.road_width = float(road_width)
-        self.road_surface = str(road_surface)
+        self.road_surface = road_surface if isinstance(road_surface, str) and (road_surface.lower() != 'nan') else road_surface
