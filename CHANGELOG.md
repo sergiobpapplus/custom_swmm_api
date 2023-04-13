@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.19 (2023-04-13)
+### Fix
+* Weir road surface parameter not used, was a string, now its a nan and will not be written into the new inp file. ([`25d665b`](https://gitlab.com/markuspichler/swmm_api/-/commit/25d665bb46a2bfc4c82a4446bc590f3b92a58f88))
+
 ## v0.4.18 (2023-04-08)
 ### Fix
 * Raise error when swmm run failed with owa swmm ([`0aa9743`](https://gitlab.com/markuspichler/swmm_api/-/commit/0aa97438c32bcdb20358ebf8bc16dc5b7ff970b4))
