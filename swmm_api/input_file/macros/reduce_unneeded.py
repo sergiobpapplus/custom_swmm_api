@@ -70,6 +70,9 @@ def reduce_controls(inp):
     links = links_dict(inp)
     nodes = nodes_dict(inp)
 
+    # TODO first action is THEN
+    # first condition is IF
+
     for label in list(inp.CONTROLS.keys()):
         control = inp.CONTROLS[label]
         # if unavailable object in condition: remove whole rule
@@ -120,7 +123,7 @@ def reduce_controls(inp):
 
 def simplify_curves(curve_section, dist=0.001):
     """
-    simplify curves with the algorithm by Ramer and Douglas
+    Simplify curves with the algorithm by Ramer and Douglas.
 
     Args:
         curve_section (InpSection[Curve]): old section
@@ -140,13 +143,13 @@ def simplify_curves(curve_section, dist=0.001):
 
 def reduce_raingages(inp):
     """
-    get used RAINGAGES from SUBCATCHMENTS and keep only used raingages in the section
+    Get used ``RAINGAGES`` from SUBCATCHMENTS and keep only used rain-gages in the section.
 
     Args:
         inp (SwmmInput):  inp-file data
 
     Returns:
-        SwmmInput: inp-file data with filtered RAINGAGES section
+        SwmmInput: inp-file data with filtered ``RAINGAGES`` section
     """
     needed_raingages = set()
     if (SUBCATCHMENTS in inp) and (RAINGAGES in inp):
@@ -157,7 +160,7 @@ def reduce_raingages(inp):
 
 def remove_empty_sections(inp):
     """
-    remove empty inp-file data sections
+    Remove empty inp-file data sections.
 
     Args:
         inp (SwmmInput): inp-file data
