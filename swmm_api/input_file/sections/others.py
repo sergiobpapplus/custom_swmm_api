@@ -930,6 +930,9 @@ class Control(BaseSectionObject):
         # last
         yield cls(*args)
 
+    def copy(self):
+        return type(self)(self.name, self.conditions.copy(), self.actions.copy(), self.priority)
+
     def to_inp_line(self):
         s = f'{self.LOGIC.RULE} {self.name}\n'
         s += '{}\n'.format('\n'.join([c.to_inp_line() for c in self.conditions]))
