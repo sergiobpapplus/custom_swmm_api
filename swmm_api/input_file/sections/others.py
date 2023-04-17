@@ -1,4 +1,5 @@
 import datetime
+import enum
 import locale
 import warnings
 from typing import Literal
@@ -796,8 +797,9 @@ class Control(BaseSectionObject):
         RULE = 'RULE'  # only to declare the first line of a rule
         IF = 'IF'  # only for conditions
         THEN = 'THEN'  # only for actions
+        ELSE = 'ELSE'  # only for actions
         PRIORITY = 'PRIORITY'  # only to declare the last line of a rule with a priority
-        AND = 'AND'  # only for actions
+        AND = 'AND'  # for conditions and actions
         OR = 'OR'  # only for conditions
 
     class _Condition(BaseSectionObject):
@@ -826,8 +828,8 @@ class Control(BaseSectionObject):
             SIMULATION CLOCKTIME = 22:45:00
         """
 
-        def __init__(self, logic: Literal['IF', 'OR'], kind, *args, label=NaN, attribute=None, relation: Literal['=', '<>', '<', '<=', '>', '>=']=None, value=None):
-            self.logic = logic.upper()  # if and or
+        def __init__(self, logic: Literal['IF', 'OR', 'AND'], kind, *args, label=NaN, attribute=None, relation: Literal['=', '<>', '<', '<=', '>', '>=']=None, value=None):
+            self.logic = logic.upper()  # if, and, or
             self.kind = kind.upper()  # Control.OBJECTS
             line = list(args)
             if line:
@@ -867,8 +869,7 @@ class Control(BaseSectionObject):
             ORIFICE ORI_23 SETTING = PID 0.1 0.1 0.0
         """
 
-        def __init__(self, logic: Literal['THEN', 'AND'], kind, label, action, relation='=', *values, value=None):
-            self.logic = logic.upper()  # THEN, AND
+        def __init__(self, kind, label, action, relation='=', *values, value=None):
             self.kind = kind.upper()  # Control.OBJECTS
             self.label = label  # label of the object
             self.action = action.upper()  #
@@ -887,56 +888,79 @@ class Control(BaseSectionObject):
             Returns:
                 str: SWMM .inp file compatible string
             """
-            return f'{self.logic} {self.kind} {self.label} {self.action} {self.relation} {self.value}'
+            return f'{self.kind} {self.label} {self.action} {self.relation} {self.value}'
 
-    def __init__(self, name, conditions, actions, priority=0):
+    def __init__(self, name, conditions, actions_if, actions_else=None, priority=0):
         self.name = str(name)
         self.conditions = conditions
-        self.actions = actions
+        self.actions_if = actions_if
+        self.actions_else = [] if actions_else is None else actions_else
         self.priority = int(priority)
 
     @classmethod
     def _convert_lines(cls, multi_line_args):
-        args = []
-        is_condition = False
-        is_action = False
+        kwargs = {}
+
+        class SECTIONS(enum.Enum):
+            CONDITIONS = 0
+            ACTIONS_IF = 1
+            ACTIONS_ELSE = 2
+
+        last = None
         for logic, *line in multi_line_args:
             if logic.upper() == cls.LOGIC.RULE:
-                if args:
-                    yield cls(*args)
-                    args = []
-                args.append(line[0])
-                is_action = False
+                if kwargs:
+                    yield cls(**kwargs)
+                    kwargs = {}
+                kwargs['name'] = line[0]
+                last = None
 
             elif logic.upper() == cls.LOGIC.IF:
-                args.append([cls._Condition(logic, *line)])
-                is_condition = True
+                kwargs['conditions'] = [cls._Condition(logic, *line)]
+                # is_condition = True
+                last = SECTIONS.CONDITIONS
 
             elif logic.upper() == cls.LOGIC.THEN:
-                args.append([cls._Action(logic, *line)])
-                is_condition = False
-                is_action = True
+                kwargs['actions_if'] = [cls._Action(*line)]
+                # args.append([cls._Action(logic, *line)])
+                # is_condition = False
+                # is_action = True
+                last = SECTIONS.ACTIONS_IF
+
+            elif logic.upper() == cls.LOGIC.ELSE:
+                kwargs['actions_else'] = [cls._Action(*line)]
+                # args.append([cls._Action(logic, *line)])
+                # is_condition = False
+                # is_action = True
+                last = SECTIONS.ACTIONS_ELSE
 
             elif logic.upper() == cls.LOGIC.PRIORITY:
-                args.append(line[0])
-                is_action = False
+                kwargs['priority'] = line[0]
+                # args.append(line[0])
+                # is_action = False
+                last = None
 
-            elif is_condition:
-                args[-1].append(cls._Condition(logic, *line))
+            elif last is SECTIONS.CONDITIONS:
+                kwargs['conditions'].append(cls._Condition(logic, *line))
 
-            elif is_action:
-                args[-1].append(cls._Action(logic, *line))
+            elif last is SECTIONS.ACTIONS_IF:
+                kwargs['actions_if'].append(cls._Action(*line))
+
+            elif last is SECTIONS.ACTIONS_ELSE:
+                kwargs['actions_else'].append(cls._Action(*line))
 
         # last
-        yield cls(*args)
+        yield cls(**kwargs)
 
     def copy(self):
-        return type(self)(self.name, self.conditions.copy(), self.actions.copy(), self.priority)
+        return type(self)(self.name, self.conditions.copy(), self.actions_if.copy(), self.actions_else.copy(), self.priority)
 
     def to_inp_line(self):
         s = f'{self.LOGIC.RULE} {self.name}\n'
         s += '{}\n'.format('\n'.join([c.to_inp_line() for c in self.conditions]))
-        s += '{}\n'.format('\n'.join([a.to_inp_line() for a in self.actions]))
+        s += 'THEN {}\n'.format('\nAND '.join([a.to_inp_line() for a in self.actions_if]))
+        if self.actions_else:
+            s += 'ELSE {}\n'.format('\nAND '.join([a.to_inp_line() for a in self.actions_else]))
         s += f'{self.LOGIC.PRIORITY} {self.priority}\n'
         return s
 

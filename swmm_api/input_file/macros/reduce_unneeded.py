@@ -80,44 +80,50 @@ def reduce_controls(inp):
             if condition.kind + 'S' in inp:
                 # CONDUIT PUMP ORIFICE WEIR OUTLET
                 if condition.label not in inp[condition.kind + 'S']:
-                    # pass  # delete
+                    # delete whole rule
                     del inp.CONTROLS[label]
                     continue
             elif condition.kind == Control.OBJECTS.NODE:
                 if condition.label not in nodes:
-                    # pass  # delete
+                    # delete whole rule
                     del inp.CONTROLS[label]
                     continue
             elif condition.kind == Control.OBJECTS.LINK:
                 if condition.label not in links:
-                    # pass  # delete
+                    # delete whole rule
                     del inp.CONTROLS[label]
                     continue
 
         if label not in inp.CONTROLS:
             continue
 
+        def _delete_action(_label, _action):
+            if _action in inp.CONTROLS[label].actions_if:
+                inp.CONTROLS[label].actions_if.remove(i)
+            if _action in inp.CONTROLS[label].actions_else:
+                inp.CONTROLS[label].actions_else.remove(i)
+
         # if unavailable object in action: remove only this action
-        for action in list(control.actions):  # type: Control._Action
+        for action in list(control.actions_if) + list(control.actions_else):  # type: Control._Action
             i = control.actions.index(action)
             if action.kind + 'S' in inp:
                 # CONDUIT PUMP ORIFICE WEIR OUTLET
                 if action.label not in inp[action.kind + 'S']:
-                    # pass  # delete
-                    inp.CONTROLS[label].actions.pop(i)
+                    # delete only this action
+                    _delete_action(label, action)
             elif action.kind + 'S' in SECTION_TYPES and action.kind + 'S' not in inp:
                 inp.CONTROLS[label].actions.pop(i)
             elif action.kind == Control.OBJECTS.NODE:
                 if action.label not in nodes:
-                    # pass  # delete
-                    inp.CONTROLS[label].actions.pop(i)
+                    # delete only this action
+                    _delete_action(label, action)
             elif action.kind == Control.OBJECTS.LINK:
                 if action.label not in links:
-                    # pass  # delete
-                    inp.CONTROLS[label].actions.pop(i)
+                    # delete only this action
+                    _delete_action(label, action)
 
         # if no actions left
-        if not control.actions:
+        if not control.actions_if:
             del inp.CONTROLS[label]
 
 
