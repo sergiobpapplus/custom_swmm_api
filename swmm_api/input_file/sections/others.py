@@ -1611,7 +1611,7 @@ class TimeseriesData(Timeseries):
         else:
             str_only = False
         try:
-            loc = locale.getlocale()
+            loc = locale.getlocale(locale.LC_TIME)
 
             # use default locale for SWMM dates
             try:
@@ -1635,7 +1635,10 @@ class TimeseriesData(Timeseries):
             if str_only:
                 date_time_new = pd.to_datetime(date_time_new, format='%m/%d/%Y %H:%M:%S')
 
-            locale.setlocale(locale.LC_TIME, loc)  # restore saved locale
+            try:
+                locale.setlocale(locale.LC_TIME, loc)  # restore saved locale
+            except locale.Error:
+                locale.setlocale(locale.LC_TIME, '')
             self.data = list(zip(date_time_new, values))
         except Exception as e:
             # if the conversion doesn't work - skip it
