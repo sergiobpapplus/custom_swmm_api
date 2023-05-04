@@ -107,9 +107,9 @@ def conduits_are_equal(inp: SwmmInput, link0, link1, diff_roughness=0.1, diff_sl
         inp (SwmmInput):
         link0 (Conduit | Weir | Outlet | Orifice | Pump | _Link): first link
         link1 (Conduit | Weir | Outlet | Orifice | Pump | _Link): second link
-        diff_roughness (float): difference from which it is considered different.
-        diff_slope (float): difference from which it is considered different.
-        diff_height (float): difference from which it is considered different.
+        diff_roughness (float | None): difference from which it is considered different.
+        diff_slope (float | None): difference from which it is considered different.
+        diff_height (float | None): difference from which it is considered different.
 
     Returns:
         bool: if the links are equal

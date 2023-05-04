@@ -122,7 +122,7 @@ def compare_sections(sec1, sec2, precision=3):
     return CompareSections(sec1, sec2, precision=precision).get_diff_string()
 
 
-def compare_inp_files(fn1, fn2, precision=2, skip_section=None, sep='\n' + '#' * 100):
+def compare_inp_files(fn1, fn2, precision=2, skip_section=None, sep='\n' + '#' * 100, show_progressbar=True):
     """
     compare two inp files and get the differences as string output
 
@@ -131,6 +131,7 @@ def compare_inp_files(fn1, fn2, precision=2, skip_section=None, sep='\n' + '#' *
         fn2 (str): filename for the second inp file
         precision (int): number of relevant decimal places
         skip_section (list): skip sections if you don't care for specific changes
+        show_progressbar (bool): show progress bar
 
     Returns:
         str: differences of the files
@@ -142,10 +143,10 @@ def compare_inp_files(fn1, fn2, precision=2, skip_section=None, sep='\n' + '#' *
          f'Ignoring Sections: {skip_section}\n')
     inp1 = SwmmInput.read_file(fn1)
     inp2 = SwmmInput.read_file(fn2)
-    return s + compare_inp_objects(inp1, inp2, precision=precision, skip_section=skip_section, sep=sep)
+    return s + compare_inp_objects(inp1, inp2, precision=precision, skip_section=skip_section, sep=sep, show_progressbar=show_progressbar)
 
 
-def compare_inp_objects(inp1, inp2, precision=2, skip_section=None, sep='\n' + '#' * 100):
+def compare_inp_objects(inp1, inp2, precision=2, skip_section=None, sep='\n' + '#' * 100, show_progressbar=True):
     s = ''
     sections = set(inp1.keys()) | set(inp2.keys())
 
@@ -155,8 +156,13 @@ def compare_inp_objects(inp1, inp2, precision=2, skip_section=None, sep='\n' + '
         else:
             return len(inp2._original_section_order)
 
-    for section in (progress := tqdm(sorted(sections, key=_sort_by), desc='compare_inp_objects')):
-        progress.set_postfix_str(section)
+    progress = sorted(sections, key=_sort_by)
+
+    if show_progressbar:
+        progress = tqdm(progress, desc='compare_inp_objects')
+
+    for section in progress:
+        if show_progressbar: progress.set_postfix_str(section)
         if skip_section is not None and section in skip_section:
             continue
         if section in [TITLE]:

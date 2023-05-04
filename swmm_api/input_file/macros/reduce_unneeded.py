@@ -65,13 +65,8 @@ def reduce_controls(inp):
     if CONTROLS not in inp:
         return
 
-    # c0 = Control.create_section(inp.CONTROLS.to_inp_lines())
-
     links = links_dict(inp)
     nodes = nodes_dict(inp)
-
-    # TODO first action is THEN
-    # first condition is IF
 
     for label in list(inp.CONTROLS.keys()):
         control = inp.CONTROLS[label]
