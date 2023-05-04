@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.21 (2023-05-04)
+### Fix
+* Set back to default locale in timeseries data converter ([`56d1af7`](https://gitlab.com/markuspichler/swmm_api/-/commit/56d1af71beb4a704a72c5ff9963c98498d38a6e5))
+* Optional show progressbar in compare_inp_files ([`d2661f2`](https://gitlab.com/markuspichler/swmm_api/-/commit/d2661f2aabd6cd826a28370881ddc3ffbe8dde0c))
+
 ## v0.4.20 (2023-04-17)
 ### Fix
 * Fixed errors in the `Control` object implementation. `actions` attribute is now split into `actions_if` and `actions_else`. Actions don't need the parameter `logic`. ([`2aa71a9`](https://gitlab.com/markuspichler/swmm_api/-/commit/2aa71a90427e978baf8af0736f065bc908fa2062))
