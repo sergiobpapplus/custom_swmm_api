@@ -1,3 +1,5 @@
+from typing import Mapping
+
 from numpy import NaN
 
 from ._identifiers import IDENTIFIERS
@@ -95,7 +97,7 @@ class LIDControl(BaseSectionObject):
             - ``RD`` for rooftop disconnection
             - ``VS`` for vegetative swale.
 
-        layer_dict (dict[str, LIDControl.LAYER_TYPES.Surface | LIDControl.LAYER_TYPES.Soil]): Sict of used layers in control.
+        layer_dict (MutableMapping[str, LIDControl.LAYER_TYPES.Surface | LIDControl.LAYER_TYPES.Soil]): Sict of used layers in control.
 
         LID_TYPES: Enum-like for the attribute :attr:`LIDControl.lid_kind` with following members -> {``BC`` | ``RG`` | ``IT`` | ``PP`` | ``RB`` | ``RD`` | ``VS``}
     """
@@ -104,14 +106,24 @@ class LIDControl(BaseSectionObject):
     _table_inp_export = False
 
     class LID_TYPES:
-        BC = 'BC'  # for bio-retention cell
-        RG = 'RG'  # for rain garden
-        GR = 'GR'  # for green roof
-        IT = 'IT'  # for infiltration trench
-        PP = 'PP'  # for permeable pavement
-        RB = 'RB'  # for rain barrel
-        RD = 'RD'  # for rooftop disconnection
-        VS = 'VS'  # for vegetative swale.
+        BC = 'BC'  # bio-retention cell
+        RG = 'RG'  # rain garden
+        GR = 'GR'  # green roof
+        IT = 'IT'  # infiltration trench
+        PP = 'PP'  # permeable pavement
+        RB = 'RB'  # rain barrel
+        RD = 'RD'  # rooftop disconnection
+        VS = 'VS'  # vegetative swale
+
+        # Aliases
+        BIO_RETENTION_CELL = BC
+        RAIN_GARDEN = RG
+        GREEN_ROOF = GR
+        INFILTRATION_TRENCH = IT
+        PERMEABLE_PAVEMENT = PP
+        RAIN_BARREL = RB
+        ROOFTOP_DISCONNECTION = RD
+        VEGETATIVE_SWALE = VS
 
         _possible = [BC, RG, GR, IT, PP, RB, RD, VS]
 
@@ -136,6 +148,7 @@ class LIDControl(BaseSectionObject):
         self.name = str(name)
         self.lid_kind = lid_kind.upper()  # one of LID_TYPES
         self.layer_dict = {} if layer_dict is None else layer_dict
+        # Using dict instead of list to simplify editing single layer after creation.
 
     @classmethod
     def _convert_lines(cls, multi_line_args):
@@ -148,9 +161,17 @@ class LIDControl(BaseSectionObject):
                     yield last
                 last = cls(name, lid_kind=line[0].upper())
             elif name == last.name:
-                surface_kind = line.pop(0).upper()  # one of SURFACE_TYPES
-                last.layer_dict[surface_kind] = cls.LAYER_TYPES._dict[surface_kind](*line)
+                layer_type = line.pop(0).upper()  # one of LAYER_TYPES
+                layer = cls.LAYER_TYPES._dict[layer_type](*line)
+                last.add_layer(layer)
+                # last.layer_dict[layer_type] = layer
         yield last
+    
+    def add_layer(self, layer):
+        self.layer_dict[layer._LABEL] = layer
+
+    def add_layer_as_dict(self, layer_type, kwargs):
+        self.add_layer(self.LAYER_TYPES._dict[layer_type](**kwargs))
 
     class LAYER_TYPES:
         class Surface(BaseSectionObject):

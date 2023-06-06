@@ -3,6 +3,7 @@ import datetime
 import re
 import types
 from abc import ABC
+from collections.abc import Mapping
 from inspect import isfunction, isclass, getdoc, signature
 import warnings
 
@@ -110,6 +111,10 @@ class CustomDict:
     # @property
     # def id(self):
     #     return id(self)
+
+
+Mapping.register(CustomDict)
+
 
 class InpSectionABC(ABC, CustomDict):
     """

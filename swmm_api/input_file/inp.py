@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from pathlib import Path
 
 import os
@@ -479,7 +480,7 @@ class SwmmInput(CustomDict):
         COORDINATES section
 
         Returns:
-            dict[str, Coordinate] | InpSectionGeo: Coordinates in INP
+            Mapping[str, Coordinate] | InpSectionGeo: Coordinates in INP
         """
         if COORDINATES in self:
             return self[COORDINATES]
@@ -490,7 +491,7 @@ class SwmmInput(CustomDict):
         VERTICES section
 
         Returns:
-            dict[str, Vertices] | InpSectionGeo: Vertices section
+            Mapping[str, Vertices] | InpSectionGeo: Vertices section
         """
         if VERTICES in self:
             return self[VERTICES]
@@ -501,7 +502,7 @@ class SwmmInput(CustomDict):
         POLYGONS section
 
         Returns:
-            dict[str, Polygon] or InpSectionGeo: Polygon section
+            Mapping[str, Polygon] or InpSectionGeo: Polygon section
         """
         if POLYGONS in self:
             return self[POLYGONS]
@@ -512,7 +513,7 @@ class SwmmInput(CustomDict):
         SYMBOLS section
 
         Returns:
-            dict[str, Symbol] | InpSection: Symbol section
+            Mapping[str, Symbol] | InpSection: Symbol section
         """
         if SYMBOLS in self:
             return self[SYMBOLS]
@@ -523,7 +524,7 @@ class SwmmInput(CustomDict):
         MAP section
 
         Returns:
-            dict[str, MapSection] | InpSection: MapSection section
+            Mapping[str, MapSection] | InpSection: MapSection section
         """
         if MAP in self:
             return self[MAP]
@@ -534,7 +535,7 @@ class SwmmInput(CustomDict):
         LABELS section
 
         Returns:
-            dict[str, Label] | InpSection: Label section
+            Mapping[str, Label] | InpSection: Label section
         """
         if LABELS in self:
             return self[LABELS]
@@ -545,7 +546,7 @@ class SwmmInput(CustomDict):
         CONDUITS section
 
         Returns:
-            dict[str, Conduit] | InpSection: Conduit section
+            Mapping[str, Conduit] | InpSection: Conduit section
         """
         if CONDUITS in self:
             return self[CONDUITS]
@@ -556,7 +557,7 @@ class SwmmInput(CustomDict):
         ORIFICES section
 
         Returns:
-            dict[str, Orifice] | InpSection: Orifice section
+            Mapping[str, Orifice] | InpSection: Orifice section
         """
         if ORIFICES in self:
             return self[ORIFICES]
@@ -567,7 +568,7 @@ class SwmmInput(CustomDict):
         WEIRS section
 
         Returns:
-            dict[str, Weir] | InpSection: Weir section
+            Mapping[str, Weir] | InpSection: Weir section
         """
         if WEIRS in self:
             return self[WEIRS]
@@ -578,7 +579,7 @@ class SwmmInput(CustomDict):
         PUMPS section
 
         Returns:
-            dict[str, Pump] | InpSection: Pump section
+            Mapping[str, Pump] | InpSection: Pump section
         """
         if PUMPS in self:
             return self[PUMPS]
@@ -589,7 +590,7 @@ class SwmmInput(CustomDict):
         OUTLETS section
 
         Returns:
-            dict[str, Outlet] | InpSection: Outlet section
+            Mapping[str, Outlet] | InpSection: Outlet section
         """
         if OUTLETS in self:
             return self[OUTLETS]
@@ -600,7 +601,7 @@ class SwmmInput(CustomDict):
         TRANSECTS section
 
         Returns:
-            dict[str, Transect] | InpSection: Transect section
+            Mapping[str, Transect] | InpSection: Transect section
         """
         if TRANSECTS in self:
             return self[TRANSECTS]
@@ -611,7 +612,7 @@ class SwmmInput(CustomDict):
         XSECTIONS section
 
         Returns:
-            dict[str, CrossSection] | InpSection: CrossSection section
+            Mapping[str, CrossSection] | InpSection: CrossSection section
         """
         if XSECTIONS in self:
             return self[XSECTIONS]
@@ -622,7 +623,7 @@ class SwmmInput(CustomDict):
         LOSSES section
 
         Returns:
-            dict[str, Loss] | InpSection: Loss section
+            Mapping[str, Loss] | InpSection: Loss section
         """
         if LOSSES in self:
             return self[LOSSES]
@@ -633,7 +634,7 @@ class SwmmInput(CustomDict):
         JUNCTIONS section
 
         Returns:
-            dict[str, Junction] | InpSection: Junction section
+            Mapping[str, Junction] | InpSection: Junction section
         """
         if JUNCTIONS in self:
             return self[JUNCTIONS]
@@ -644,7 +645,7 @@ class SwmmInput(CustomDict):
         OUTFALLS section
 
         Returns:
-            dict[str, Outfall] | InpSection: Outfall section
+            Mapping[str, Outfall] | InpSection: Outfall section
         """
         if OUTFALLS in self:
             return self[OUTFALLS]
@@ -655,7 +656,7 @@ class SwmmInput(CustomDict):
         STORAGE section
 
         Returns:
-            dict[str, swmm_api.input_file.sections.node.Storage] | InpSection: Storage section
+            Mapping[str, swmm_api.input_file.sections.node.Storage] | InpSection: Storage section
         """
         if STORAGE in self:
             return self[STORAGE]
@@ -666,7 +667,7 @@ class SwmmInput(CustomDict):
         DWF section
 
         Returns:
-            dict[str, DryWeatherFlow] | InpSection: DryWeatherFlow section
+            Mapping[str, DryWeatherFlow] | InpSection: DryWeatherFlow section
         """
         if DWF in self:
             return self[DWF]
@@ -677,7 +678,7 @@ class SwmmInput(CustomDict):
         INFLOWS section
 
         Returns:
-            dict[str, Inflow] | InpSection: Inflow section
+            Mapping[str, Inflow] | InpSection: Inflow section
         """
         if INFLOWS in self:
             return self[INFLOWS]
@@ -688,7 +689,7 @@ class SwmmInput(CustomDict):
         RDII section
 
         Returns:
-            dict[str, RainfallDependentInfiltrationInflow] | InpSection: RainfallDependentInfiltrationInflow section
+            Mapping[str, RainfallDependentInfiltrationInflow] | InpSection: RainfallDependentInfiltrationInflow section
         """
         if RDII in self:
             return self[RDII]
@@ -699,7 +700,7 @@ class SwmmInput(CustomDict):
         TREATMENT section
 
         Returns:
-            dict[str, Treatment] | InpSection: Treatment section
+            Mapping[str, Treatment] | InpSection: Treatment section
         """
         if TREATMENT in self:
             return self[TREATMENT]
@@ -710,7 +711,7 @@ class SwmmInput(CustomDict):
         SUBCATCHMENTS section
 
         Returns:
-            dict[str, SubCatchment] | InpSection: SubCatchment section
+            Mapping[str, SubCatchment] | InpSection: SubCatchment section
         """
         if SUBCATCHMENTS in self:
             return self[SUBCATCHMENTS]
@@ -721,7 +722,7 @@ class SwmmInput(CustomDict):
         SUBAREAS section
 
         Returns:
-            dict[str, SubArea] | InpSection: SubArea section
+            Mapping[str, SubArea] | InpSection: SubArea section
         """
         if SUBAREAS in self:
             return self[SUBAREAS]
@@ -732,7 +733,7 @@ class SwmmInput(CustomDict):
         INFILTRATION section
 
         Returns:
-            dict[str, Infiltration] | InpSection: Infiltration section
+            Mapping[str, Infiltration] | InpSection: Infiltration section
         """
         if INFILTRATION in self:
             return self[INFILTRATION]
@@ -743,7 +744,7 @@ class SwmmInput(CustomDict):
         LOADINGS section
 
         Returns:
-            dict[str, Loading] | InpSection: Loading section
+            Mapping[str, Loading] | InpSection: Loading section
         """
         if LOADINGS in self:
             return self[LOADINGS]
@@ -754,7 +755,7 @@ class SwmmInput(CustomDict):
         WASHOFF section
 
         Returns:
-            dict[str, WashOff] | InpSection: WashOff section
+            Mapping[str, WashOff] | InpSection: WashOff section
         """
         if WASHOFF in self:
             return self[WASHOFF]
@@ -765,7 +766,7 @@ class SwmmInput(CustomDict):
         BUILDUP section
 
         Returns:
-            dict[str, BuildUp] | InpSection: BuildUp section
+            Mapping[str, BuildUp] | InpSection: BuildUp section
         """
         if BUILDUP in self:
             return self[BUILDUP]
@@ -776,7 +777,7 @@ class SwmmInput(CustomDict):
         COVERAGES section
 
         Returns:
-            dict[str, Coverage] | InpSection: Coverage section
+            Mapping[str, Coverage] | InpSection: Coverage section
         """
         if COVERAGES in self:
             return self[COVERAGES]
@@ -787,7 +788,7 @@ class SwmmInput(CustomDict):
         GWF section
 
         Returns:
-            dict[str, GroundwaterFlow] | InpSection: GroundwaterFlow section
+            Mapping[str, GroundwaterFlow] | InpSection: GroundwaterFlow section
         """
         if GWF in self:
             return self[GWF]
@@ -798,7 +799,7 @@ class SwmmInput(CustomDict):
         GROUNDWATER section
 
         Returns:
-            dict[str, Groundwater] | InpSection: Groundwater section
+            Mapping[str, Groundwater] | InpSection: Groundwater section
         """
         if GROUNDWATER in self:
             return self[GROUNDWATER]
@@ -809,7 +810,7 @@ class SwmmInput(CustomDict):
         RAINGAGES section
 
         Returns:
-            dict[str, RainGage] | InpSection: RainGage section
+            Mapping[str, RainGage] | InpSection: RainGage section
         """
         if RAINGAGES in self:
             return self[RAINGAGES]
@@ -820,7 +821,7 @@ class SwmmInput(CustomDict):
         PATTERNS section
 
         Returns:
-            dict[str, Pattern] | InpSection: Pattern section
+            Mapping[str, Pattern] | InpSection: Pattern section
         """
         if PATTERNS in self:
             return self[PATTERNS]
@@ -831,7 +832,7 @@ class SwmmInput(CustomDict):
         POLLUTANTS section
 
         Returns:
-            dict[str, Pollutant] | InpSection: Pollutant section
+            Mapping[str, Pollutant] | InpSection: Pollutant section
         """
         if POLLUTANTS in self:
             return self[POLLUTANTS]
@@ -842,7 +843,7 @@ class SwmmInput(CustomDict):
         CONTROLS section
 
         Returns:
-            dict[str, Control] | InpSection: Control section
+            Mapping[str, Control] | InpSection: Control section
         """
         if CONTROLS in self:
             return self[CONTROLS]
@@ -853,7 +854,7 @@ class SwmmInput(CustomDict):
         CURVES section
 
         Returns:
-            dict[str, Curve] | InpSection: Curve section
+            Mapping[str, Curve] | InpSection: Curve section
         """
         if CURVES in self:
             return self[CURVES]
@@ -864,7 +865,7 @@ class SwmmInput(CustomDict):
         TIMESERIES section
 
         Returns:
-            dict[str, Timeseries] | InpSection: Timeseries section
+            Mapping[str, Timeseries] | InpSection: Timeseries section
         """
         if TIMESERIES in self:
             return self[TIMESERIES]
@@ -875,7 +876,7 @@ class SwmmInput(CustomDict):
         TAGS section
 
         Returns:
-            dict[str, Tag] | InpSection: Tag section
+            Mapping[str, Tag] | InpSection: Tag section
         """
         if TAGS in self:
             return self[TAGS]
@@ -886,7 +887,7 @@ class SwmmInput(CustomDict):
         HYDROGRAPHS section
 
         Returns:
-            dict[str, Hydrograph] | InpSection: Hydrograph section
+            Mapping[str, Hydrograph] | InpSection: Hydrograph section
         """
         if HYDROGRAPHS in self:
             return self[HYDROGRAPHS]
@@ -897,7 +898,7 @@ class SwmmInput(CustomDict):
         LANDUSES section
 
         Returns:
-            dict[str, LandUse] | InpSection: LandUse section
+            Mapping[str, LandUse] | InpSection: LandUse section
         """
         if LANDUSES in self:
             return self[LANDUSES]
@@ -908,7 +909,7 @@ class SwmmInput(CustomDict):
         AQUIFERS section
 
         Returns:
-            dict[str, Aquifer] | InpSection: Aquifer section
+            Mapping[str, Aquifer] | InpSection: Aquifer section
         """
         if AQUIFERS in self:
             return self[AQUIFERS]
@@ -919,7 +920,7 @@ class SwmmInput(CustomDict):
         SNOWPACKS section
 
         Returns:
-            dict[str, SnowPack] | InpSection: SnowPack section
+            Mapping[str, SnowPack] | InpSection: SnowPack section
         """
         if SNOWPACKS in self:
             return self[SNOWPACKS]
@@ -930,7 +931,7 @@ class SwmmInput(CustomDict):
         LID_CONTROLS section
 
         Returns:
-            dict[str, LIDControl] | InpSection: LIDControl section
+            Mapping[str, LIDControl] | InpSection: LIDControl section
         """
         if LID_CONTROLS in self:
             return self[LID_CONTROLS]
@@ -941,7 +942,7 @@ class SwmmInput(CustomDict):
         LID_USAGE section
 
         Returns:
-            dict[str, LIDUsage] | InpSection: LIDUsage section
+            Mapping[str, LIDUsage] | InpSection: LIDUsage section
         """
         if LID_USAGE in self:
             return self[LID_USAGE]
@@ -952,7 +953,7 @@ class SwmmInput(CustomDict):
         STREETS section
 
         Returns:
-            dict[str, Street] | InpSection: Street section
+            Mapping[str, Street] | InpSection: Street section
         """
         if STREETS in self:
             return self[STREETS]
@@ -963,7 +964,7 @@ class SwmmInput(CustomDict):
         INLETS section
 
         Returns:
-            dict[str, Inlet] | InpSection: Inlet section
+            Mapping[str, Inlet] | InpSection: Inlet section
         """
         if INLETS in self:
             return self[INLETS]
@@ -974,10 +975,12 @@ class SwmmInput(CustomDict):
         INLET_USAGE section
 
         Returns:
-            dict[str, InletUsage] | InpSection: InletUsage section
+            Mapping[str, InletUsage] | InpSection: InletUsage section
         """
         if INLET_USAGE in self:
             return self[INLET_USAGE]
 
 
 read_inp_file = SwmmInput.read_file
+
+Mapping.register(SwmmInput)
