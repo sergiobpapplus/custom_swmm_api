@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.22 (2023-06-07)
+### Fix
+* Added function for adding layers to LIDcontrol ([`d31a3d2`](https://gitlab.com/markuspichler/swmm_api/-/commit/d31a3d296325b02c01255fb790f18f7e2289cc05))
+
 ## v0.4.21 (2023-05-04)
 ### Fix
 * Set back to default locale in timeseries data converter ([`56d1af7`](https://gitlab.com/markuspichler/swmm_api/-/commit/56d1af71beb4a704a72c5ff9963c98498d38a6e5))
