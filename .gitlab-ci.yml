@@ -20,6 +20,7 @@ pages:
   - cp ./examples/gis_data_to_swmm.ipynb ./documentation/examples/gis_data_to_swmm.ipynb
   - cp ./examples/how_to_add_control_rules.ipynb ./documentation/examples/how_to_add_control_rules.ipynb
   - cp ./examples/custom_inp_sections.ipynb ./documentation/examples/custom_inp_sections.ipynb
+  - cp ./examples/how_to_add_LIDs.ipynb ./documentation/examples/how_to_add_LIDs.ipynb
   - python ./documentation/api_reference/inp/_auto_create_macros.py
   - export PYTHONPATH=$(pwd)
   - sphinx-build -b html ./documentation public

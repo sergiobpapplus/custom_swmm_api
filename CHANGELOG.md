@@ -5,6 +5,11 @@
 ## v0.4.22 (2023-06-07)
 ### Fix
 * Added function for adding layers to LIDcontrol ([`d31a3d2`](https://gitlab.com/markuspichler/swmm_api/-/commit/d31a3d296325b02c01255fb790f18f7e2289cc05))
+* fixed type hinting for inp-sections with tuples as keys
+* removed lid_kind as identifier of LIDControl object.
+
+### Documentation
+* added example for LIDs
 
 ## v0.4.21 (2023-05-04)
 ### Fix
@@ -14,10 +19,14 @@
 ## v0.4.20 (2023-04-17)
 ### Fix
 * Fixed errors in the `Control` object implementation. `actions` attribute is now split into `actions_if` and `actions_else`. Actions don't need the parameter `logic`. ([`2aa71a9`](https://gitlab.com/markuspichler/swmm_api/-/commit/2aa71a90427e978baf8af0736f065bc908fa2062))
-
+* deeper copy for controls. If a copy of inp uses the reduce_controls, actions got lost for the original inp to, now it got fixed.
+* 
 ## v0.4.19 (2023-04-13)
 ### Fix
 * Weir road surface parameter not used, was a string, now its a nan and will not be written into the new inp file. ([`25d665b`](https://gitlab.com/markuspichler/swmm_api/-/commit/25d665bb46a2bfc4c82a4446bc590f3b92a58f88))
+* renamed downstream_nodes to get_downstream_nodes
+* renamed upstream_nodes to get_upstream_nodes
+* don't convert sections when deleting empty sections
 
 ## v0.4.18 (2023-04-08)
 ### Fix
