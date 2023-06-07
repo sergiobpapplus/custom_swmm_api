@@ -15,3 +15,4 @@ Examples
    gis_data_to_swmm
    how_to_add_control_rules
    custom_inp_sections
+   how_to_add_LIDs

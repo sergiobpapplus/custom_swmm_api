@@ -7,6 +7,7 @@ cp ../examples/inp_file_macros.ipynb ./examples/inp_file_macros.ipynb
 cp ../examples/inp_file_structure.ipynb ./examples/inp_file_structure.ipynb
 cp ../examples/hotstart_file_reader.ipynb ./examples/hotstart_file_reader.ipynb
 cp ../examples/custom_inp_sections.ipynb ./examples/custom_inp_sections.ipynb
+cp ../examples/how_to_add_LIDs.ipynb ./examples/how_to_add_LIDs.ipynb
 
 cp ../README.md ./README.md
 cp ../CHANGES.md ./CHANGES.md

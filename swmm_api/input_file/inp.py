@@ -524,7 +524,7 @@ class SwmmInput(CustomDict):
         MAP section
 
         Returns:
-            Mapping[str, MapSection] | InpSection: MapSection section
+            MapSection: MapSection section
         """
         if MAP in self:
             return self[MAP]
@@ -667,7 +667,7 @@ class SwmmInput(CustomDict):
         DWF section
 
         Returns:
-            Mapping[str, DryWeatherFlow] | InpSection: DryWeatherFlow section
+            Mapping[tuple[str, str], DryWeatherFlow] | InpSection: DryWeatherFlow section
         """
         if DWF in self:
             return self[DWF]
@@ -678,7 +678,7 @@ class SwmmInput(CustomDict):
         INFLOWS section
 
         Returns:
-            Mapping[str, Inflow] | InpSection: Inflow section
+            Mapping[tuple[str, str], Inflow] | InpSection: Inflow section
         """
         if INFLOWS in self:
             return self[INFLOWS]
@@ -700,7 +700,7 @@ class SwmmInput(CustomDict):
         TREATMENT section
 
         Returns:
-            Mapping[str, Treatment] | InpSection: Treatment section
+            Mapping[tuple[str, str], Treatment] | InpSection: Treatment section
         """
         if TREATMENT in self:
             return self[TREATMENT]
@@ -755,7 +755,7 @@ class SwmmInput(CustomDict):
         WASHOFF section
 
         Returns:
-            Mapping[str, WashOff] | InpSection: WashOff section
+            Mapping[tuple[str, str], WashOff] | InpSection: WashOff section
         """
         if WASHOFF in self:
             return self[WASHOFF]
@@ -766,7 +766,7 @@ class SwmmInput(CustomDict):
         BUILDUP section
 
         Returns:
-            Mapping[str, BuildUp] | InpSection: BuildUp section
+            Mapping[tuple[str, str], BuildUp] | InpSection: BuildUp section
         """
         if BUILDUP in self:
             return self[BUILDUP]
@@ -788,7 +788,7 @@ class SwmmInput(CustomDict):
         GWF section
 
         Returns:
-            Mapping[str, GroundwaterFlow] | InpSection: GroundwaterFlow section
+            Mapping[tuple[str, str], GroundwaterFlow] | InpSection: GroundwaterFlow section
         """
         if GWF in self:
             return self[GWF]
@@ -799,7 +799,7 @@ class SwmmInput(CustomDict):
         GROUNDWATER section
 
         Returns:
-            Mapping[str, Groundwater] | InpSection: Groundwater section
+            Mapping[tuple[str, str, str], Groundwater] | InpSection: Groundwater section
         """
         if GROUNDWATER in self:
             return self[GROUNDWATER]
@@ -876,7 +876,7 @@ class SwmmInput(CustomDict):
         TAGS section
 
         Returns:
-            Mapping[str, Tag] | InpSection: Tag section
+            Mapping[tuple[str, str], Tag] | InpSection: Tag section
         """
         if TAGS in self:
             return self[TAGS]
@@ -931,7 +931,7 @@ class SwmmInput(CustomDict):
         LID_CONTROLS section
 
         Returns:
-            Mapping[str, LIDControl] | InpSection: LIDControl section
+            Mapping[tuple[str, str], LIDControl] | InpSection: LIDControl section
         """
         if LID_CONTROLS in self:
             return self[LID_CONTROLS]
@@ -942,7 +942,7 @@ class SwmmInput(CustomDict):
         LID_USAGE section
 
         Returns:
-            Mapping[str, LIDUsage] | InpSection: LIDUsage section
+            Mapping[tuple[str, str], LIDUsage] | InpSection: LIDUsage section
         """
         if LID_USAGE in self:
             return self[LID_USAGE]
@@ -964,7 +964,7 @@ class SwmmInput(CustomDict):
         INLETS section
 
         Returns:
-            Mapping[str, Inlet] | InpSection: Inlet section
+            Mapping[tuple[str, str], Inlet] | InpSection: Inlet section
         """
         if INLETS in self:
             return self[INLETS]

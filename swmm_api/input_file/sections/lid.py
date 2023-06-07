@@ -27,6 +27,7 @@ class LIDControl(BaseSectionObject):
             Name STORAGE Height Vratio Seepage Vclog
             Name DRAIN Coeff Expon Offset Delay
             Name DRAINMAT Thick Vratio Rough
+            Name REMOVALS Pollut PctRemove ...
 
     Examples:
         ::
@@ -56,25 +57,25 @@ class LIDControl(BaseSectionObject):
     Remarks:
         The following table shows which layers are required (x) or are optional (o) for each type of LID process:
 
-        +-----------------------+---------+----------+------+---------+-------+-----------+
-        | LID Type              | Surface | Pavement | Soil | Storage | Drain | Drain Mat |
-        +-----------------------+---------+----------+------+---------+-------+-----------+
-        | Bio-Retention Cell    | x       |          | x    | x       | o     |           |
-        +-----------------------+---------+----------+------+---------+-------+-----------+
-        | Rain Garden           | x       |          | x    |         |       |           |
-        +-----------------------+---------+----------+------+---------+-------+-----------+
-        | Green Roof            | x       |          | x    |         |       | x         |
-        +-----------------------+---------+----------+------+---------+-------+-----------+
-        | Infiltration Trench   | x       |          |      | x       | o     |           |
-        +-----------------------+---------+----------+------+---------+-------+-----------+
-        | Permeable Pavement    | x       | x        | o    | x       | o     |           |
-        +-----------------------+---------+----------+------+---------+-------+-----------+
-        | Rain Barrel           |         |          |      | x       | x     |           |
-        +-----------------------+---------+----------+------+---------+-------+-----------+
-        | Rooftop Disconnection | x       |          |      |         | x     |           |
-        +-----------------------+---------+----------+------+---------+-------+-----------+
-        | Vegetative Swale      | x       |          |      |         |       |           |
-        +-----------------------+---------+----------+------+---------+-------+-----------+
+        +-----------------------+---------+----------+------+---------+-------+-----------+--------------------+
+        | LID Type              | Surface | Pavement | Soil | Storage | Drain | Drain Mat | Pollutant Removals |
+        +-----------------------+---------+----------+------+---------+-------+-----------+--------------------+
+        | Bio-Retention Cell    | x       |          | x    | x       | o     |           | o                  |
+        +-----------------------+---------+----------+------+---------+-------+-----------+--------------------+
+        | Rain Garden           | x       |          | x    |         |       |           |                    |
+        +-----------------------+---------+----------+------+---------+-------+-----------+--------------------+
+        | Green Roof            | x       |          | x    |         |       | x         |                    |
+        +-----------------------+---------+----------+------+---------+-------+-----------+--------------------+
+        | Infiltration Trench   | x       |          |      | x       | o     |           | o                  |
+        +-----------------------+---------+----------+------+---------+-------+-----------+--------------------+
+        | Permeable Pavement    | x       | x        | o    | x       | o     |           | o                  |
+        +-----------------------+---------+----------+------+---------+-------+-----------+--------------------+
+        | Rain Barrel           |         |          |      | x       | x     |           | o                  |
+        +-----------------------+---------+----------+------+---------+-------+-----------+--------------------+
+        | Rooftop Disconnection | x       |          |      |         | x     |           |                    |
+        +-----------------------+---------+----------+------+---------+-------+-----------+--------------------+
+        | Vegetative Swale      | x       |          |      |         |       |           |                    |
+        +-----------------------+---------+----------+------+---------+-------+-----------+--------------------+
 
 
         The equation used to compute flow rate out of the underdrain per unit area of the LID (in in/hr or
@@ -89,19 +90,22 @@ class LIDControl(BaseSectionObject):
         name (str): name assigned to LID process.
         lid_kind (str): One of :attr:`LIDControl.LID_TYPES`.
 
-            - ``BC`` for bio-retention cell
-            - ``RG`` for rain garden; GR for green roof
-            - ``IT`` for infiltration trench
-            - ``PP`` for permeable pavement
-            - ``RB`` for rain barrel
-            - ``RD`` for rooftop disconnection
-            - ``VS`` for vegetative swale.
+            - ``BC`` bio-retention cell
+            - ``RG`` rain garden
+            - ``GR`` green roof
+            - ``IT`` infiltration trench
+            - ``PP`` permeable pavement
+            - ``RB`` rain barrel
+            - ``RD`` rooftop disconnection
+            - ``VS`` vegetative swale
 
         layer_dict (MutableMapping[str, LIDControl.LAYER_TYPES.Surface | LIDControl.LAYER_TYPES.Soil]): Sict of used layers in control.
 
         LID_TYPES: Enum-like for the attribute :attr:`LIDControl.lid_kind` with following members -> {``BC`` | ``RG`` | ``IT`` | ``PP`` | ``RB`` | ``RD`` | ``VS``}
+
+        LAYER_TYPES: Sub-classes for the attribute :attr:`LIDControl.layer_dict` with following members -> {Surface, Soil, Pavement, Storage, Drain, Drainmat, Removals}
     """
-    _identifier = (IDENTIFIERS.name, 'lid_kind')
+    _identifier = IDENTIFIERS.name
     _section_label = LID_CONTROLS
     _table_inp_export = False
 
@@ -125,7 +129,7 @@ class LIDControl(BaseSectionObject):
         ROOFTOP_DISCONNECTION = RD
         VEGETATIVE_SWALE = VS
 
-        _possible = [BC, RG, GR, IT, PP, RB, RD, VS]
+        _possible = {BC, RG, GR, IT, PP, RB, RD, VS}
 
     def __init__(self, name, lid_kind, layer_dict=None):
         """
@@ -166,19 +170,24 @@ class LIDControl(BaseSectionObject):
                 last.add_layer(layer)
                 # last.layer_dict[layer_type] = layer
         yield last
-    
-    def add_layer(self, layer):
-        self.layer_dict[layer._LABEL] = layer
-
-    def add_layer_as_dict(self, layer_type, kwargs):
-        self.add_layer(self.LAYER_TYPES._dict[layer_type](**kwargs))
 
     class LAYER_TYPES:
+        """Layer types to add to LID controls."""
         class Surface(BaseSectionObject):
             _LABEL = 'SURFACE'
 
-            def __init__(self, StorHt, VegFrac, Rough, Slope, Xslope):
+            def __init__(self, StorHt, VegFrac=0, Rough=0, Slope=0, Xslope=0):
                 """
+
+                Used:
+                    bio-retention cell
+                    rain garden
+                    green roof
+                    infiltration trench
+                    permeable pavement
+                    rooftop disconnection
+                    vegetative swale
+
                 Args:
                     StorHt (float): when confining walls or berms are present this is the maximum depth to which water can
                         pond above the surface of the unit before overflow occurs (in inches or mm). For LIDs that
@@ -208,6 +217,12 @@ class LIDControl(BaseSectionObject):
 
             def __init__(self, Thick, Por, FC, WP, Ksat, Kcoeff, Suct):
                 """
+                Used:
+                    bio-retention cell
+                    rain garden
+                    green roof
+                    permeable pavement (only optional)
+
                 Args:
                     Thick (float): thickness of the soil layer (inches or mm).
                     Por (float): soil porosity (volume of pore space relative to total volume).
@@ -233,6 +248,9 @@ class LIDControl(BaseSectionObject):
 
             def __init__(self, Thick, Vratio, FracImp, Perm, Vclog, regeneration_interval=NaN, regeneration_fraction=NaN):
                 """
+                Used:
+                    permeable pavement
+
                 Args:
                     Thick (float): thickness of the pavement layer (inches or mm).
                     Vratio (float): void ratio (volume of void space relative to the volume of solids in the
@@ -244,8 +262,7 @@ class LIDControl(BaseSectionObject):
                     Perm (float): permeability of the concrete or asphalt used in continuous systems or
                         hydraulic conductivity of the fill material (gravel or sand) used in modular
                         systems (in/hr or mm/hr).
-                    Vclog (float): number of pavement layer void volumes of runoff treated it takes to
-                        completely clog the pavement. Use a value of 0 to ignore clogging.
+                    Vclog (float): number of pavement layer void volumes of runoff treated it takes to completely clog the pavement. Use a value of 0 to ignore clogging.
                 """
                 self.Thick = float(Thick)
                 self.Vratio = float(Vratio)
@@ -261,6 +278,12 @@ class LIDControl(BaseSectionObject):
 
             def __init__(self, Height, Vratio, Seepage, Vclog, Covrd=True):
                 """
+                Used:
+                    bio-retention cell
+                    infiltration trench
+                    permeable pavement
+                    rain barrel
+
                 Args:
                     Height (float): thickness of the storage layer or height of a rain barrel (inches or mm).
                     Vratio (float): void ratio (volume of void space relative to the volume of solids in the
@@ -286,6 +309,14 @@ class LIDControl(BaseSectionObject):
 
             def __init__(self, Coeff, Expon, Offset, Delay, open_level=NaN, close_level=NaN, Qcurve=NaN):
                 """
+
+                Used:
+                    bio-retention cell (only optional)
+                    infiltration trench (only optional)
+                    permeable pavement (only optional)
+                    rain barrel
+                    rooftop disconnection
+
                 Args:
                     Coeff (float): coefficient C that determines the rate of flow through the drain as a
                         function of height of stored water above the drain bottom. For Rooftop
@@ -320,6 +351,9 @@ class LIDControl(BaseSectionObject):
 
             def __init__(self, Thick, Vratio, Rough):
                 """
+                Used:
+                    GreenRoofs
+
                 Args:
                     Thick (float): thickness of the drainage mat (inches or mm).
                     Vratio (float): ratio of void volume to total volume in the mat.
@@ -334,9 +368,19 @@ class LIDControl(BaseSectionObject):
 
             def __init__(self, *pollutant_removal_rate):
                 """
+                Pollutant removals.
+
+                Only when pollutants are defined.
+
+                Used:
+                    bio-retention cell
+                    infiltration trench
+                    permeable pavement
+                    rain barrel
+
                 Args:
-                    Pollut (): name of a pollutant
-                    Rmvl (): the percent removal the LID achieves for the pollutant (several pollutant
+                    Pollut (str): name of a pollutant
+                    Rmvl (flaat): the percent removal the LID achieves for the pollutant (several pollutant
                         removals can be placed on the same line or specified in separate REMOVALS
                         lines).
                 """
@@ -350,9 +394,28 @@ class LIDControl(BaseSectionObject):
         DRAINMAT = Drainmat._LABEL
         REMOVALS = Removals._LABEL
 
-        _possible = [SURFACE, SOIL, PAVEMENT, STORAGE, DRAIN, DRAINMAT, REMOVALS]
+        _possible = {SURFACE, SOIL, PAVEMENT, STORAGE, DRAIN, DRAINMAT, REMOVALS}
 
         _dict = {x._LABEL: x for x in (Surface, Soil, Pavement, Storage, Drain, Drainmat, Removals)}
+
+    def add_layer(self, layer):
+        """
+        Add a new layer to the LID control. Or overwrite the existing one.
+
+        Args:
+            layer (LIDControl.LAYER_TYPES.Surface | LIDControl.LAYER_TYPES.Soil | LIDControl.LAYER_TYPES.Pavement | LIDControl.LAYER_TYPES.Storage | LIDControl.LAYER_TYPES.Drain | LIDControl.LAYER_TYPES.Drainmat | LIDControl.LAYER_TYPES.Removals): layer object.
+        """
+        self.layer_dict[layer._LABEL] = layer
+
+    def add_layer_as_dict(self, layer_type, kwargs):
+        """
+        Add a new layer to the LID control. Or overwrite the existing one.
+
+        Args:
+            layer_type (str): label of the layer. One of :attr:`LIDControl.LAYER_TYPES._possible` -> {``SURFACE``| ``SOIL``| ``PAVEMENT``| ``STORAGE``| ``DRAIN``| ``DRAINMAT``| ``REMOVALS``}
+            kwargs (dict): keyword arguments of the new layer.
+        """
+        self.add_layer(self.LAYER_TYPES._dict[layer_type](**kwargs))
 
     def to_inp_line(self):
         s = f'{self.name} {self.lid_kind}\n'
