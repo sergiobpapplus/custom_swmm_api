@@ -30,6 +30,7 @@ RUN pip3 install pydata_sphinx_theme
 RUN pip3 install pyswmm
 RUN pip3 install python-semantic-release
 RUN pip3 install sphinx-codeautolink  # https://sphinx-codeautolink.readthedocs.io/en/latest/index.html
+RUN pip3 install sphinx-favicon  # https://pypi.org/project/sphinx-favicon/
 
 RUN useradd -ms /bin/bash mp;
 RUN chmod g+rw /home && \

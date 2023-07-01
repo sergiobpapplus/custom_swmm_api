@@ -37,7 +37,7 @@ macros = ["networkx", "fastparquet", "matplotlib", "SWMM_xsections_shape_generat
 gis = ["Shapely", "pyproj", "Rtree", "geopandas"]
 full = ["networkx", "fastparquet", "matplotlib", "SWMM_xsections_shape_generator", "Shapely", "pyproj", "Rtree", "geopandas", "pyswmm"]
 docs = ["networkx", "fastparquet", "matplotlib", "Shapely", "pyproj", "Rtree", "geopandas", "SWMM_xsections_shape_generator",
-        "sphinx", "nbsphinx", "recommonmark", "pydata_sphinx_theme", 'sphinx-codeautolink']
+        "sphinx", "nbsphinx", "recommonmark", "pydata_sphinx_theme", 'sphinx-codeautolink', 'sphinx-favicon']
 
 [project.urls]
 Documentation = "https://markuspichler.gitlab.io/swmm_api"

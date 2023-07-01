@@ -23,6 +23,7 @@ pages:
   - cp ./examples/how_to_add_LIDs.ipynb ./documentation/examples/how_to_add_LIDs.ipynb
   - python ./documentation/api_reference/inp/_auto_create_macros.py
   - export PYTHONPATH=$(pwd)
+  - pip3 install sphinx-favicon
   - sphinx-build -b html ./documentation public
   artifacts:
     paths:
