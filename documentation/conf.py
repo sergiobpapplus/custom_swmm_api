@@ -43,17 +43,17 @@ html_theme_options = {  # https://fontawesome.com/
         {
             "name": "GitLab",
             "url": "https://gitlab.com/markuspichler/swmm_api",
-            "icon": "fa-brands fa-square-gitlab",
+            "icon": "fa-brands fa-gitlab fa-lg",
         },
         {
             "name": "PyPI",
             "url": "https://pypi.org/project/swmm-api/",
-            "icon": 'fa-custom fa-pypi',  # 'fa-brands fa-python' 'https://pypi.org/static/images/logo-small.95de8436.svg',
+            "icon": 'fa-brands fa-python fa-lg',  # 'fa-custom fa-pypi' 'https://pypi.org/static/images/logo-small.95de8436.svg',
         },
         {
             "name": "SWW @ TU Graz",
             "url": "https://sww.tugraz.at",
-            "icon": 'fas fa-tint',
+            "icon": 'fas fa-tint fa-lg',
         },
         # {
         #     "name": "SWW @ TU Graz",
