@@ -38,43 +38,68 @@ version = __version__[:3]
 # release = '0.2.0.15'
 release = __version__
 
-html_theme_options = {  # https://fontawesome.com/v5.15/icons?d=gallery&p=2
+html_theme_options = {  # https://fontawesome.com/
     "icon_links": [
         {
             "name": "GitLab",
             "url": "https://gitlab.com/markuspichler/swmm_api",
-            "icon": "fab fa-gitlab",
+            "icon": "fa-brands fa-square-gitlab",
         },
         {
             "name": "PyPI",
             "url": "https://pypi.org/project/swmm-api/",
-            "icon": 'fab fa-python',  # 'https://pypi.org/static/images/logo-small.95de8436.svg',
+            "icon": 'fa-custom fa-pypi',  # 'fa-brands fa-python' 'https://pypi.org/static/images/logo-small.95de8436.svg',
         },
         {
             "name": "SWW @ TU Graz",
             "url": "https://sww.tugraz.at",
-            "icon": 'fas fa-tint',  # 'images/logo_sww.png',
-        }
+            "icon": 'fas fa-tint',
+        },
+        # {
+        #     "name": "SWW @ TU Graz",
+        #     "url": "https://sww.tugraz.at",
+        #     "icon": 'images/logo_sww.png',
+        #     "type": "local",
+        # }
     ],
-    "favicons": [
-        {
-            "rel": "icon",
-            "sizes": "16x16",
-            "href": 'swmm_api_logo_16.png',
-        },
-        {
-            "rel": "icon",
-            "sizes": "32x32",
-            "href": 'swmm_api_logo_32.png',
-        },
-        {
-            "rel": "apple-touch-icon",
-            "sizes": "180x180",
-            "href": 'swmm_api_logo_180.png'
-        },
-    ],
+    # The configuration `favicons` is deprecated.Use the sphinx-favicon extension instead.
+    # "favicons": [
+    #     {
+    #         "rel": "icon",
+    #         "sizes": "16x16",
+    #         "href": 'swmm_api_logo_16.png',
+    #     },
+    #     {
+    #         "rel": "icon",
+    #         "sizes": "32x32",
+    #         "href": 'swmm_api_logo_32.png',
+    #     },
+    #     {
+    #         "rel": "apple-touch-icon",
+    #         "sizes": "180x180",
+    #         "href": 'swmm_api_logo_180.png'
+    #     },
+    # ],
     "show_toc_level": 2
 }
+
+favicons = [
+    {
+        "rel": "icon",
+        "sizes": "16x16",
+        "href": 'swmm_api_logo_16.png',
+    },
+    {
+        "rel": "icon",
+        "sizes": "32x32",
+        "href": 'swmm_api_logo_32.png',
+    },
+    {
+        "rel": "apple-touch-icon",
+        "sizes": "180x180",
+        "href": 'swmm_api_logo_180.png'
+    },
+]
 
 html_favicon = '_static/swmm_api_logo_16.png'
 
@@ -103,6 +128,7 @@ extensions = [
     'myst_parser',  # markdown new
     'sphinx.ext.duration',
     'sphinx_codeautolink',  # automatic links from code to documentation # https://sphinx-codeautolink.readthedocs.io/en/latest/index.html
+    'sphinx_favicon',  # to add custom favicons https://pypi.org/project/sphinx-favicon/
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -253,21 +279,16 @@ epub_exclude_files = ['search.html']
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/3/': None,
-                       # 'pd': ('http://pandas.pydata.org/pandas-docs/stable/', None),
-                       'https://pandas.pydata.org/pandas-docs/stable/': None,
-                       # 'numpy': ('https://numpy.org/doc/stable/', None),
-                       # 'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
-                       # 'matplotlib': ('http://matplotlib.sourceforge.net/', None),
-                       # 'sympy': ('https://docs.sympy.org/latest/', None),
-                       'sympy': ('https://docs.sympy.org/latest/', 'https://docs.sympy.org/latest/objects.inv'),
-                       'networkx': ('https://networkx.org/documentation/stable/', 'https://networkx.org/documentation/stable/objects.inv'),
-                       'pyproj': ('https://pyproj4.github.io/pyproj/stable/', None),
-                       'IPython': ('https://ipython.readthedocs.io/en/stable/', None),
-                       'matplotlib': ('https://matplotlib.org/', None),
-                       'numpy': ('https://docs.scipy.org/doc/numpy/', None),
-                       'pandas': ('https://pandas.pydata.org/docs/', None),
-                       'python': ('https://docs.python.org/3/', None),
+intersphinx_mapping = {  # 'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
+    # 'sympy': ('https://docs.sympy.org/latest/', None),
+    'sympy': ('https://docs.sympy.org/latest/', 'https://docs.sympy.org/latest/objects.inv'),
+    'networkx': ('https://networkx.org/documentation/stable/', 'https://networkx.org/documentation/stable/objects.inv'),
+    'pyproj': ('https://pyproj4.github.io/pyproj/stable/', None),
+    'IPython': ('https://ipython.readthedocs.io/en/stable/', None),
+    'matplotlib': ('https://matplotlib.org/stable/', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'pandas': ('https://pandas.pydata.org/docs/', None),
+    'python': ('https://docs.python.org/3/', None),
 }
 
 # -------------------------------------
