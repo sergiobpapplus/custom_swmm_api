@@ -29,6 +29,7 @@ RUN pip3 install SWMM_xsections_shape_generator
 RUN pip3 install pydata_sphinx_theme
 RUN pip3 install pyswmm
 RUN pip3 install python-semantic-release
+RUN pip3 install sphinx-codeautolink  # https://sphinx-codeautolink.readthedocs.io/en/latest/index.html
 
 RUN useradd -ms /bin/bash mp;
 RUN chmod g+rw /home && \

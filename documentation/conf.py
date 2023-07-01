@@ -57,22 +57,22 @@ html_theme_options = {  # https://fontawesome.com/v5.15/icons?d=gallery&p=2
         }
     ],
     "favicons": [
-          {
-             "rel": "icon",
-             "sizes": "16x16",
-             "href": 'swmm_api_logo_16.png',
-          },
-          {
-             "rel": "icon",
-             "sizes": "32x32",
-             "href": 'swmm_api_logo_32.png',
-          },
-          {
-             "rel": "apple-touch-icon",
-             "sizes": "180x180",
-             "href": 'swmm_api_logo_180.png'
-          },
-       ],
+        {
+            "rel": "icon",
+            "sizes": "16x16",
+            "href": 'swmm_api_logo_16.png',
+        },
+        {
+            "rel": "icon",
+            "sizes": "32x32",
+            "href": 'swmm_api_logo_32.png',
+        },
+        {
+            "rel": "apple-touch-icon",
+            "sizes": "180x180",
+            "href": 'swmm_api_logo_180.png'
+        },
+    ],
     "show_toc_level": 2
 }
 
@@ -90,7 +90,7 @@ html_favicon = '_static/swmm_api_logo_16.png'
 extensions = [
     'sphinx.ext.autodoc',
     # 'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
+    'sphinx.ext.intersphinx',  # links to other Sphinx projects (e.g. NumPy)
     # 'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
@@ -100,8 +100,9 @@ extensions = [
     'sphinx.ext.napoleon',  # numpy/google docstrings
     'nbsphinx',  # jupyter notebook
     # 'recommonmark',  # markdown old
-    'myst_parser', # markdown new
+    'myst_parser',  # markdown new
     'sphinx.ext.duration',
+    'sphinx_codeautolink',  # automatic links from code to documentation # https://sphinx-codeautolink.readthedocs.io/en/latest/index.html
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -182,30 +183,30 @@ html_css_files = [
 # -- Options for LaTeX output ------------------------------------------------
 
 # latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    # 'papersize': 'letterpaper',
+# The paper size ('letterpaper' or 'a4paper').
+#
+# 'papersize': 'letterpaper',
 
-    # The font size ('10pt', '11pt' or '12pt').
-    #
-    # 'pointsize': '10pt',
+# The font size ('10pt', '11pt' or '12pt').
+#
+# 'pointsize': '10pt',
 
-    # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
+# Additional stuff for the LaTeX preamble.
+#
+# 'preamble': '',
 
-    # Latex figure (float) alignment
-    #
-    # 'figure_align': 'htbp',
+# Latex figure (float) alignment
+#
+# 'figure_align': 'htbp',
 # }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-#latex_documents = [
+# latex_documents = [
 #    (master_doc, 'IntensityDurationFrequencyAnalyse.tex', 'Intensity Duration Frequency Analyse Documentation',
 #     'Pichler', 'manual'),
-#]
+# ]
 
 
 # -- Options for manual page output ------------------------------------------
@@ -247,7 +248,6 @@ html_css_files = [
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
 
-
 # -- Extension configuration -------------------------------------------------
 
 # -- Options for intersphinx extension ---------------------------------------
@@ -256,14 +256,19 @@ epub_exclude_files = ['search.html']
 intersphinx_mapping = {'https://docs.python.org/3/': None,
                        # 'pd': ('http://pandas.pydata.org/pandas-docs/stable/', None),
                        'https://pandas.pydata.org/pandas-docs/stable/': None,
-                       'numpy': ('https://numpy.org/doc/stable/', None),
+                       # 'numpy': ('https://numpy.org/doc/stable/', None),
                        # 'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
                        # 'matplotlib': ('http://matplotlib.sourceforge.net/', None),
                        # 'sympy': ('https://docs.sympy.org/latest/', None),
                        'sympy': ('https://docs.sympy.org/latest/', 'https://docs.sympy.org/latest/objects.inv'),
                        'networkx': ('https://networkx.org/documentation/stable/', 'https://networkx.org/documentation/stable/objects.inv'),
-                       'pyproj': ('https://pyproj4.github.io/pyproj/stable/', None)
-                       }
+                       'pyproj': ('https://pyproj4.github.io/pyproj/stable/', None),
+                       'IPython': ('https://ipython.readthedocs.io/en/stable/', None),
+                       'matplotlib': ('https://matplotlib.org/', None),
+                       'numpy': ('https://docs.scipy.org/doc/numpy/', None),
+                       'pandas': ('https://pandas.pydata.org/docs/', None),
+                       'python': ('https://docs.python.org/3/', None),
+}
 
 # -------------------------------------
 # https://nbsphinx.readthedocs.io/en/latest/never-execute.html
