@@ -20,6 +20,14 @@ Unit Conversion
     ~report_file.helpers.ReportUnitConversion
 
 
+LID Report File
+~~~~~~~~~~~~~~~
+.. autosummary::
+    :toctree: rpt/
+
+    ~report_file.lid_rpt.read_lid_report
+
+
 Errors and Warnings
 ~~~~~~~~~~~~~~~~~~~
 

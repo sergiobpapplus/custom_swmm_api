@@ -52,17 +52,10 @@ SAVE HOTSTART "Example6-Final_AllSections_GUI.hsf"
 CONSTANT         12
 DRY_ONLY         NO
 
-[TEMPERATURE]
-;;Data Element     Values
-WINDSPEED MONTHLY  1 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
-SNOWMELT           2 0.5 0.6 0.0 50.0 0.0
-ADC IMPERVIOUS     .5 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
-ADC PERVIOUS       1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
-
 [RAINGAGES]
 ;;Name           Format    Interval SCF      Source    
 ;;-------------- --------- ------ ------ ----------
-RainGage         INTENSITY 0:05     1.0      TIMESERIES 100-yr
+RainGage         INTENSITY 0:05     1.0      TIMESERIES 100-yr          
 Null             INTENSITY 1:00     1.0      TIMESERIES Null            
 
 [SUBCATCHMENTS]
@@ -154,13 +147,14 @@ S_IT_4           0.2        0.2        6.5        7          0
 ;;-------------- ---------- ----------
 asd              BC
 asd              SURFACE    0.0        0.0        0.1        1.0        5         
-asd              SOIL       12         0.5        0.2        0.1        0.5        10.0       3.5
+asd              SOIL       12         0.5        0.2        0.1        0.5        10.0       3.5       
 asd              STORAGE    1          0.75       0.5        0          NO        
 asd              DRAIN      0          0.5        6          6          0          0                    
 
 [LID_USAGE]
 ;;Subcatchment   LID Process      Number  Area       Width      InitSat    FromImp    ToPerv     RptFile                  DrainTo          FromPerv  
 ;;-------------- ---------------- ------- ---------- ---------- ---------- ---------- ---------- ------------------------ ---------------- ----------
+S5               asd              1       12000      0          0          0          0          "Example6-Final_AllSections_GUI_S5_LID_report.txt" *                0               
 
 [AQUIFERS]
 ;;Name           Por    WP     FC     Ksat   Kslope Tslope ETu    ETs    Seep   Ebot   Egw    Umc    ETupat 
@@ -279,7 +273,7 @@ C13              TRAPEZOIDAL  1.5              0          0.0001     25         
 C14              TRAPEZOIDAL  1.5              0          0.0001     25         1                    
 Street1          STREET       StreetQS        
 C16              TRAPEZOIDAL  3                5          5          5          1                    
-C17              CUSTOM 1.5 triangle 0 0
+C17              CUSTOM       1.5              triangle   0          0          1                    
 C_out            CIRCULAR     4.75             0          0          0          1                    
 Or1              RECT_CLOSED  0.16             0.25       0          0
 Or2              RECT_CLOSED  0.5              2.25       0          0
@@ -318,6 +312,7 @@ RULE PUMP1A
 IF NODE J1 DEPTH >= 4
 THEN PUMP PUMP1 status = ON
 PRIORITY 1
+
 
 
 
@@ -417,13 +412,13 @@ J8               asd              0
 pump_curve_1     Pump1      0          1         
 pump_curve_1                1          0         
 ;
+triangle         shape      0          1         
+triangle                    0.5        0.5       
+;
 SU2              Storage    0          10368     
 SU2                         2.2        14512     
 SU2                         2.3        32000     
-SU2                         6          50000
-
-triangle shape 0 1
-triangle 0.5 0.5
+SU2                         6          50000     
 
 [TIMESERIES]
 ;;Name           Date       Time       Value     
