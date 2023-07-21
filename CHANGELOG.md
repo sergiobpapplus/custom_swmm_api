@@ -2,6 +2,19 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.23 (2023-07-21)
+
+### Fix
+
+* Added reader for LID report file ([`546694b`](https://gitlab.com/markuspichler/swmm_api/-/commit/546694b7a47a34d18384852579adb354c275adec))
+
+### Documentation
+
+* Icons on doc site ([`bc8c815`](https://gitlab.com/markuspichler/swmm_api/-/commit/bc8c815f0b78ca39e2736f3a70532f5f83546905))
+* Update dependencies due to deprecations ([`8c8d343`](https://gitlab.com/markuspichler/swmm_api/-/commit/8c8d3433ba71263631708e182b19d1d0047ddb72))
+* New autolinks in jupyter notebook code ([`d4e0b60`](https://gitlab.com/markuspichler/swmm_api/-/commit/d4e0b60279b82fae201bb0105452e28137e30bca))
+* New autolinks in jupyter notebook code ([`28f4229`](https://gitlab.com/markuspichler/swmm_api/-/commit/28f42295a258a6c0658a2c2d5994eba1777b942b))
+
 ## v0.4.22 (2023-06-07)
 ### Fix
 * Added function for adding layers to LIDcontrol ([`d31a3d2`](https://gitlab.com/markuspichler/swmm_api/-/commit/d31a3d296325b02c01255fb790f18f7e2289cc05))
