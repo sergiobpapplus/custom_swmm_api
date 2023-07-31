@@ -116,8 +116,12 @@ def conduits_are_equal(inp: SwmmInput, link0, link1, diff_roughness=0.1, diff_sl
     """
     all_checks_out = True
 
+    if type(link0) != type(link1):
+        return False
+
     # Roughness values match within a specified percent tolerance
-    if diff_roughness is not None:
+    # only conduits
+    if (diff_roughness is not None) and isinstance(link0, Conduit) and isinstance(link1, Conduit):
         all_checks_out &= _rel_diff(link0.roughness, link1.roughness) < diff_roughness
 
     xs0 = inp[XSECTIONS][link0.name]  # type: CrossSection
@@ -139,7 +143,8 @@ def conduits_are_equal(inp: SwmmInput, link0, link1, diff_roughness=0.1, diff_sl
         all_checks_out &= xs0.transect == xs1.transect
 
     # Slope values match within a specified tolerance
-    if diff_slope is not None:
+    # only conduits
+    if (diff_slope is not None) and isinstance(link0, Conduit) and isinstance(link1, Conduit):
         rel_slope_diff = _rel_diff(calc_slope(inp, link0), calc_slope(inp, link1))
 
         # if rel_slope_diff < 0:
