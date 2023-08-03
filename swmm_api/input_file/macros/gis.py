@@ -372,7 +372,7 @@ def gpkg_to_swmm(fn, label_sep='.', infiltration_class=None, custom_section_hand
             cols = gdf.columns[gdf.columns.str.startswith(sub_sec)].to_list()
             if cols:
                 if sub_sec == XSECTIONS:
-                    cols = [f'{sub_sec}{label_sep}{i}' for i in inspect.getargspec(section_dict[sub_sec]).args[2:]]
+                    cols = [f'{sub_sec}{label_sep}{i}' for i in inspect.getfullargspec(section_dict[sub_sec]).args[2:]]
                 gdf_sub = gdf[cols].copy().dropna(how='all')
                 if sub_sec == LOSSES:
                     gdf_sub[f'{LOSSES}{label_sep}has_flap_gate'] = gdf_sub[f'{LOSSES}{label_sep}has_flap_gate'] == 1
