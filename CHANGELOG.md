@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.24 (2023-07-31)
+
+### Fix
+
+* Conduits_are_equal returns false if  both links are not the same type ([`e219ac6`](https://gitlab.com/markuspichler/swmm_api/-/commit/e219ac6f197bfa4c3de2a194bb7f24640782a999))
+
 ## v0.4.23 (2023-07-21)
 
 ### Fix
