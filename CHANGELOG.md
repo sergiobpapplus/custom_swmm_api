@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.25 (2023-08-03)
+
+### Fix
+
+* Update gis import to remove depreciated function ([`2a38e2e`](https://gitlab.com/markuspichler/swmm_api/-/commit/2a38e2e6e472f3835c31844337d89a8466370930))
+
 ## v0.4.24 (2023-07-31)
 
 ### Fix
