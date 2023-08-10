@@ -103,20 +103,20 @@ def get_swmm_command_line_auto(fn_inp, rpt_dir=None, out_dir=None, create_out=Tr
     return get_swmm_command_line(swmm_path, fn_inp, rpt, out)
 
 
-def run_swmm_stdout(command_line, sep='_' * 100):
+def run_swmm_stdout(command_line, sep='_' * 100, working_dir=None):
     print(sep)
     print(*command_line, sep=' | ')
-    subprocess.run(command_line)
+    subprocess.run(command_line, cwd=working_dir)
     print(sep)
 
 
-def run_swmm_custom(command_line):
+def run_swmm_custom(command_line, working_dir=None):
     # shell_output = subprocess.run(command_line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    shell_output = subprocess.run(command_line, capture_output=True)
+    shell_output = subprocess.run(command_line, capture_output=True, cwd=working_dir)
     return shell_output
 
 
-def swmm5_run_epa(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=True, swmm_path=None):
+def swmm5_run_epa(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=True, swmm_path=None, working_dir=None):
     """
     Run a simulation with EPA-SWMM.
 
@@ -135,6 +135,7 @@ def swmm5_run_epa(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=
                 UNIX users should place the path to the swmm executable in the system path and name the file ``swmm5``.
                 Default: the api will search in the standard paths for the swmm exe.
                 Be aware that the ``epaswmm5.exe`` is the graphical user interface and will not work for this api.
+        working_dir (str or pathlib.Path): directory where swmm should be executed. Important if relative paths are in the input file. Default is directory of input-file.
 
     Returns:
         tuple[str, str, str]: INP-, RPT- and OUT-filename
@@ -142,11 +143,14 @@ def swmm5_run_epa(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=
     command_line, inp, rpt, out = get_swmm_command_line_auto(inp, rpt_dir=rpt_dir, out_dir=out_dir,
                                                              create_out=create_out, swmm_path=swmm_path)
     # -------------------------
+    if working_dir is None:
+        working_dir = Path(inp).resolve().parent
+
     if init_print:
-        run_swmm_stdout(command_line)
+        run_swmm_stdout(command_line, working_dir=working_dir)
         stdout = ' '.join(command_line)
     else:
-        stdout = run_swmm_custom(command_line)
+        stdout = run_swmm_custom(command_line, working_dir=working_dir)
 
     # -------------------------
     check_swmm_errors(rpt, stdout)

@@ -57,3 +57,18 @@ def get_report_errors(fn_rpt):
             return 'No Errors.'
     else:
         return 'NO Report file created!!!'
+
+
+class TemporaryWorkingDirectory:
+    def __init__(self, temp_wd):
+        self.previous_wd = None
+        self.temp_wd = temp_wd
+
+    def __enter__(self):
+        if self.temp_wd is not None:
+            self.previous_wd = os.getcwd()
+            os.chdir(self.temp_wd)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.temp_wd is not None:
+            os.chdir(self.previous_wd)
