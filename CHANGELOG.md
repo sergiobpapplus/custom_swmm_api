@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.26 (2023-08-10)
+
+### Fix
+
+* Set custom working directory for running swmm. new default is directory of the input-file. ([`b472986`](https://gitlab.com/markuspichler/swmm_api/-/commit/b4729863986fd21ecb9d51c0fce3b8fa65c6d0e1))
+
 ## v0.4.25 (2023-08-03)
 
 ### Fix
