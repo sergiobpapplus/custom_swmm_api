@@ -223,6 +223,17 @@ def _upstream_nodes(graph: nx.DiGraph, node: str, nodes_list=None) -> set:
 
 
 def subcatchments_connected(inp, node: str, graph=None):
+    """
+    Get the SC with have the node as outlet.
+
+    Args:
+        inp (SwmmInput): model
+        node (str): label of the node
+        graph (nx.DiGraph): network
+
+    Returns:
+        list[swmm_api.input_file.sections.SubCatchment]: list of connected subcatchments
+    """
     if graph is None:
         graph = inp_to_graph(inp, add_subcatchments=True)
     return [inp.SUBCATCHMENTS[k] for k in graph.predecessors(node) if k in inp.SUBCATCHMENTS]
