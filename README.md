@@ -163,11 +163,15 @@ see [examples/rpt_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-
 
 ```python
 from swmm_api import SwmmInput
-from swmm_api.input_file.macros.gis import write_geo_package, gpkg_to_swmm
+from swmm_api.input_file.macros.gis import write_geo_package, gpkg_to_swmm, complete_vertices
 
 inp = SwmmInput.read_file('inputfile.inp')
 
 coords = inp.COORDINATES.geo_series  # type: geoandas.GeoSeries with points for all nodes
+
+complete_vertices(inp)  # this will insert the start and end node points into the link vertices.
+# this function is automatically called in `write_geo_package`, but is needed if the geo-series of vertices is used directly.
+
 vertices = inp.VERTICES.geo_series  # type: geoandas.GeoSeries with lines for all links
 polygons = inp.POLYGONS.geo_series  # type: geoandas.GeoSeries with polygons for all subcatchments
 
