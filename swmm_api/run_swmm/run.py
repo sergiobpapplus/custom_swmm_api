@@ -9,15 +9,15 @@ def swmm5_run(fn_inp, fn_rpt=None, fn_out=None, progress_size=None, swmm_lib_pat
 
     The default working directory is the input-file directory.
 
-    If ``progress_size`` is given -> using PySWMM,
-    otherwise using swmm-toolkit of OWA.
-    If none of them are installed -> searching for epa-swmm path.
+    If ``progress_size`` is given -> using PySWMM, (see :func:`~swmm_api.run_swmm.run_pyswmm.swmm5_run_progress`)
+    otherwise using swmm-toolkit of OWA. (see :func:`~swmm_api.run_swmm.run_swmm_toolkit.swmm5_run_owa`)
+    If none of them are installed -> searching for epa-swmm path. (see :func:`~swmm_api.run_swmm.run_epaswmm.swmm5_run_epa`)
 
     Args:
         fn_inp (str or pathlib.Path): pointer to name of input file (must exist)
         fn_rpt (str or pathlib.Path): pointer to name of report file (to be created)
         fn_out (str or pathlib.Path): pointer to name of binary output file (to be created)
-        progress_size (int):  Number of progress bar iterations.
+        progress_size (int):  Number of progress bar iterations. (this will only work using pyswmm)
         swmm_lib_path (str or pathlib.Path): custom path to the command line swmm executable. i.e. 'C:\\Program Files\\EPA SWMM 5.2.0 (64-bit)\\runswmm.exe'.
                 UNIX users should place the path to the swmm executable in the system path and name the file 'swmm5'.
                 Default: the api will search in the standard paths for the swmm exe.

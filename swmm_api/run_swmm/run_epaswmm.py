@@ -71,7 +71,7 @@ def text_swmm_path(swmm_path):
     try:
         get_swmm_version_base(swmm_path)
     except FileNotFoundError:
-        raise SWMMRunError('Path to SWMM command line executable not found. Pleas pass a custom path to the swmm5.exe using the "swmm_path" argument.')
+        raise SWMMRunError('Path to SWMM command line executable not found. Please pass a custom path to the swmm5.exe using the "swmm_path" argument.')
 
 
 def get_swmm_command_line_auto(fn_inp, rpt_dir=None, out_dir=None, create_out=True, swmm_path=None):
@@ -99,6 +99,9 @@ def get_swmm_command_line_auto(fn_inp, rpt_dir=None, out_dir=None, create_out=Tr
     # -----------------------
     if swmm_path is None:
         swmm_path = infer_swmm_path()
+    else:
+        ...  # TODO check if in system path or valide file name
+        # if executed -> raises a file not found error
 
     return get_swmm_command_line(swmm_path, fn_inp, rpt, out)
 
