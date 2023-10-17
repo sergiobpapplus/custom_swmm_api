@@ -18,7 +18,7 @@ from .._io_helpers import CONFIG
 
 def get_swmm_command_line(swmm_path, inp, rpt, out):
     cmd = (str(swmm_path), str(inp), str(rpt), str(out))
-    return cmd, inp, rpt, out
+    return cmd
 
 
 def infer_swmm_path():
@@ -74,28 +74,58 @@ def text_swmm_path(swmm_path):
         raise SWMMRunError('Path to SWMM command line executable not found. Please pass a custom path to the swmm5.exe using the "swmm_path" argument.')
 
 
-def get_swmm_command_line_auto(fn_inp, rpt_dir=None, out_dir=None, create_out=True, swmm_path=None):
-    if isinstance(fn_inp, str):
-        fn_inp = Path(fn_inp)
+def _to_path(pth, default):
+    if pth is None:
+        pth = default
+    elif isinstance(pth, str):
+        pth = Path(pth)
 
-    base_filename = fn_inp.stem
-    inp_dir = fn_inp.parent
+    if not pth.is_absolute():
+        pth = pth.resolve()
+    return pth
 
-    # -----------------------
-    if rpt_dir is None:
-        rpt_dir = inp_dir
 
-    rpt = os.path.join(rpt_dir, base_filename + '.rpt')
+def resolve_paths(fn_inp, pth_rpt_dir=None, pth_out_dir=None, pth_working_dir=None):
+    """
+    Check all paths.
 
-    # -----------------------
-    if out_dir is None:
-        out_dir = inp_dir
+    Make string to pathlib.Path and resolve relative paths.
+    Set input dir as default working dir.
 
-    if create_out:
-        out = os.path.join(out_dir, base_filename + '.out')
-    else:
-        out = ''
+    Args:
+        fn_inp (str or Path): path to input file
+        pth_rpt_dir (str or Path): directory in which the report-file is written.
+        pth_out_dir (str or Path): directory in which the output-file is written.
+        pth_working_dir (str | Path): directory where swmm should be executed. Important if relative paths are in the input file. Default is directory of input-file.
 
+    Returns:
+        tuple[Path, Path, Path, Path]: fn_inp, pth_rpt_dir, pth_out_dir, pth_working_dir
+    """
+    fn_inp = _to_path(fn_inp, ...)
+
+    # ---
+    pth_rpt_dir = _to_path(pth_rpt_dir, fn_inp.parent)
+    fn_rpt = pth_rpt_dir / (fn_inp.stem + '.rpt')
+
+    # ---
+    pth_out_dir = _to_path(pth_out_dir, fn_inp.parent)
+    fn_out = pth_out_dir / (fn_inp.stem + '.out')
+
+    # ---
+    pth_working_dir = _to_path(pth_working_dir, fn_inp.parent)
+
+    # ---
+    if not fn_inp.is_file():
+        raise FileNotFoundError(f'inputfile {fn_inp} not found.')
+
+    if not pth_working_dir.is_dir():
+        raise NotADirectoryError(f'Working dir {pth_working_dir} not found.')
+
+    # ---
+    return fn_inp, fn_rpt, fn_out, pth_working_dir
+
+
+def get_swmm_command_line_auto(fn_inp, fn_rpt, fn_out, create_out=True, swmm_path=None):
     # -----------------------
     if swmm_path is None:
         swmm_path = infer_swmm_path()
@@ -103,7 +133,7 @@ def get_swmm_command_line_auto(fn_inp, rpt_dir=None, out_dir=None, create_out=Tr
         ...  # TODO check if in system path or valide file name
         # if executed -> raises a file not found error
 
-    return get_swmm_command_line(swmm_path, fn_inp, rpt, out)
+    return get_swmm_command_line(swmm_path, fn_inp, fn_rpt, fn_out if create_out else '')
 
 
 def run_swmm_stdout(command_line, sep='_' * 100, working_dir=None):
@@ -138,16 +168,14 @@ def swmm5_run_epa(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=
                 UNIX users should place the path to the swmm executable in the system path and name the file ``swmm5``.
                 Default: the api will search in the standard paths for the swmm exe.
                 Be aware that the ``epaswmm5.exe`` is the graphical user interface and will not work for this api.
-        working_dir (str or pathlib.Path): directory where swmm should be executed. Important if relative paths are in the input file. Default is directory of input-file.
+        working_dir (str or Path): directory where swmm should be executed. Important if relative paths are in the input file. Default is directory of input-file.
 
     Returns:
-        tuple[str, str, str]: INP-, RPT- and OUT-filename
+        tuple[str | Path, str | Path]: INP-, RPT- and OUT-filename
     """
-    command_line, inp, rpt, out = get_swmm_command_line_auto(inp, rpt_dir=rpt_dir, out_dir=out_dir,
-                                                             create_out=create_out, swmm_path=swmm_path)
-    # -------------------------
-    if working_dir is None:
-        working_dir = Path(inp).resolve().parent
+    fn_inp, fn_rpt, fn_out, working_dir = resolve_paths(inp, rpt_dir, out_dir, working_dir)
+
+    command_line = get_swmm_command_line_auto(fn_inp, fn_rpt, fn_out, create_out=create_out, swmm_path=swmm_path)
 
     if init_print:
         run_swmm_stdout(command_line, working_dir=working_dir)
@@ -155,10 +183,9 @@ def swmm5_run_epa(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=
     else:
         stdout = run_swmm_custom(command_line, working_dir=working_dir)
 
-    # -------------------------
-    check_swmm_errors(rpt, stdout)
+    check_swmm_errors(fn_rpt, stdout)
 
-    return rpt, out
+    return fn_rpt, fn_out
 
 
 def swmm5_run_parallel(inp_fns, processes=4):
