@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.27 (2023-10-17)
+
+### Fix
+
+* Resolved issues when running an input file using a relative path. ([`2c4b260`](https://gitlab.com/markuspichler/swmm_api/-/commit/2c4b260cd5c050fd4bb466c138d0e3702b2a2e90))
+
+### Documentation
+
+* Added additional links in docs of run_swmm ([`e19f7cf`](https://gitlab.com/markuspichler/swmm_api/-/commit/e19f7cfadf692440015d42a64e49bcfdf571ac51))
+* Update readme ([`14105b0`](https://gitlab.com/markuspichler/swmm_api/-/commit/14105b0a5d8ef97e11fab59f70e2322ed7aaadf2))
+* Function header of subcatchments_connected ([`fd5468c`](https://gitlab.com/markuspichler/swmm_api/-/commit/fd5468c53e36c536a2530dfa1abd3a19014bdd55))
+
 ## v0.4.26 (2023-08-10)
 
 ### Fix
