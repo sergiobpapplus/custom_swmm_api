@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.28 (2023-10-19)
+
+### Fix
+
+* Added a warning when reading a very large output-file. ([`8b813c8`](https://gitlab.com/markuspichler/swmm_api/-/commit/8b813c809dab7e195c6a497b637be98b44ce4e6c))
+
 ## v0.4.27 (2023-10-17)
 
 ### Fix
