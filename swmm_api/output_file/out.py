@@ -8,6 +8,8 @@ __license__ = "MIT"
 import datetime
 import warnings
 from itertools import product
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
@@ -56,6 +58,7 @@ class SwmmOutput(SwmmOutExtract):
         fp (file-like): Stream of the open file.
     """
     filename: str = ...
+
     def __init__(self, filename, skip_init=False, encoding=''):
         """
         Read a SWMM-output-file (___.out).
@@ -77,9 +80,6 @@ class SwmmOutput(SwmmOutExtract):
             self.index = pd.date_range(self.start_date, periods=self.n_periods, freq=self.report_interval)
         except OutOfBoundsDatetime:
             self.index = pd.Index([self.start_date + self.report_interval * i for i in range(self.n_periods)])
-
-    def __repr__(self):
-        return f'SwmmOutput(file="{self.filename}")'
 
     def __enter__(self):
         return self
@@ -119,23 +119,44 @@ class SwmmOutput(SwmmOutExtract):
             columns += list(product([kind], self.labels[kind], self.variables[kind]))
         return columns
 
-    def to_numpy(self):
+    def to_numpy(self, ignore_filesize=False):
         """
         Convert all data to a numpy-array.
+
+        Args:
+            ignore_filesize (bool): hide a warning when reading a huge output-file.
 
         Returns:
             numpy.ndarray: all data
         """
         if self._data is None:
+
+            if not ignore_filesize and isinstance(self.filename, Path):
+                stats_file = self.filename.lstat()
+                filesize = stats_file.st_size  # in bytes
+                filesize_gb = filesize*1e-9
+                if filesize_gb > 6:
+                    warnings.warn(f"You are attempting to read a large output file ({filesize_gb:0.3f} GB), "
+                                  f"which could potentially lead to memory overflow. "
+                                  f"If you are only interested in a specific portion of the file, "
+                                  f"please utilize the .get_part() function with the slim=True parameter. "
+                                  f"This way, only the necessary data is read from the file. "
+                                  f"To disregard and suppress this message, use the ignore_filesize=True parameter.", SwmmOutputWarning)
+
             types = [('datetime', 'f8')] + [('/'.join(i), 'f4') for i in self._columns_raw]
             self.fp.seek(self._pos_start_output, 0)
-            try:
-                self._data = np.fromfile(self.fp, dtype=np.dtype(types))
-            except:
+
+            if isinstance(self.filename, str) and (self.filename == '<stream>'):
                 self._data = np.frombuffer(self.fp.read1(), dtype=np.dtype(types), count=self.n_periods)
+            else:
+                try:
+                    self._data = np.fromfile(self.fp, dtype=np.dtype(types))
+                except:
+                    self._data = np.frombuffer(self.fp.read1(), dtype=np.dtype(types), count=self.n_periods)
+
         return self._data
 
-    def to_frame(self):
+    def to_frame(self, ignore_filesize=False):
         """
         Convert all the data to a pandas-DataFrame.
 
@@ -143,15 +164,18 @@ class SwmmOutput(SwmmOutExtract):
             This function may take a long time if the out-file has with many objects (=columns).
             If you just want the data of a few columns use :meth:`SwmmOutput.get_part` instead.
 
+        Args:
+            ignore_filesize (bool): hide a warning when reading a huge output-file.
+
         Returns:
             pandas.DataFrame: data
         """
         if self._frame is None:
-            self._frame = self._to_pandas(self.to_numpy())
+            self._frame = self._to_pandas(self.to_numpy(ignore_filesize=ignore_filesize))
             del self._frame['datetime']
         return self._frame
 
-    def get_part(self, kind=None, label=None, variable=None, slim=False, processes=1, show_progress=True):
+    def get_part(self, kind=None, label=None, variable=None, slim=False, processes=1, show_progress=True, ignore_filesize=False):
         """
         Get specific columns of the data.
 
@@ -206,6 +230,7 @@ class SwmmOutput(SwmmOutExtract):
             slim (bool): set to ``True`` to speedup the code if there are a lot of objects and just few time-steps in the out-file.
             processes (int): number of parallel processes for the slim-reading.
             show_progress (bool): show a progress bar for the slim-reading.
+            ignore_filesize (bool): hide a warning when reading a huge output-file.
 
         Returns:
             pandas.DataFrame | pandas.Series: Filtered data.
@@ -215,7 +240,7 @@ class SwmmOutput(SwmmOutExtract):
         if slim:
             values = self._get_selective_results(columns, processes=processes, show_progress=show_progress)
         else:
-            values = self.to_numpy()[list(map('/'.join, columns))]
+            values = self.to_numpy(ignore_filesize=ignore_filesize)[list(map('/'.join, columns))]
 
         return self._to_pandas(values, drop_useless=True)
 
