@@ -251,9 +251,6 @@ class SwmmOutExtract(BinaryReader):
             warn('There are zero time periods in the output file.', SwmmOutExtractWarning)
             # raise SwmmExtractValueError('There are zero time periods in the output file.')
 
-    def __repr__(self):
-        return f'SwmmOutExtract(file="{self.filename}")'
-
     def _infer_bytes_per_period(self):
         """
         Calculate the bytes for each time period when reading the computed results

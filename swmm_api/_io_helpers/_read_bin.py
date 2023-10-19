@@ -35,9 +35,8 @@ class BinaryReader(abc.ABC):
             self.filename = Path(filename)
         self.encoding = get_default_encoding(encoding)
 
-    @abc.abstractmethod
     def __repr__(self):
-        return f'SwmmOutExtract(file="{self.filename}")'
+        return f'{self.__class__.__name__}(file="{self.filename}")'
 
     def __enter__(self):
         return self

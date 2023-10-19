@@ -248,8 +248,5 @@ class SwmmHotstart(BinaryReader):
         df.columns = self.columns_subcatchment
         return df
 
-    def __repr__(self):
-        return f'SwmmHotstart(file="{self.filename}")'
-
 
 read_hst_file = SwmmHotstart
