@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.29 (2023-10-27)
+
+### Fix
+
+* Added reduce_hydrographs, reduce_snowpacks and reduce_report_objects to macros.reduce_unneeded ([`0a812fa`](https://gitlab.com/markuspichler/swmm_api/-/commit/0a812fad28f7a075d2c33358e75454d7f1c07b11))
+
 ## v0.4.28 (2023-10-19)
 
 ### Fix
