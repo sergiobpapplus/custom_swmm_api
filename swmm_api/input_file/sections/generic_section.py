@@ -1,9 +1,14 @@
 import datetime
+import logging
+import warnings
 from typing import Literal
 
 from .._type_converter import infer_type, type2str
 from ..helpers import InpSectionGeneric, SEP_INP
 from ..section_labels import TITLE, OPTIONS, REPORT, EVAPORATION, TEMPERATURE, MAP, FILES, ADJUSTMENTS, BACKDROP
+
+
+logger = logging.getLogger(__name__)
 
 
 def line_iter(lines):
@@ -965,7 +970,7 @@ class ReportSection(InpSectionGeneric):
             if value is None:
                 continue
 
-            if isinstance(value, list) and len(value) > 20:
+            if isinstance(value, (list, tuple, set)) and len(value) > 20:
                 size = len(value)
                 start = 0
                 for end in range(20, size, 20):
@@ -1576,6 +1581,8 @@ class AdjustmentsSection(InpSectionGeneric):
                 data[key] = [float(i) for i in factors]
             elif key in cls.KEYS._subcatchment:
                 subcatchment, pattern = factors
+                warnings.warn('[ADJUSTMENTS] reading inputfile with subcatchment adjustment is not tested and my fail.')
+                logger.warning('[ADJUSTMENTS] reading inputfile with subcatchment adjustment is not tested and my fail.')
                 data[(key, subcatchment)] = pattern  # todo: might not work, have to test first
                 # if subcatchment not in data:
                 #     data[subcatchment] = {}

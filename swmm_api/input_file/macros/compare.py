@@ -191,8 +191,7 @@ def _to_coordinates_list(geo_series):
     return list(zip(geo_series.x, geo_series.y))
 
 
-def _next_nodes():
-    # TODO ...
+def _next_nodes():  # TODO: find nearest node in model
     coords_from = _to_coordinates_list(geometry_from.geometry)
     coords_to = _to_coordinates_list(geometry_to.geometry)
     # distance_matrix = distance.cdist(coords_from, coords_to, 'euclidean')

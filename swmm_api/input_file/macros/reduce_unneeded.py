@@ -2,8 +2,9 @@ from .collection import links_dict, nodes_dict
 from ._helpers import get_used_curves
 from ..section_labels import *
 from ..misc.curve_simplification import ramer_douglas
+from ..section_lists import LINK_SECTIONS, NODE_SECTIONS
 from ..section_types import SECTION_TYPES
-from ..sections import Control, EvaporationSection
+from ..sections import Control, EvaporationSection, ReportSection
 
 
 def reduce_curves(inp):
@@ -144,19 +145,53 @@ def simplify_curves(curve_section, dist=0.001):
 
 def reduce_raingages(inp):
     """
-    Get used ``RAINGAGES`` from SUBCATCHMENTS and keep only used rain-gages in the section.
+    Set used ``RAINGAGES`` from ``SUBCATCHMENTS`` and keep only used rain-gages in the section.
 
     Args:
         inp (SwmmInput):  inp-file data
 
-    Returns:
-        SwmmInput: inp-file data with filtered ``RAINGAGES`` section
+    .. Important::
+        works inplace
     """
     needed_raingages = set()
     if (SUBCATCHMENTS in inp) and (RAINGAGES in inp):
         needed_raingages = {inp[SUBCATCHMENTS][s].rain_gage for s in inp[SUBCATCHMENTS]}
 
     inp[RAINGAGES] = inp[RAINGAGES].slice_section(needed_raingages)
+
+
+def reduce_hydrographs(inp):
+    """
+    Set used ``HYDROGRAPHS`` from ``RDII`` and keep only used hydrographs in the section.
+
+    Args:
+        inp (SwmmInput):  inp-file data
+
+    .. Important::
+        works inplace
+    """
+    needed_hydrographs = set()
+    if (HYDROGRAPHS in inp) and (RDII in inp):
+        needed_hydrographs = {inp.RDII[s].hydrograph for s in inp.RDII}
+
+    inp[HYDROGRAPHS] = inp[HYDROGRAPHS].slice_section(needed_hydrographs)
+
+
+def reduce_snowpacks(inp):
+    """
+    Set used ``SNOWPACKS`` from ``SUBCATCHMENTS`` and keep only used snow-packs in the section.
+
+    Args:
+        inp (SwmmInput):  inp-file data
+
+    .. Important::
+        works inplace
+    """
+    needed_snowpacks = set()
+    if (SUBCATCHMENTS in inp) and (SNOWPACKS in inp):
+        needed_snowpacks = {inp.SUBCATCHMENTS[s].snow_pack for s in inp[SUBCATCHMENTS]}
+
+    inp[SNOWPACKS] = inp[SNOWPACKS].slice_section(needed_snowpacks)
 
 
 def remove_empty_sections(inp):
@@ -204,3 +239,59 @@ def reduce_timeseries(inp):
         needed_timeseries |= set(f['time_series'])
 
     inp[TIMESERIES] = inp[TIMESERIES].slice_section(needed_timeseries)
+
+
+def reduce_report_objects(inp):
+    """
+    Remove lost objects in report section.
+
+    Args:
+        inp (swmm_api.SwmmInput): inp-file data
+    """
+    T = ReportSection.KEYS
+
+    if T.SUBCATCHMENTS in inp.REPORT:
+        # none all or list
+        value = inp.REPORT[T.SUBCATCHMENTS]
+        if value is None:
+            pass  # Do nothing -> looks like a placeholder / could be deleted
+        elif isinstance(value, str) and value.upper() == 'all':
+            pass  # Do nothing -> looks like a placeholder / could be deleted if no subcatchments are in the input data
+        else:  # list of SC
+            if SUBCATCHMENTS in inp:
+                # keep only SC in SUBCATCHMENTS section
+                inp.REPORT[T.SUBCATCHMENTS] = list(set(inp.SUBCATCHMENTS) & set(value))
+            else:
+                del inp.REPORT[T.SUBCATCHMENTS]
+
+    # ---
+    if T.LINKS in inp.REPORT:
+        # none all or list
+        value = inp.REPORT[T.LINKS]
+        if value is None:
+            pass  # Do nothing -> looks like a placeholder / could be deleted
+        elif isinstance(value, str) and value.upper() == 'all':
+            pass  # Do nothing -> looks like a placeholder / could be deleted if no subcatchments are in the input data
+        else:  # list of links
+            avail_objects = set(links_dict(inp))  # set of strings
+            if avail_objects:
+                # keep only links which are in link-sections
+                inp.REPORT[T.LINKS] = list(avail_objects & set(value))
+            else:
+                del inp.REPORT[T.LINKS]
+
+    # ---
+    if T.NODES in inp.REPORT:
+        # none all or list
+        value = inp.REPORT[T.NODES]
+        if value is None:
+            pass  # Do nothing -> looks like a placeholder / could be deleted
+        elif isinstance(value, str) and value.upper() == 'all':
+            pass  # Do nothing -> looks like a placeholder / could be deleted if no subcatchments are in the input data
+        else:  # list of links
+            avail_objects = set(nodes_dict(inp))  # set of strings
+            if avail_objects:
+                # keep only links which are in link-sections
+                inp.REPORT[T.NODES] = list(avail_objects & set(value))
+            else:
+                del inp.REPORT[T.NODES]

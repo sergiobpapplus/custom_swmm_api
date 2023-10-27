@@ -1,8 +1,9 @@
+import warnings
 from typing import Literal
 
 from numpy import interp, mean, ceil
 
-from ._helpers import print_warning
+from ._helpers import print_warning, get_constituents
 from .collection import nodes_dict, links_dict, subcatchments_per_node_dict
 from .combine_dwf import combine_dwf
 from .graph import next_links_labels, previous_links, previous_links_labels, links_connected, _previous_links_labels
@@ -10,8 +11,10 @@ from .macros import calc_slope, find_link, delete_sections
 from .._type_converter import is_equal
 from ..inp import SwmmInput
 from ..section_labels import *
-from ..section_lists import NODE_SECTIONS, LINK_SECTIONS, SUBCATCHMENT_SECTIONS, POLLUTANT_SECTIONS
-from ..sections import Tag, DryWeatherFlow, Junction, Coordinate, Conduit, Loss, Vertices, EvaporationSection, Inflow
+from ..section_lists import NODE_SECTIONS, LINK_SECTIONS, SUBCATCHMENT_SECTIONS, POLLUTANT_SECTIONS, NODE_SECTIONS_ADD, \
+    LINK_SECTIONS_ADD
+from ..sections import Tag, DryWeatherFlow, Junction, Coordinate, Conduit, Loss, Vertices, EvaporationSection, Inflow, \
+    ReportSection, GroundwaterFlow, Groundwater, LIDUsage, InletUsage
 from ..sections._identifiers import IDENTIFIERS
 
 
@@ -28,12 +31,13 @@ def delete_node(inp, node_label, graph=None, alt_node=None):
     .. Important::
         works inplace
     """
-    for section in NODE_SECTIONS + [COORDINATES]:
+    for section in NODE_SECTIONS + NODE_SECTIONS_ADD:
         if (section in inp) and (node_label in inp[section]):
             inp[section].pop(node_label)
 
-    if (TAGS in inp) and ((Tag.TYPES.Node, node_label) in inp.TAGS):
-        del inp[TAGS][(Tag.TYPES.Node, node_label)]
+    remove_obj_from_reporting(inp, kind=ReportSection.KEYS.NODES, label=node_label)
+    remove_obj_tag(inp, kind=Tag.TYPES.Node, label=node_label)
+    remove_obj_from_control(inp)
 
     connected_subcatchments = []
 
@@ -72,8 +76,53 @@ def delete_node(inp, node_label, graph=None, alt_node=None):
         delete_link(inp, link)
 
     if alt_node is not None:
+        # INFOWS, DWF
         move_flows(inp, node_label, alt_node)
+        # SUBCATCHMENTS
         reconnect_subcatchments(inp, node_label, alt_node, graph, connected_subcatchments)
+    else:
+        if SUBCATCHMENTS in inp:
+            # node is parameter -> delete object
+
+            # for sc in subcatchments_per_node_dict(inp)[from_node]:
+            #     delete_subcatchment(sc.name)
+            #     sc.outlet = to_node
+
+            warnings.warn('delete_node in SUBCATCHMENTS section not implemented.')  # TODO
+            # delete_subcatchment()
+
+        # ---
+        constituents = get_constituents(inp)
+        for section in (DWF, INFLOWS):
+            if section in inp:
+                for constituent in constituents:
+                    if (node_label, constituent) in inp.GWF:
+                        del inp[section][(node_label, constituent)]
+    # ---
+    if GROUNDWATER in inp:
+        for gw in list(inp.GROUNDWATER.values()):  # or using filter section. my guess is that very few groundwater objects are being defined.
+            if gw.node == node_label:
+                del inp.GROUNDWATER[gw.section_key]
+        # warnings.warn('delete_node in GROUNDWATER section not implemented.')
+
+    # ---
+    if INLET_USAGE in inp:
+        # node is parameter -> delete object
+        for inlet_usage in list(inp.INLET_USAGE.values()):  # or using filter section. my guess is that very few groundwater objects are being defined.
+            if inlet_usage.node == node_label:
+                del inp.INLET_USAGE[inlet_usage.section_key]
+        # warnings.warn('delete_node in INLET_USAGE section not implemented.')
+
+    # ---
+    if TREATMENT in inp:
+        if POLLUTANTS in inp:
+            for p in inp.POLLUTANTS:
+                if (node_label, p) in inp.TREATMENT:
+                    del inp.TREATMENT[(node_label, p)]
+        else:
+            for t in list(inp.TREATMENT.values()):  # or using filter section. my guess is that very few groundwater objects are being defined.
+                if t.node == node_label:
+                    del inp.TREATMENT[t.section_key]
 
 
 def _mean_dwf_flow(inp, node):
@@ -107,7 +156,7 @@ def move_flows(inp: SwmmInput, from_node, to_node, only_constituent=None):
             continue
 
         if only_constituent is None:
-            only_constituent = [DryWeatherFlow.TYPES.FLOW]
+            only_constituent = [DryWeatherFlow.TYPES.FLOW]  # TODO Pollutants
 
         for constituent in only_constituent:
             index_old = (from_node, constituent)
@@ -187,26 +236,59 @@ def reconnect_subcatchments(inp: SwmmInput, from_node, to_node, graph=None, conn
     #     sc.outlet = to_node
 
 
-def delete_link(inp: SwmmInput, link):
-    for s in LINK_SECTIONS + [XSECTIONS, LOSSES, VERTICES]:
+def delete_link(inp: SwmmInput, link: str):
+    for s in LINK_SECTIONS + LINK_SECTIONS_ADD:
         if (s in inp) and (link in inp[s]):
             inp[s].pop(link)
 
-    if (TAGS in inp) and ((Tag.TYPES.Link, link) in inp.TAGS):
-        del inp[TAGS][(Tag.TYPES.Link, link)]
+    remove_obj_from_reporting(inp, kind=ReportSection.KEYS.LINKS, label=link)
+    remove_obj_tag(inp, kind=Tag.TYPES.Link, label=link)
+    remove_obj_from_control(inp)
+
+    # ---
+    if CONDUITS in inp and link in inp.CONDUITS and INLET_USAGE in inp:
+        for inlet_usage in list(inp.INLET_USAGE.values()):  # or using filter section. my guess is that very few groundwater objects are being defined.
+            if inlet_usage.conduit == link:
+                del inp.INLET_USAGE[inlet_usage.section_key]
 
 
-def delete_subcatchment(inp: SwmmInput, subcatchment):
-    for s in SUBCATCHMENT_SECTIONS + [LOADINGS, COVERAGES]:
-        # , GWF, GROUNDWATER
+def delete_subcatchment(inp: SwmmInput, subcatchment: str):
+    for s in SUBCATCHMENT_SECTIONS:
         if (s in inp) and (subcatchment in inp[s]):
             inp[s].pop(subcatchment)
 
-    if (TAGS in inp) and ((Tag.TYPES.Subcatch, subcatchment) in inp.TAGS):
-        del inp[TAGS][(Tag.TYPES.Subcatch, subcatchment)]
+    remove_obj_from_reporting(inp, ReportSection.KEYS.SUBCATCHMENTS, label=subcatchment)
+    remove_obj_tag(inp, kind=Tag.TYPES.Subcatch, label=subcatchment)
+    remove_obj_from_control(inp)
+
+    # ---
+    if GWF in inp:
+        for k in (GroundwaterFlow.TYPES.DEEP, GroundwaterFlow.TYPES.LATERAL):
+            if (subcatchment, k) in inp.GWF:
+                del inp.GWF[(subcatchment, k)]
+
+    # ---
+    if GROUNDWATER in inp:
+        for gw in list(inp.GROUNDWATER.values()):  # or using filter section. my guess is that very few groundwater objects are being defined.
+            if gw.subcatchment == subcatchment:
+                del inp.GROUNDWATER[gw.section_key]
+        # warnings.warn('delete_subcatchment in GROUNDWATER section not implemented.')
+
+    # ---
+    if LID_USAGE in inp:
+        if LID_CONTROLS in inp:
+            for lid in inp.LID_CONTROLS:
+                if (subcatchment, lid) in inp.LID_USAGE:
+                    del inp[LID_USAGE][(subcatchment, lid)]
+        else:
+            for lid_usage in list(inp.LID_USAGE.values()):  # or using filter section. my guess is that very few lid_usage objects are being defined.
+                if lid_usage.subcatchment == subcatchment:
+                    del inp.LID_USAGE[lid_usage.section_key]
+        # warnings.warn('delete_subcatchment in LID_USAGE section not implemented.')
 
 
 def split_conduit(inp, conduit, intervals=None, length=None, from_inlet=True):
+    raise NotImplementedError('"split_conduit" is not working yet.')
     # mode = [cut_point (GUI), intervals (n), length (l)]
     nodes = nodes_dict(inp)
     if isinstance(conduit, str):
@@ -235,17 +317,19 @@ def split_conduit(inp, conduit, intervals=None, length=None, from_inlet=True):
     new_links = []
 
     x = dx
-    last_node = from_node
+    last_node: Junction = from_node
     for new_node_i in range(n_new_nodes + 1):
+        # TODO node is not a junction
+        warnings.warn()
         if x >= conduit.length:
             node = to_node
         else:
             node = Junction(name=f'{from_node.name}_{to_node.name}_{chr(new_node_i + 97)}',
                             elevation=interp(x, [0, conduit.length], [from_node.elevation, to_node.elevation]),
-                            depth_max=interp(x, [0, conduit.length], [from_node.MaxDepth, to_node.MaxDepth]),
-                            depth_init=interp(x, [0, conduit.length], [from_node.InitDepth, to_node.InitDepth]),
-                            depth_surcharge=interp(x, [0, conduit.length], [from_node.SurDepth, to_node.SurDepth]),
-                            area_ponded=float(mean([from_node.Aponded, to_node.Aponded])),
+                            depth_max=interp(x, [0, conduit.length], [from_node.depth_max, to_node.depth_max]),
+                            depth_init=interp(x, [0, conduit.length], [from_node.depth_init, to_node.depth_init]),
+                            depth_surcharge=interp(x, [0, conduit.length], [from_node.depth_surcharge, to_node.depth_surcharge]),
+                            area_ponded=float(mean([from_node.area_ponded, to_node.area_ponded])),
                             )
             new_nodes.append(node)
             inp[JUNCTIONS].add_obj(node)
@@ -476,10 +560,8 @@ def rename_node(inp: SwmmInput, old_label: str, new_label: str, g=None):
         works inplace
         CONTROLS Not Implemented!
     """
-    # ToDo: Not Implemented: CONTROLS
-
     # Nodes and basic node components
-    for section in NODE_SECTIONS + [COORDINATES, RDII]:
+    for section in NODE_SECTIONS + NODE_SECTIONS_ADD:
         if (section in inp) and (old_label in inp[section]):
             inp[section][new_label] = inp[section].pop(old_label)
             if hasattr(inp[section][new_label], IDENTIFIERS.name):
@@ -488,12 +570,11 @@ def rename_node(inp: SwmmInput, old_label: str, new_label: str, g=None):
             else:
                 inp[section][new_label].node = new_label
 
-    # tags
-    if (TAGS in inp) and ((Tag.TYPES.Node, old_label) in inp.TAGS):
-        tag = inp[TAGS].pop((Tag.TYPES.Node, old_label))  # type: swmm_api.input_file.sections.Tag
-        tag.name = new_label
-        inp.TAGS.add_obj(tag)
+    rename_obj_in_tags(inp, Tag.TYPES.Node, old_label, new_label)
+    rename_obj_in_reporting_section(inp, ReportSection.KEYS.NODES, old_label, new_label)
+    rename_obj_in_control_section(inp)
 
+    # ---
     # subcatchment outlets
     if SUBCATCHMENTS in inp:
         for obj in subcatchments_per_node_dict(inp)[old_label]:
@@ -503,43 +584,44 @@ def rename_node(inp: SwmmInput, old_label: str, new_label: str, g=None):
         #     obj.outlet = new_label
         # -------
 
+    # ---
     # link: from-node and to-node
     previous_links, next_links = links_connected(inp, old_label, g=g)
     for link in previous_links:
         link.to_node = new_label
 
     for link in next_links:
-        link.to_node = new_label
+        link.from_node = new_label
 
-    # -------
-    # for section in [CONDUITS, PUMPS, ORIFICES, WEIRS, OUTLETS]:
-    #     if section in inp:
-    #         for obj in inp[section].filter_keys([old_label], 'from_node'):  # type: _Link
-    #             obj.FromNode = new_label
-    #
-    #         for obj in inp[section].filter_keys([old_label], 'to_node'):  # type: _Link
-    #             obj.ToNode = new_label
-    # -------
-
+    # ---
     # (dwf-)inflows
-    constituents = [DryWeatherFlow.TYPES.FLOW]
-    if POLLUTANTS in inp:
-        constituents += list(inp.POLLUTANTS.keys())
-
-    for section in [INFLOWS, DWF, TREATMENT]:
+    constituents = get_constituents(inp)
+    for section in (INFLOWS, DWF, TREATMENT):
         if section in inp:
             for constituent in constituents:
-                old_id = (old_label, constituent)
-                if old_id in inp[section]:
-                    inp[section][old_id].node = new_label
-                    inp[section][(new_label, constituent)] = inp[section].pop(old_id)
+                if (old_label, constituent) in inp[section]:
+                    new = inp[section].pop((old_label, constituent))
+                    new.node = new_label
+                    inp[section].add_obj(new)
 
-            # -------
-            # for obj in inp[section].filter_keys([old_label], 'Node'):  # type: Inflow
-            #     obj.Node = new_label
-            #     inp[section][(new_label, obj[obj._identifier[1]])] = inp[section].pop((old_label,
-            #     obj[obj._identifier[1]]))
-            # -------
+    # ---
+    if GROUNDWATER in inp:
+        for gw in list(inp.GROUNDWATER.values()):  # or using filter section. my guess is that very few groundwater objects are being defined.
+            if gw.node == old_label:
+                new = inp.GROUNDWATER.pop(gw.section_key)  # type: Groundwater
+                new.node = new_label
+                inp.GROUNDWATER.add_obj(new)
+
+    # ---
+    if INLET_USAGE in inp:
+        for inlet_usage in list(inp.INLET_USAGE.values()):  # or using filter section. my guess is that very few INLET_USAGE objects are being defined.
+            if inlet_usage.node == old_label:
+                # node is not an identifier
+                # inlet_usage.node = new_label
+                # => but to be safe
+                new = inp.INLET_USAGE.pop(inlet_usage.section_key)  # type: InletUsage
+                new.node = new_label
+                inp.INLET_USAGE.add_obj(new)
 
 
 def rename_link(inp: SwmmInput, old_label: str, new_label: str):
@@ -555,8 +637,7 @@ def rename_link(inp: SwmmInput, old_label: str, new_label: str):
         old_label (str): previous link label
         new_label (str): new link label
     """
-    # ToDo: Not Implemented: CONTROLS
-    for section in LINK_SECTIONS + [XSECTIONS, LOSSES, VERTICES]:
+    for section in LINK_SECTIONS + LINK_SECTIONS_ADD:
         if (section in inp) and (old_label in inp[section]):
             inp[section][new_label] = inp[section].pop(old_label)
             if hasattr(inp[section][new_label], 'Name'):
@@ -564,12 +645,20 @@ def rename_link(inp: SwmmInput, old_label: str, new_label: str):
             else:
                 inp[section][new_label].link = new_label
 
-    if (TAGS in inp) and ((Tag.TYPES.Link, old_label) in inp.TAGS):
-        inp[TAGS][(Tag.TYPES.Link, new_label)] = inp[TAGS].pop((Tag.TYPES.Link, old_label))
+    rename_obj_in_tags(inp, Tag.TYPES.Link, old_label, new_label)
+    rename_obj_in_reporting_section(inp, ReportSection.KEYS.LINKS, old_label, new_label)
+    rename_obj_in_control_section(inp)
+
+    if CONDUITS in inp and old_label in inp.CONDUITS and INLET_USAGE in inp:
+        for inlet_usage in list(inp.INLET_USAGE.values()):  # or using filter section. my guess is that very few groundwater objects are being defined.
+            if inlet_usage.conduit == old_label:
+                new = inp.INLET_USAGE.pop(inlet_usage.section_key)  # type: GroundwaterFlow
+                new.conduit = new_label
+                inp.INLET_USAGE.add_obj(new)
 
 
 def rename_subcatchment(inp: SwmmInput, old_label: str, new_label: str):
-    for section in SUBCATCHMENT_SECTIONS + [LOADINGS, COVERAGES, GWF, GROUNDWATER]:
+    for section in SUBCATCHMENT_SECTIONS:
         if (section in inp) and (old_label in inp[section]):
             inp[section][new_label] = inp[section].pop(old_label)
             if hasattr(inp[section][new_label], 'name'):
@@ -577,8 +666,41 @@ def rename_subcatchment(inp: SwmmInput, old_label: str, new_label: str):
             else:
                 inp[section][new_label].subcatchment = new_label
 
-    if (TAGS in inp) and ((Tag.TYPES.Subcatch, old_label) in inp.TAGS):
-        inp[TAGS][(Tag.TYPES.Subcatch, new_label)] = inp[TAGS].pop((Tag.TYPES.Subcatch, old_label))
+    rename_obj_in_tags(inp, Tag.TYPES.Subcatch, old_label, new_label)
+    rename_obj_in_reporting_section(inp, ReportSection.KEYS.SUBCATCHMENTS, old_label, new_label)
+    rename_obj_in_control_section(inp)
+
+    # ---
+    if GWF in inp:
+        for k in (GroundwaterFlow.TYPES.DEEP, GroundwaterFlow.TYPES.LATERAL):
+            if (old_label, k) in inp.GWF:
+                new = inp.GWF.pop((old_label, k))  # type: GroundwaterFlow
+                new.subcatchment = new_label
+                inp.GWF.add_obj(new)
+
+    # ---
+    if GROUNDWATER in inp:
+        for gw in list(inp.GROUNDWATER.values()):  # or using filter section. my guess is that very few groundwater objects are being defined.
+            if gw.subcatchment == old_label:
+                new = inp.GROUNDWATER.pop(gw.section_key)  # type: Groundwater
+                new.subcatchment = new_label
+                inp.GROUNDWATER.add_obj(new)
+
+    # ---
+    if LID_USAGE in inp:
+        if LID_CONTROLS in inp:
+            for lid in inp.LID_CONTROLS:
+                if (old_label, lid) in inp.LID_USAGE:
+                    new = inp.LID_USAGE.pop((old_label, lid))  # type: LIDUsage
+                    new.subcatchment = new_label
+                    inp.LID_USAGE.add_obj(new)
+
+        else:
+            for lid_usage in list(inp.LID_USAGE.values()):  # or using filter section. my guess is that very few lid_usage objects are being defined.
+                if lid_usage.subcatchment == old_label:
+                    new = inp.LID_USAGE.pop(lid_usage.section_key)  # type: LIDUsage
+                    new.subcatchment = new_label
+                    inp.LID_USAGE.add_obj(new)
 
 
 def rename_timeseries(inp, old_label, new_label):
@@ -666,20 +788,26 @@ def delete_pollutant(inp, label):
         inp (SwmmInput):
         label (str):
     """
-    # TODO LID control
     if POLLUTANTS in inp:
         del inp.POLLUTANTS[label]
-    if SUBCATCHMENTS in inp:
-        for sc in inp.SUBCATCHMENTS:
-            if LOADINGS in inp and label in inp.LOADINGS[sc].pollutant_buildup_dict:
-                del inp.LOADINGS[sc].pollutant_buildup_dict[label]
-
+    # ---
+    if LOADINGS in inp:
+        for l in inp.LOADINGS:
+            if label in inp.LOADINGS[l].pollutant_buildup_dict:
+                del inp.LOADINGS[l].pollutant_buildup_dict[label]
+    # ---
     if LANDUSES in inp:
         for lu in inp.LANDUSES:
             for sec in [BUILDUP, WASHOFF]:
                 if (sec in inp) and ((lu, label) in inp[sec]):
                     del inp[sec][(lu, label)]
-
+    # ---
+    if LID_CONTROLS in inp:
+        for lid_control in inp.LID_CONTROLS.values():
+            if ((lid_control.LAYER_TYPES.REMOVALS in lid_control.layer_dict)
+                    and (label in lid_control.layer_dict[lid_control.LAYER_TYPES.REMOVALS])):
+                warnings.warn('delete_pollutant in LID_CONTROLS (REMOVALS) section not implemented.')  # TODO
+    # ---
     for n in nodes_dict(inp):
         for sec in [TREATMENT, DWF, INFLOWS]:
             if (sec in inp) and ((n, label) in inp[sec]):
@@ -687,7 +815,7 @@ def delete_pollutant(inp, label):
 
 
 def copy_link(inp_from: SwmmInput, inp_to: SwmmInput, link_label):
-    for s in LINK_SECTIONS + [XSECTIONS, LOSSES, VERTICES]:
+    for s in LINK_SECTIONS + LINK_SECTIONS_ADD:
         if (s in inp_from) and (link_label in inp_from[s]):
             inp_to.add_obj(inp_from[s][link_label].copy())
 
@@ -696,9 +824,81 @@ def copy_link(inp_from: SwmmInput, inp_to: SwmmInput, link_label):
 
 
 def copy_node(inp_from: SwmmInput, inp_to: SwmmInput, node_label):
-    for s in NODE_SECTIONS + [COORDINATES]:
+    for s in NODE_SECTIONS + NODE_SECTIONS_ADD:
         if (s in inp_from) and (node_label in inp_from[s]):
             inp_to.add_obj(inp_from[s][node_label].copy())
 
     if (TAGS in inp_from) and ((Tag.TYPES.Node, node_label) in inp_from.TAGS):
         inp_to.add_obj(inp_from[TAGS][(Tag.TYPES.Node, node_label)].copy())
+
+
+def remove_obj_from_reporting(inp, kind, label):
+    """
+    Remove object from reporting section.
+
+    Object will not be reported in the output-file.
+
+    Args:
+        inp (swmm_api.SwmmInput): input-data.
+        kind (str): one of (`SUBCATCHMENTS`, `NODES`, `LINKS`). You can use the :attr:`ReportSection.KEYS` attribute.
+        label (str): label of the object, which shouldn't be reported in the output-file.
+    """
+    if (REPORT in inp) and (kind in inp.REPORT):
+        if (isinstance(inp.REPORT[kind], (list, tuple, set))
+                and (label in inp.REPORT[kind])):
+            inp.REPORT[kind] = list(inp.REPORT[kind])
+            inp.REPORT[kind].remove(label)
+
+
+def rename_obj_in_reporting_section(inp, kind, old_label, new_label):
+    """
+    Rename object in reporting section.
+
+    Args:
+        inp (swmm_api.SwmmInput): input-data.
+        kind (str): one of (`SUBCATCHMENTS`, `NODES`, `LINKS`). You can use the :attr:`ReportSection.KEYS` attribute.
+        old_label (str): old label of the object, which tag should be renamed.
+        new_label (str): new label of the object, which tag should be renamed.
+    """
+    if (REPORT in inp) and (kind in inp.REPORT):
+        if (isinstance(inp.REPORT[kind], (list, tuple, set))
+                and (old_label in inp.REPORT[kind])):
+            inp.REPORT[kind] = list(inp.REPORT[kind])
+            inp.REPORT[kind].remove(old_label)
+            inp.REPORT[kind].append(new_label)
+
+
+def remove_obj_tag(inp, kind, label):
+    """
+    Remove tag froo object.
+
+    Args:
+        inp (swmm_api.SwmmInput): input-data.
+        kind (str): one of (`Subcatch`, `Node`, `Link`). You can use the :attr:`Tag.TYPES` attribute.
+        label (str): label of the object, which tag should be removed.
+    """
+    if (TAGS in inp) and ((kind, label) in inp.TAGS):
+        del inp[TAGS][(kind, label)]
+
+
+def rename_obj_in_tags(inp, kind, old_label, new_label):
+    """
+    Rename object in tags section.
+
+    Args:
+        inp (swmm_api.SwmmInput): input-data.
+        kind (str): one of (`Subcatch`, `Node`, `Link`). You can use the :attr:`Tag.TYPES` attribute.
+        old_label (str): old label of the object, which tag should be renamed.
+        new_label (str): new label of the object, which tag should be renamed.
+    """
+    if (TAGS in inp) and ((kind, old_label) in inp.TAGS):
+        inp[TAGS][(kind, new_label)] = inp[TAGS].pop((kind, old_label))
+        inp.TAGS[(kind, new_label)].name = new_label
+
+
+def remove_obj_from_control(inp):
+    warnings.warn('remove_obj_from_control not implemented.')  # TODO
+
+
+def rename_obj_in_control_section(inp):
+    warnings.warn('rename_obj_in_control_section not implemented.')  # TODO

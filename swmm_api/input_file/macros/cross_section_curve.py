@@ -40,8 +40,8 @@ def to_cross_section_maker(xs: CrossSection, inp: SwmmInput = None):
         curve = inp.CURVES[xs.curve_name]
         return shape_generator.CrossSection.from_curve(curve, height=xs.height)
 
-    elif xs.shape == CrossSection.SHAPES.IRREGULAR:
-        return  # Todo: I don't know how
+    elif xs.shape == CrossSection.SHAPES.IRREGULAR:  # Todo: I don't know how
+        return
 
     elif xs.shape == CrossSection.SHAPES.CIRCULAR:
         return Circular(xs.height, label=xs.link)
@@ -85,9 +85,8 @@ def to_cross_section_maker(xs: CrossSection, inp: SwmmInput = None):
     elif xs.shape == CrossSection.SHAPES.TRAPEZOIDAL:
         return Trapezoidal(xs.height, xs.parameter_2, xs.parameter_3, xs.parameter_4, label=xs.link)
     else:
-        # CrossSection.SHAPES.TRAPEZOIDAL
-        # CrossSection.SHAPES.MODBASKETHANDLE
-        return  # Todo: ??? Not Implemented
+        # Todo: ??? Not Implemented: CrossSection.SHAPES.TRAPEZOIDAL, CrossSection.SHAPES.MODBASKETHANDLE
+        raise NotImplementedError(f'Shape {xs.shape} is not implemented (yet).')
 
 
 def profil_area(inp, link_label):
@@ -105,8 +104,7 @@ def profil_area(inp, link_label):
     if cs is not None:
         return cs.area_v
 
-# def velocity(inp, link_label, flow):
-#     # TODO
+# def velocity(inp, link_label, flow): # TODO
 #     cs = get_cross_section_maker(inp, link_label)
 #     if cs is None:
 #         return

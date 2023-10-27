@@ -170,6 +170,9 @@ S2.3             asd              J1               10     0      0      0      0
 ;;Subcatchment   Flow    Equation
 ;;-------------- ------- --------
 S2.3             LATERAL Hgw
+S2.3             DEEP 2
+S2.3             DEEP 3
+S2.3             LATERAL 2
 
 [SNOWPACKS]
 ;;Name           Surface    Parameters

@@ -697,6 +697,8 @@ class GroundwaterFlow(BaseSectionObject):
         Use ``LATERAL`` to designate an expression for lateral groundwater flow
         (to a node of the conveyance network) and ``DEEP`` for vertical loss to deep groundwater.
 
+        A subcatchment can have a lateral **and** a deep groundwater-flow.
+
         See the [``TREATMENT``] section for a list of built-in math functions that can be used in
         ``Expr``. In particular, the ``STEP(x)`` function is 1 when ``x > 0`` and is 0 otherwise.
 

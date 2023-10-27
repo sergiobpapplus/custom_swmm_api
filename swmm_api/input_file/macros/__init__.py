@@ -9,7 +9,7 @@ from .edit import (combine_conduits, combine_conduits_keep_slope, combine_vertic
                    delete_subcatchment, dissolve_conduit, flip_link_direction, move_flows, rename_link, rename_node,
                    rename_subcatchment, rename_timeseries, split_conduit, remove_quality_model, delete_pollutant)
 from .filter import (filter_nodes, filter_links_within_nodes, filter_links, filter_subcatchments,
-                     create_sub_inp, )
+                     create_sub_inp, filter_tags)
 from .geo import (transform_coordinates, complete_vertices, reduce_vertices, complete_link_vertices,
                   simplify_link_vertices, simplify_vertices, )
 
@@ -37,7 +37,8 @@ from .plotting_longitudinal import plot_longitudinal, animated_plot_longitudinal
 from .plotting_map import (plot_map, init_empty_map_plot, add_node_map, add_link_map, add_subcatchment_map,
                            add_node_labels, set_inp_dimensions, add_backdrop)
 from .reduce_unneeded import (reduce_curves, reduce_controls, simplify_curves, reduce_raingages,
-                              remove_empty_sections, reduce_timeseries, reduce_pattern)
+                              remove_empty_sections, reduce_timeseries, reduce_pattern, reduce_snowpacks,
+                              reduce_hydrographs, reduce_report_objects)
 from .split_inp_file import split_inp_to_files, read_split_inp_file
 from .summarize import print_summary
 from ._helpers import get_used_curves, print_warning

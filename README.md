@@ -7,7 +7,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![docs](https://img.shields.io/static/v1.svg?label=&message=documentation&color=blue&logo=readthedocs&logoColor=white)](https://markuspichler.gitlab.io/swmm_api)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7054804.svg)](https://doi.org/10.5281/zenodo.7054804)
-[![Gitter](https://badges.gitter.im/MarkusPic/swmm-api.svg)](https://gitter.im/MarkusPic/swmm-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Latest Release](https://gitlab.com/markuspichler/swmm_api/-/badges/release.svg)](https://gitlab.com/markuspichler/swmm_api/-/releases)
 
 [![PyPI - Downloads](https://img.shields.io/pypi/dd/swmm-api)](https://pypi.python.org/pypi/swmm-api)

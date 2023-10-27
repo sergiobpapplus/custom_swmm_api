@@ -348,7 +348,7 @@ class InpSection(InpSectionABC):
         Args:
             obj (BaseSectionObject): new object
         """
-        self[obj.get(self._identifier)] = obj
+        self[obj.section_key] = obj
 
     def add_inp_lines(self, multi_line_args):
         """
@@ -613,7 +613,7 @@ def split_line_with_quotes(line):
 
 
 def free_attributes(key):
-    # TODO maybe laster?!
+    # TODO maybe later?!
     return key  # .lower()  # .replace('_', '') -> .casefold() betten than fold
 
 
@@ -628,7 +628,7 @@ class BaseSectionObject(ABC):
     _identifier = ''
     """str: attribute of an object which will be used as identifiers"""
     _table_inp_export = True
-    """bool: if an section is writeable as table. Default ist True"""
+    """bool: if a section is writeable as table. Default ist True"""
     _section_class = InpSection
     """class: section class to identify functionality"""
     _section_label = ''
@@ -737,6 +737,10 @@ class BaseSectionObject(ABC):
     # def id(self):
     #     return id(self)
 
+    @property
+    def section_key(self):  # get key of object for section
+        return self.get(self._identifier)
+
     def _to_debug_string(self):
         """for debugging purposes
 
@@ -750,7 +754,7 @@ class BaseSectionObject(ABC):
 
     @property
     def _short_debug_string(self):
-        return f'{self.__class__.__name__}({self[self._identifier]})'
+        return f'{self.__class__.__name__}({self.section_key})'
 
     def to_inp_line(self):
         """

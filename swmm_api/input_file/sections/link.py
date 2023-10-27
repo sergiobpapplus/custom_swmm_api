@@ -249,7 +249,8 @@ class Outlet(_Link):
 
     @property
     def curve_name(self):
-        return self.curve_description is isinstance(self.curve_description, str)
+        if isinstance(self.curve_description, str):
+            return self.curve_description
 
     def _functional_init(self, coefficient, exponent, has_flap_gate=False):
         """

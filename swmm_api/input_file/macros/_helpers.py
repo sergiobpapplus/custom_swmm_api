@@ -1,6 +1,7 @@
 import warnings
 
-from ..section_labels import STORAGE, OUTFALLS, OUTLETS, PUMPS, XSECTIONS
+from ..section_labels import STORAGE, OUTFALLS, OUTLETS, PUMPS, XSECTIONS, POLLUTANTS
+from ..sections import Inflow
 
 
 class SwmmApiInputMacrosWarning(UserWarning): ...
@@ -25,6 +26,22 @@ def get_used_curves(inp):
                         continue
                     used_curves.add(inp[section][name].curve_name)
     return used_curves
+
+
+def get_constituents(inp):
+    """
+    Get constituents (FLOW + Pollutens) from inp-data.
+
+    Args:
+        inp (swmm_api.SwmmInput):
+
+    Returns:
+        list: list of constituents (FLOW + Pollutens)
+    """
+    constituents = [Inflow.TYPES.FLOW]
+    if POLLUTANTS in inp:
+        constituents += list(inp.POLLUTANTS)
+    return constituents
 
 
 def print_warning(message):

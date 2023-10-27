@@ -205,7 +205,7 @@ class InpMacros(SwmmInput):
     def add_links_to_report(self, new_links):
         self.add_obj_to_report('LINKS', new_links)
 
-    # def add_timeseries_file(self, fn):  # TODO
+    # def add_timeseries_file(self, fn):
     #     if 'Files' not in self[sec.TIMESERIES]:
     #         self[sec.TIMESERIES]['Files'] = DataFrame(columns=['Type', 'Fname'])
     #
