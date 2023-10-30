@@ -768,6 +768,7 @@ class Control(BaseSectionObject):
     _section_label = CONTROLS
 
     class OBJECTS:
+        GAGE = 'GAGE'  # new in 5.2
         NODE = 'NODE'
         LINK = 'LINK'
         CONDUIT = 'CONDUIT'
@@ -792,6 +793,8 @@ class Control(BaseSectionObject):
         MONTH = 'MONTH'
         DAY = 'DAY'
         CLOCKTIME = 'CLOCKTIME'
+        INTENSITY = 'INTENSITY'  # new in 5.2
+        n_HR_DEPTH = 'n-HR_DEPTH'  # new in 5.2
 
     class LOGIC:
         RULE = 'RULE'  # only to declare the first line of a rule
