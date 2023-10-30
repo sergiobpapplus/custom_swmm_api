@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.30 (2023-10-30)
+
+### Fix
+
+* Added macros function remove_obj_from_control and rename_obj_in_control_section and implemented them in delete_node/_links and rename_node/_links ([`11fd554`](https://gitlab.com/markuspichler/swmm_api/-/commit/11fd55443a7603fa41157d00d80eadd2b06e15e9))
+* Added new types and attributes in Control.OBJECTS and Control.ATTRIBUTES (new in SWMM 5.2) ([`0834774`](https://gitlab.com/markuspichler/swmm_api/-/commit/08347744c7dded37509caca95892e420b63cdb8c))
+* Fixed error in reduce_controls macro function ([`d86cd12`](https://gitlab.com/markuspichler/swmm_api/-/commit/d86cd12b845e74685b090972636d19851f030e35))
+
 ## v0.4.29 (2023-10-27)
 
 ### Fix
