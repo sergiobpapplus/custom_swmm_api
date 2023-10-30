@@ -94,26 +94,30 @@ def reduce_controls(inp):
             continue
 
         def _delete_action(_label, _action):
-            if _action in inp.CONTROLS[label].actions_if:
-                inp.CONTROLS[label].actions_if.remove(i)
-            if _action in inp.CONTROLS[label].actions_else:
-                inp.CONTROLS[label].actions_else.remove(i)
+            if _action in inp.CONTROLS[_label].actions_if:
+                i = control.actions_if.index(_action)
+                inp.CONTROLS[_label].actions_if.remove(i)
+            if _action in inp.CONTROLS[_label].actions_else:
+                i = control.actions_else.index(_action)
+                inp.CONTROLS[_label].actions_else.remove(i)
 
         # if unavailable object in action: remove only this action
         for action in list(control.actions_if) + list(control.actions_else):  # type: Control._Action
-            i = control.actions.index(action)
-            if action.kind + 'S' in inp:
+            section_label = action.kind.upper() + 'S'
+            if section_label in inp:
                 # CONDUIT PUMP ORIFICE WEIR OUTLET
-                if action.label not in inp[action.kind + 'S']:
+                if action.label not in inp[section_label]:
                     # delete only this action
                     _delete_action(label, action)
-            elif action.kind + 'S' in SECTION_TYPES and action.kind + 'S' not in inp:
-                inp.CONTROLS[label].actions.pop(i)
-            elif action.kind == Control.OBJECTS.NODE:
+            elif section_label in SECTION_TYPES and section_label not in inp:
+                # if section not in inp-file -> not objects in model -> delete action
+                _delete_action(label, action)
+
+            elif action.kind == Control.OBJECTS.NODE:  # not possible?!
                 if action.label not in nodes:
                     # delete only this action
                     _delete_action(label, action)
-            elif action.kind == Control.OBJECTS.LINK:
+            elif action.kind == Control.OBJECTS.LINK:  # not possible?!
                 if action.label not in links:
                     # delete only this action
                     _delete_action(label, action)
