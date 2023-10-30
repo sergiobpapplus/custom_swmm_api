@@ -14,7 +14,7 @@ from ..section_labels import *
 from ..section_lists import NODE_SECTIONS, LINK_SECTIONS, SUBCATCHMENT_SECTIONS, POLLUTANT_SECTIONS, NODE_SECTIONS_ADD, \
     LINK_SECTIONS_ADD
 from ..sections import Tag, DryWeatherFlow, Junction, Coordinate, Conduit, Loss, Vertices, EvaporationSection, Inflow, \
-    ReportSection, GroundwaterFlow, Groundwater, LIDUsage, InletUsage
+    ReportSection, GroundwaterFlow, Groundwater, LIDUsage, InletUsage, Control
 from ..sections._identifiers import IDENTIFIERS
 
 
@@ -37,7 +37,7 @@ def delete_node(inp, node_label, graph=None, alt_node=None):
 
     remove_obj_from_reporting(inp, kind=ReportSection.KEYS.NODES, label=node_label)
     remove_obj_tag(inp, kind=Tag.TYPES.Node, label=node_label)
-    remove_obj_from_control(inp)
+    remove_obj_from_control(inp, kind=Control.OBJECTS.NODE, label=node_label)
 
     connected_subcatchments = []
 
@@ -243,7 +243,7 @@ def delete_link(inp: SwmmInput, link: str):
 
     remove_obj_from_reporting(inp, kind=ReportSection.KEYS.LINKS, label=link)
     remove_obj_tag(inp, kind=Tag.TYPES.Link, label=link)
-    remove_obj_from_control(inp)
+    remove_obj_from_control(inp, kind=Control.OBJECTS.LINK, label=link)
 
     # ---
     if CONDUITS in inp and link in inp.CONDUITS and INLET_USAGE in inp:
@@ -259,7 +259,7 @@ def delete_subcatchment(inp: SwmmInput, subcatchment: str):
 
     remove_obj_from_reporting(inp, ReportSection.KEYS.SUBCATCHMENTS, label=subcatchment)
     remove_obj_tag(inp, kind=Tag.TYPES.Subcatch, label=subcatchment)
-    remove_obj_from_control(inp)
+    # remove_obj_from_control(inp)  # not implemented in SWMM
 
     # ---
     if GWF in inp:
@@ -572,7 +572,7 @@ def rename_node(inp: SwmmInput, old_label: str, new_label: str, g=None):
 
     rename_obj_in_tags(inp, Tag.TYPES.Node, old_label, new_label)
     rename_obj_in_reporting_section(inp, ReportSection.KEYS.NODES, old_label, new_label)
-    rename_obj_in_control_section(inp)
+    rename_obj_in_control_section(inp, Control.OBJECTS.NODE, old_label, new_label)
 
     # ---
     # subcatchment outlets
@@ -647,7 +647,7 @@ def rename_link(inp: SwmmInput, old_label: str, new_label: str):
 
     rename_obj_in_tags(inp, Tag.TYPES.Link, old_label, new_label)
     rename_obj_in_reporting_section(inp, ReportSection.KEYS.LINKS, old_label, new_label)
-    rename_obj_in_control_section(inp)
+    rename_obj_in_control_section(inp, Control.OBJECTS.LINK, old_label, new_label)
 
     if CONDUITS in inp and old_label in inp.CONDUITS and INLET_USAGE in inp:
         for inlet_usage in list(inp.INLET_USAGE.values()):  # or using filter section. my guess is that very few groundwater objects are being defined.
@@ -668,7 +668,7 @@ def rename_subcatchment(inp: SwmmInput, old_label: str, new_label: str):
 
     rename_obj_in_tags(inp, Tag.TYPES.Subcatch, old_label, new_label)
     rename_obj_in_reporting_section(inp, ReportSection.KEYS.SUBCATCHMENTS, old_label, new_label)
-    rename_obj_in_control_section(inp)
+    # rename_obj_in_control_section(inp)  # not implemented in SWMM
 
     # ---
     if GWF in inp:
@@ -787,6 +787,9 @@ def delete_pollutant(inp, label):
     Args:
         inp (SwmmInput):
         label (str):
+
+    .. Important::
+        works inplace
     """
     if POLLUTANTS in inp:
         del inp.POLLUTANTS[label]
@@ -842,6 +845,9 @@ def remove_obj_from_reporting(inp, kind, label):
         inp (swmm_api.SwmmInput): input-data.
         kind (str): one of (`SUBCATCHMENTS`, `NODES`, `LINKS`). You can use the :attr:`ReportSection.KEYS` attribute.
         label (str): label of the object, which shouldn't be reported in the output-file.
+
+    .. Important::
+        works inplace
     """
     if (REPORT in inp) and (kind in inp.REPORT):
         if (isinstance(inp.REPORT[kind], (list, tuple, set))
@@ -859,6 +865,9 @@ def rename_obj_in_reporting_section(inp, kind, old_label, new_label):
         kind (str): one of (`SUBCATCHMENTS`, `NODES`, `LINKS`). You can use the :attr:`ReportSection.KEYS` attribute.
         old_label (str): old label of the object, which tag should be renamed.
         new_label (str): new label of the object, which tag should be renamed.
+
+    .. Important::
+        works inplace
     """
     if (REPORT in inp) and (kind in inp.REPORT):
         if (isinstance(inp.REPORT[kind], (list, tuple, set))
@@ -876,6 +885,9 @@ def remove_obj_tag(inp, kind, label):
         inp (swmm_api.SwmmInput): input-data.
         kind (str): one of (`Subcatch`, `Node`, `Link`). You can use the :attr:`Tag.TYPES` attribute.
         label (str): label of the object, which tag should be removed.
+
+    .. Important::
+        works inplace
     """
     if (TAGS in inp) and ((kind, label) in inp.TAGS):
         del inp[TAGS][(kind, label)]
@@ -890,15 +902,103 @@ def rename_obj_in_tags(inp, kind, old_label, new_label):
         kind (str): one of (`Subcatch`, `Node`, `Link`). You can use the :attr:`Tag.TYPES` attribute.
         old_label (str): old label of the object, which tag should be renamed.
         new_label (str): new label of the object, which tag should be renamed.
+
+    .. Important::
+        works inplace
     """
     if (TAGS in inp) and ((kind, old_label) in inp.TAGS):
         inp[TAGS][(kind, new_label)] = inp[TAGS].pop((kind, old_label))
         inp.TAGS[(kind, new_label)].name = new_label
 
 
-def remove_obj_from_control(inp):
-    warnings.warn('remove_obj_from_control not implemented.')  # TODO
+def remove_obj_from_control(inp, kind: str, label: str):
+    """
+    Remove object from CONTROLS section.
+
+    Args:
+        inp (swmm_api.SwmmInput): input-data.
+        kind (str): one of (`NODE`, `LINK`). You can use the :attr:`swmm_api.input_file.sections.Control.OBJECTS` attribute.
+        label (str): label of the object, which will be removed from the model.
+
+    .. Important::
+        works inplace
+    """
+    if CONTROLS not in inp:
+        return
+
+    possible_kinds = {kind}
+    if kind == Control.OBJECTS.LINK:
+        possible_kinds = {Control.OBJECTS.LINK,
+                          Control.OBJECTS.CONDUIT,
+                          Control.OBJECTS.ORIFICE,
+                          Control.OBJECTS.OUTLET,
+                          Control.OBJECTS.WEIR,
+                          Control.OBJECTS.PUMP}
+
+    for label_control in list(inp.CONTROLS.keys()):
+        control = inp.CONTROLS[label_control]
+        # ---
+        # if object in condition: remove whole rule
+        for condition in control.conditions:  # type: Control._Condition
+            if (condition.kind in possible_kinds) and (condition.label == label):
+                del inp.CONTROLS[label_control]
+                continue
+
+        # ---
+        if label_control not in inp.CONTROLS:
+            continue
+
+        # ---
+        # if object in action: remove only this action
+        if kind == Control.OBJECTS.LINK:  # action only for links
+            for action in list(control.actions_if):  # type: Control._Action
+                if action.label == label:
+                    i = control.actions_if.index(action)
+                    inp.CONTROLS[label_control].actions_if.remove(i)
+
+            for action in list(control.actions_else):  # type: Control._Action
+                if action.label == label:
+                    i = control.actions_else.index(action)
+                    inp.CONTROLS[label_control].actions_else.remove(i)
+
+            # if no actions left
+            if not control.actions_if:
+                del inp.CONTROLS[label_control]
 
 
-def rename_obj_in_control_section(inp):
-    warnings.warn('rename_obj_in_control_section not implemented.')  # TODO
+def rename_obj_in_control_section(inp, kind, old_label: str, new_label: str):
+    """
+    Rename a object in the CONTROLS section.
+
+    Args:
+        inp (swmm_api.SwmmInput): input data.
+        kind (str): one of (`LINK`, `NODE`). You can use the :attr:`swmm_api.input_file.sections.Control.OBJECTS` attribute.
+        old_label (str): old label of the object, which tag should be renamed.
+        new_label (str): new label of the object, which tag should be renamed.
+
+    .. Important::
+        works inplace
+    """
+    if CONTROLS not in inp:
+        return
+
+    possible_kinds = {kind}
+    if kind == Control.OBJECTS.LINK:
+        possible_kinds = {Control.OBJECTS.LINK,
+                          Control.OBJECTS.CONDUIT,
+                          Control.OBJECTS.ORIFICE,
+                          Control.OBJECTS.OUTLET,
+                          Control.OBJECTS.WEIR,
+                          Control.OBJECTS.PUMP}
+
+    for control in inp.CONTROLS.values():
+        # ---
+        for condition in control.conditions:  # type: Control._Condition
+            if (condition.kind in possible_kinds) and (condition.label == old_label):
+                condition.label = new_label
+
+        # ---
+        if kind == Control.OBJECTS.LINK:  # action only for links
+            for action in list(control.actions_if) + list(control.actions_else):  # type: Control._Action
+                if action.label == old_label:
+                    action.label = new_label
