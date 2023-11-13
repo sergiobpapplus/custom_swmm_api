@@ -291,7 +291,7 @@ class PatternRegression:
     #         for k, (m, i) in enumerate(zip(params_i[MUL].sort_index().round(3).values,
     #                                        params_i['conf_int_MUL'].sort_index().round(3).values)):
     #             error_boxes.append(Rectangle((k - 0.5, m - i), 1, i * 2))
-    #             # ax.plot([k, k], [m - i, m + i], color='k', lw=0.5)
+    #             # ax.plot([k, k], [m - i, m + i], color='black', lw=0.5)
     #         from matplotlib.collections import PatchCollection
     #         pc = PatchCollection(error_boxes, facecolor=PATTERN_COLORS[pattern.cycle], alpha=0.2)
     # 
