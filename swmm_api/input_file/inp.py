@@ -865,7 +865,7 @@ class SwmmInput(CustomDict):
         TIMESERIES section
 
         Returns:
-            Mapping[str, Timeseries] | InpSection: Timeseries section
+            Mapping[str, Timeseries | TimeseriesData | TimeseriesFile] | InpSection: Timeseries section
         """
         if TIMESERIES in self:
             return self[TIMESERIES]
