@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.31 (2023-11-17)
+
+### Fix
+
+* Error in new reduce_controls() function ([`d1ffa98`](https://gitlab.com/markuspichler/swmm_api/-/commit/d1ffa9803413036594b6349806f21b8a58a3473e))
+
 ## v0.4.30 (2023-10-30)
 
 ### Fix
