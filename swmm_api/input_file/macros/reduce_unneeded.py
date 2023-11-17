@@ -95,11 +95,13 @@ def reduce_controls(inp):
 
         def _delete_action(_label, _action):
             if _action in inp.CONTROLS[_label].actions_if:
-                i = control.actions_if.index(_action)
-                inp.CONTROLS[_label].actions_if.remove(i)
+                # i = control.actions_if.index(_action)
+                # inp.CONTROLS[_label].actions_if.remove(i)
+                inp.CONTROLS[_label].actions_if.remove(_action)
             if _action in inp.CONTROLS[_label].actions_else:
-                i = control.actions_else.index(_action)
-                inp.CONTROLS[_label].actions_else.remove(i)
+                # i = control.actions_else.index(_action)
+                # inp.CONTROLS[_label].actions_else.remove(i)
+                inp.CONTROLS[_label].actions_else.remove(_action)
 
         # if unavailable object in action: remove only this action
         for action in list(control.actions_if) + list(control.actions_else):  # type: Control._Action
