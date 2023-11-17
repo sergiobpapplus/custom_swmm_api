@@ -911,12 +911,20 @@ def dataframe_to_inp_string(df, index=True):
     if not index:
         c.columns = [COMMENT_STR + c.columns[0]] + list(c.columns)[1:]
 
-    return c.applymap(type2str).to_string(sparsify=False,
-                                          line_width=999999,
-                                          max_rows=999999,
-                                          max_cols=999999,
-                                          max_colwidth=999999,
-                                          index=index)
+    if pd.__version__.startswith('2.1.'):
+        return c.map(type2str).to_string(sparsify=False,
+                                         line_width=999999,
+                                         max_rows=999999,
+                                         max_cols=999999,
+                                         max_colwidth=999999,
+                                         index=index)
+    else:
+        return c.applymap(type2str).to_string(sparsify=False,
+                                              line_width=999999,
+                                              max_rows=999999,
+                                              max_cols=999999,
+                                              max_colwidth=999999,
+                                              index=index)
 
 
 ########################################################################################################################
