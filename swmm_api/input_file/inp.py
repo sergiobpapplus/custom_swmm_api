@@ -733,7 +733,7 @@ class SwmmInput(CustomDict):
         INFILTRATION section
 
         Returns:
-            Mapping[str, Infiltration] | InpSection: Infiltration section
+            Mapping[str, (Infiltration | InfiltrationGreenAmpt | InfiltrationHorton | InfiltrationCurveNumber)] | InpSection: Infiltration section
         """
         if INFILTRATION in self:
             return self[INFILTRATION]

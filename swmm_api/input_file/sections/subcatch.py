@@ -293,10 +293,16 @@ class InfiltrationGreenAmpt(Infiltration):
         
         Args:
             subcatchment (str): Subcatchment name.
-            suction_head (float): Soil suction head (inches or mm).
+            suction_head (float): Soil suction head (inches or mm). Average value of soil capillary suction along the wetting front (inches or mm).
             hydraulic_conductivity (float): Soil saturated hydraulic conductivity (in/hr or mm/hr).
             moisture_deficit_init (float): Soil initial moisture deficit (porosity minus moisture content) (fraction).
             kind (str, Optional): Method to use -> ``GREEN_AMPT`` or ``MODIFIED_GREEN_AMPT`` (new in 5.1.015).
+
+        Initial Deficit:
+            Fraction of soil volume that is initially dry (i.e., difference between soil porosity and initial moisture content).
+            For a completely drained soil, it is the difference between the soil's porosity and its field capacity.
+            Typical values for all of these parameters can be found in the Soil Characteristics Table in Section
+            A.2.
         """
         Infiltration.__init__(self, subcatchment)
         self.suction_head = float(suction_head)
