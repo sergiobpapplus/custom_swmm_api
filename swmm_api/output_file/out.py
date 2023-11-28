@@ -57,7 +57,7 @@ class SwmmOutput(SwmmOutExtract):
         variables (dict[str, list]): variables per object-type inclusive the pollutants.
         fp (file-like): Stream of the open file.
     """
-    filename: str = ...
+    filename: Path = ...
 
     def __init__(self, filename, skip_init=False, encoding=''):
         """
@@ -325,7 +325,7 @@ class SwmmOutput(SwmmOutExtract):
 
         Read parquet files with :func:`swmm_api.output_file.parquet.read` to get the original column-name-structure.
         """
-        parquet.write(self.to_frame(), self.filename.replace('.out', '.parquet'))
+        parquet.write(self.to_frame(), self.filename.with_suffix('.parquet'))
 
     def to_parquet_chunks(self, fn, rows_at_a_time=1000, show_progress=True, kind=None, label=None, variable=None):
         import pyarrow as pa
@@ -336,7 +336,7 @@ class SwmmOutput(SwmmOutExtract):
 
         parq_writer = None
         columns = self._filter_part_columns(kind, label, variable)
-        use_columns = ['datetime'] + ['/'.join(c) for c in  columns]
+        use_columns = ['datetime'] + ['/'.join(c) for c in columns]
 
         # ---
         if show_progress:
