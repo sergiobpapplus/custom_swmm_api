@@ -1,3 +1,5 @@
+import os.path
+
 from tqdm.auto import tqdm
 
 from .collection import nodes_dict, links_dict
@@ -6,6 +8,16 @@ from ..inp import SwmmInput
 from ..section_labels import TITLE
 from .._type_converter import is_equal
 from ..helpers import BaseSectionObject, _sort_by
+
+
+def reverse_dict(original_dict):
+    new_dict = {}
+    for key, value in original_dict.items():
+        if value not in new_dict:
+            new_dict[value] = [key]
+        else:
+            new_dict[value].append(key)
+    return new_dict
 
 
 class CompareSections:
@@ -36,7 +48,7 @@ class CompareSections:
                         self.dict_not_equal[key] = f'{section_1[key]} != {section_2[key]}'
                     else:
                         diff = []
-                        if type(section_1[key]) != type(section_2[key]):
+                        if type(section_1[key]) is not type(section_2[key]):
                             diff.append(f'{type(section_1[key]).__name__} != {type(section_2[key]).__name__}')
                         else:
                             for param in section_1[key].to_dict_():
@@ -65,16 +77,24 @@ class CompareSections:
         """
         s_warnings = ''
         if self.dict_not_equal:
-            s_warnings += (f'not equal ({len(self.dict_not_equal)}): \n    '
-                           + '\n    '.join([f'{k}: {v}' for k, v in self.dict_not_equal.items()]) + '\n')
+            unique_changes = set(self.dict_not_equal.values())
+            s_warnings += f'not equal ({len(self.dict_not_equal)}): \n    '
+
+            if len(unique_changes) < len(self.dict_not_equal)*0.5:
+                dict_not_equal_r = reverse_dict(self.dict_not_equal)
+                s_warnings += '\n    '.join([f'{k}: (n={len(v)}){v}' for k, v in dict_not_equal_r.items()]) + '\n'
+            else:
+                s_warnings += '\n    '.join([f'{k}: {v}' for k, v in self.dict_not_equal.items()]) + '\n'
 
         if self.set_labels_not_in_1:
             s_warnings += (f'not in inp1 ({len(self.set_labels_not_in_1)}): '
                            + ' | '.join(map(str, sorted(self.set_labels_not_in_1))) + '\n')
+            # TODO common pattern
 
         if self.set_labels_not_in_2:
             s_warnings += (f'not in inp2 ({len(self.set_labels_not_in_2)}): '
                            + ' | '.join(map(str, sorted(self.set_labels_not_in_2))) + '\n')
+            # TODO common pattern
 
         return (s_warnings or 'good!\n') + f'{len(self.set_labels_equal)}/{self.len_full} objects are equal\n'
 
@@ -136,10 +156,11 @@ def compare_inp_files(fn1, fn2, precision=2, skip_section=None, sep='\n' + '#' *
     Returns:
         str: differences of the files
     """
-    s = (f'Comparing \n'
-         f'   "{fn1}" (=inp1)\n'
+    parent = os.path.commonpath([str(fn1), str(fn2)])
+    s = (f'Comparing ({parent})\n'
+         f'   "{fn1.replace(parent, "")}" (=inp1)\n'
          f'   to\n'
-         f'   "{fn2}" (=inp2)\n'
+         f'   "{fn2.replace(parent, "")}" (=inp2)\n'
          f'Ignoring Sections: {skip_section}\n')
     inp1 = SwmmInput.read_file(fn1)
     inp2 = SwmmInput.read_file(fn2)
@@ -162,7 +183,8 @@ def compare_inp_objects(inp1, inp2, precision=2, skip_section=None, sep='\n' + '
         progress = tqdm(progress, desc='compare_inp_objects')
 
     for section in progress:
-        if show_progressbar: progress.set_postfix_str(section)
+        if show_progressbar:
+            progress.set_postfix_str(section)
         if skip_section is not None and section in skip_section:
             continue
         if section in [TITLE]:
