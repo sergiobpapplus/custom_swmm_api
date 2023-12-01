@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.33 (2023-12-01)
+
+### Fix
+
+* Copy None values fixed ([`3aedafe`](https://gitlab.com/markuspichler/swmm_api/-/commit/3aedafe2f8561196e93a68bc7007b8476655bdcf))
+
 ## v0.4.32 (2023-11-28)
 
 ### Fix
