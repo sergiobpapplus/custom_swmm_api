@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.32 (2023-11-28)
+
+### Fix
+
+* Error with SwmmOutput.to_parquet() ([`213cd52`](https://gitlab.com/markuspichler/swmm_api/-/commit/213cd52fdadf1be489eb31cd56cfde4e16eab93a))
+
+### Documentation
+
+* Additional info in docstrings ([`93ad3aa`](https://gitlab.com/markuspichler/swmm_api/-/commit/93ad3aaaba27692d47bd3205e14a019ef5fed02f))
+
 ## v0.4.31 (2023-11-17)
 
 ### Fix
