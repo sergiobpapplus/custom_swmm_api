@@ -21,7 +21,7 @@ COMMENT_STR = ';;'
 SEP_INP = COMMENT_STR + "_" * 100
 COMMENT_EMPTY_SECTION = COMMENT_STR + ' No Data'
 
-_TYPES_NO_COPY = (int, float, str, datetime.date, datetime.time)
+_TYPES_NO_COPY = (type(None), int, float, str, datetime.date, datetime.time)
 
 
 class SwmmInputWarning(UserWarning): ...
