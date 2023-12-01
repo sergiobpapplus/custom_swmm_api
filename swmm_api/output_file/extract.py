@@ -37,9 +37,12 @@ _NODES_TYPES = ['JUNCTION', 'OUTFALL', 'STORAGE', 'DIVIDER']
 _LINK_TYPES = ['CONDUIT', 'PUMP', 'ORIFICE', 'WEIR', 'OUTLET']
 
 
+_ERROR_MESSAGE_PREFIX = '*   '
+
+
 class SwmmExtractValueError(Exception):
     def __init__(self, message):
-        super().__init__(f'\n*\n*   {message}\n*\n')
+        super().__init__(f'\n*\n{_ERROR_MESSAGE_PREFIX}{message}\n*\n')
 
 
 class SwmmOutExtractWarning(UserWarning):
@@ -109,7 +112,9 @@ class SwmmOutExtract(BinaryReader):
         # ____
         # check errors
         if magic_num_start != _MAGIC_NUMBER:
-            raise SwmmExtractValueError('Beginning magic number incorrect.')
+            raise SwmmExtractValueError(f'Beginning magic number incorrect.\n'
+                                        f'{_ERROR_MESSAGE_PREFIX}Potential causes for this issue include either the file ({self.filename}) not being a binary SWMM output file\n'
+                                        f'{_ERROR_MESSAGE_PREFIX}or the output file being corrupted.')
 
         if magic_num_end != _MAGIC_NUMBER:
             warn('Ending magic number incorrect.', SwmmOutExtractWarning)
