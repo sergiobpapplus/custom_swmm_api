@@ -325,7 +325,15 @@ class SwmmOutput(SwmmOutExtract):
 
         Read parquet files with :func:`swmm_api.output_file.parquet.read` to get the original column-name-structure.
         """
-        parquet.write(self.to_frame(), self.filename.with_suffix('.parquet'))
+        # flow_unit, model_properties, run_failed, swmm_version as .attr
+        frame = self.to_frame()
+        frame.attrs = {
+            'flow_unit': self.flow_unit,
+            'model_properties': self.model_properties,
+            'run_failed': self.run_failed,
+            'swmm_version': self.swmm_version,
+        }
+        parquet.write(frame, self.filename.with_suffix('.parquet'))
 
     def to_parquet_chunks(self, fn, rows_at_a_time=1000, show_progress=True, kind=None, label=None, variable=None):
         import pyarrow as pa
