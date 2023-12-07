@@ -259,7 +259,7 @@ class RainfallDependentInfiltrationInflow(BaseSectionObject):
 
 
 class Treatment(BaseSectionObject):
-    """
+    r"""
     Pollutant removal functions at conveyance system nodes.
 
     Section:

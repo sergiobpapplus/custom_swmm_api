@@ -410,7 +410,7 @@ class Storage(_Node):
 
 
 class Divider(_Node):
-    """
+    r"""
     Flow divider node information.
 
     Section:

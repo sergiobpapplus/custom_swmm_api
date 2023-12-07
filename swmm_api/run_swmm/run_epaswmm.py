@@ -150,7 +150,7 @@ def run_swmm_custom(command_line, working_dir=None):
 
 
 def swmm5_run_epa(inp, rpt_dir=None, out_dir=None, init_print=False, create_out=True, swmm_path=None, working_dir=None):
-    """
+    r"""
     Run a simulation with EPA-SWMM.
 
     EPA-SWMM must be installed in the default folder.
