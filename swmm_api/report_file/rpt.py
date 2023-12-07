@@ -7,13 +7,14 @@ __license__ = "MIT"
 
 import datetime
 import os.path
+import warnings
 
 import pandas as pd
 
 from .helpers import (_get_title_of_part, _remove_lines, _part_to_frame,
                       _continuity_part_to_dict, ReportUnitConversion,
                       _routing_part_to_dict, _quality_continuity_part_to_dict,
-                      _transect_street_shape_converter, )
+                      _transect_street_shape_converter, _options_part_to_dict, )
 from .._io_helpers._encoding import get_default_encoding
 from .._io_helpers._read_txt import read_txt_file
 from ..input_file.helpers import natural_keys
@@ -143,7 +144,8 @@ class SwmmReport:
         txt = read_txt_file(self._filename, encoding=self._encoding)
         lines = txt.split('\n')
 
-        if not lines:
+        if not txt:
+            warnings.warn(f'SWMM-report-file ({self._filename}) is empty.')
             return
 
         self._raw_parts['Simulation Infos'] = '\n'.join(lines[-3:])
@@ -197,33 +199,7 @@ class SwmmReport:
         """
         if self._analysis_options is None:
             p = self._get_converted_part('Analysis Options')
-
-            res = {}
-            last_key = None
-            last_initial_spaces = 0
-
-            for line in p.split('\n'):
-                initial_spaces = len(line) - len(line.lstrip())
-
-                if '..' in line:
-                    key = line[:line.find('..')].strip()
-                    value = line[line.rfind('..') + 2:].strip()
-
-                    if last_initial_spaces > initial_spaces:
-                        last_key = None
-
-                    if last_key:
-                        res[last_key].update({key: value})
-                    else:
-                        res[key] = value
-
-                    last_initial_spaces = initial_spaces
-
-                elif line.strip():
-                    last_key = line.replace(':', '').strip()
-                    res[last_key] = {}
-
-            self._analysis_options = res
+            self._analysis_options = _options_part_to_dict(p)
         return self._analysis_options
 
     @property
@@ -234,6 +210,8 @@ class SwmmReport:
         Returns:
             str: flow unit
         """
+        if self.analysis_options is None:
+            return
         if 'Flow Units' in self.analysis_options:
             return self.analysis_options['Flow Units']
 
@@ -260,36 +238,7 @@ class SwmmReport:
         """
         if self._element_count is None:
             p = self._get_converted_part('Element Count')
-
-            if p is None:
-                return
-
-            res = {}
-            last_key = None
-            last_initial_spaces = 0
-
-            for line in p.split('\n'):
-                initial_spaces = len(line) - len(line.lstrip())
-
-                if '..' in line:
-                    key = line[:line.find('..')].strip()
-                    value = line[line.rfind('..') + 2:].strip()
-
-                    if last_initial_spaces > initial_spaces:
-                        last_key = None
-
-                    if last_key:
-                        res[last_key].update({key: value})
-                    else:
-                        res[key] = value
-
-                    last_initial_spaces = initial_spaces
-
-                elif line.strip():
-                    last_key = line.replace(':', '').strip()
-                    res[last_key] = {}
-
-            self._element_count = res
+            self._element_count = _options_part_to_dict(p)
         return self._element_count
 
     @property
@@ -872,9 +821,9 @@ class SwmmReport:
         Returns:
             pd.Timestamp: Timestamp of the start of the simulation
         """
-        v = self.get_simulation_info()['Analysis begun on']
-        if v:
-            return self._convert_str_time(v)
+        info = self.get_simulation_info()
+        if info:
+            return self._convert_str_time(info['Analysis begun on'])
 
     @property
     def analyse_end(self):
@@ -884,9 +833,9 @@ class SwmmReport:
         Returns:
             pd.Timestamp: Timestamp of the end of the simulation
         """
-        v = self.get_simulation_info()['Analysis ended on']
-        if v:
-            return self._convert_str_time(v)
+        info = self.get_simulation_info()
+        if info:
+            return self._convert_str_time(info['Analysis ended on'])
 
     @property
     def analyse_duration(self):
@@ -896,16 +845,20 @@ class SwmmReport:
         Returns:
             pandas.Timedelta: simulation duration
         """
-        v = self.get_simulation_info()['Total elapsed time']
-        if v:
+        info = self.get_simulation_info()
+        if info:
+            v = info['Total elapsed time']
             if '< 1 sec' in v:
                 return datetime.timedelta(seconds=1)
+            di_td = {}
             if '.' in v:
-                return datetime.timedelta(days=v.split('.')[0]) + datetime.timedelta(*v.split('.')[1].split(':'))
-            if v.count(':') == 2:
-                return datetime.timedelta(**dict(zip(('hours', 'minutes', 'seconds'), (int(i) for i in v.strip().split(':')))))
+                days, v = v.split('.')
+                di_td['days'] = int(days)
 
-            return datetime.timedelta(*(int(i) for i in v.strip().split(':')))
+            if v.count(':') == 2:
+                di_td.update(dict(zip(('hours', 'minutes', 'seconds'), (int(i) for i in v.strip().split(':')))))
+
+            return datetime.timedelta(**di_td)
 
     @staticmethod
     def _pretty_dict(di, chunk_size=20):

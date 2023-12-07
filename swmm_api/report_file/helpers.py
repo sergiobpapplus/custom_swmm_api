@@ -80,6 +80,38 @@ def _remove_lines(part, title=True, empty=False, sep=False):
     return '\n'.join(new_lines)
 
 
+def _options_part_to_dict(raw):
+    if raw is None:
+        return
+
+    res = {}
+    last_key = None
+    last_initial_spaces = 0
+
+    for line in raw.split('\n'):
+        initial_spaces = len(line) - len(line.lstrip())
+
+        if '..' in line:
+            key = line[:line.find('..')].strip()
+            value = line[line.rfind('..') + 2:].strip()
+
+            if last_initial_spaces > initial_spaces:
+                last_key = None
+
+            if last_key:
+                res[last_key].update({key: value})
+            else:
+                res[key] = value
+
+            last_initial_spaces = initial_spaces
+
+        elif line.strip():
+            last_key = line.replace(':', '').strip()
+            res[last_key] = {}
+
+    return res
+
+
 def _part_to_frame(part, replace_parts=None):
     """
     convert the table of a part of the report file to a dataframe
