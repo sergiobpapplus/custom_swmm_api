@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.34 (2023-12-07)
+
+### Fix
+
+* SwmmOutput - save model parameters in parquet file ([`c39e82f`](https://gitlab.com/markuspichler/swmm_api/-/commit/c39e82f8a807600bc8ed4692e42b5e017597522d))
+* Read options section in report-file + warning for empty file ([`64abc8d`](https://gitlab.com/markuspichler/swmm_api/-/commit/64abc8d9266c5892545c5bdbd111a62085d56fd3))
+* Read inp/rpt file from provided io-buffer ([`d8fced0`](https://gitlab.com/markuspichler/swmm_api/-/commit/d8fced0e8d2e44f6dd34927da50cdbeaeb991113))
+
 ## v0.4.33 (2023-12-01)
 
 ### Fix
