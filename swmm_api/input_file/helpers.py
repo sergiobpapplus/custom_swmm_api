@@ -40,6 +40,7 @@ class CustomDict:
 
     Imitates :class:`collections.UserDict` (:term:`dict-like <mapping>`), but operations only effect ``self._data``.
     """
+
     def __init__(self, d=None, **kwargs):
         if d is None:
             self._data = kwargs
@@ -208,6 +209,7 @@ class InpSectionGeneric(InpSectionABC, ABC):
     Attributes:
         _label (str): label of the section
     """
+
     def __init__(self, *args, **kwargs):
         InpSectionABC.__init__(self, *args, **kwargs)
 
@@ -1064,7 +1066,7 @@ def check_order(inp, order_list=None):
     if order_list is None:
         order_list = SECTION_ORDER_DEFAULT
     order = [order_list.index(o) if o in order_list else len(order_list) for o in inp]
-    return all((order[i+1] - order[i]) > 0 for i in range(len(order)-1))
+    return all((order[i + 1] - order[i]) > 0 for i in range(len(order) - 1))
 
 
 def _sort_by(key, sections_order):
@@ -1074,7 +1076,7 @@ def _sort_by(key, sections_order):
         return len(sections_order)
 
 
-re_int = re.compile('(\d+)')
+re_int = re.compile(r'(\d+)')
 
 
 def natural_keys(text):
@@ -1128,7 +1130,7 @@ def section_to_string(section, fast=True, sort_objects_alphabetical=False):
         return ''
 
     else:
-        print(section, '?'*10)
+        print(section, '?' * 10)
 
 
 def iter_section_lines(section, sort_objects_alphabetical=False):
