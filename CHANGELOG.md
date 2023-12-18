@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.35 (2023-12-18)
+
+### Fix
+
+* Add subcatchment_geo_data_frame function to macros ([`8addde1`](https://gitlab.com/markuspichler/swmm_api/-/commit/8addde1e41712184108a68f6ee1023c660fb39fb))
+
 ## v0.4.34 (2023-12-07)
 
 ### Fix
