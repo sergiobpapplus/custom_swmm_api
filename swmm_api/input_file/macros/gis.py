@@ -307,6 +307,13 @@ def nodes_geo_data_frame(inp, label_sep='.'):
     return GeoDataFrame(res)
 
 
+def subcatchment_geo_data_frame(inp: SwmmInput, label_sep='.'):
+    return inp[SUBCATCHMENTS].frame.rename(columns=lambda c: f'{SUBCATCHMENTS}{label_sep}{c}').join(
+               inp[SUBAREAS].frame.rename(columns=lambda c: f'{SUBAREAS}{label_sep}{c}')).join(
+               inp[INFILTRATION].frame.rename(columns=lambda c: f'{INFILTRATION}{label_sep}{c}')).join(
+               inp[POLYGONS].geo_series).join(get_subcatchment_tags(inp))
+
+
 def gpkg_to_swmm(fn, label_sep='.', infiltration_class=None, custom_section_handler=None, simplify=False):
     """
     import inp data from GIS gpkg file created from the swmm_api.input_file.macro_snippets.gis_export.convert_inp_to_geo_package function
