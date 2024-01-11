@@ -96,7 +96,7 @@ def delete_node(inp, node_label, graph=None, alt_node=None):
         for section in (DWF, INFLOWS):
             if section in inp:
                 for constituent in constituents:
-                    if (node_label, constituent) in inp.GWF:
+                    if (node_label, constituent) in inp[section]:
                         del inp[section][(node_label, constituent)]
     # ---
     if GROUNDWATER in inp:
