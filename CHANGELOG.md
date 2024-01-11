@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.36 (2024-01-11)
+
+### Fix
+
+* Fix error in delete_node function ([`9b7c83c`](https://gitlab.com/markuspichler/swmm_api/-/commit/9b7c83c1a7d0bed9fea1487829a6fbbd01aa1aab))
+
 ## v0.4.35 (2023-12-18)
 
 ### Fix
