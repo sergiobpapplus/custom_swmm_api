@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.37 (2024-01-24)
+
+### Fix
+
+* Added ability to read specific time ranges from out file ([`ab2ee9f`](https://gitlab.com/markuspichler/swmm_api/-/commit/ab2ee9fb31e13c65e3501531d7a8d3da16b42d09))
+* Added more info to print_summary(inp) ([`c7d9df7`](https://gitlab.com/markuspichler/swmm_api/-/commit/c7d9df79f80cf692e194877d16eba2f09f9b91a2))
+
+### Documentation
+
+* New citation ([`b80b39d`](https://gitlab.com/markuspichler/swmm_api/-/commit/b80b39df1260b3b7a83abed86d7d7f57bedd26c9))
+
 ## v0.4.36 (2024-01-11)
 
 ### Fix
