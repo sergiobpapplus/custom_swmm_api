@@ -76,10 +76,7 @@ class SwmmOutput(SwmmOutExtract):
             return
 
         # the main datetime index for the results
-        try:
-            self.index = pd.date_range(self.start_date, periods=self.n_periods, freq=self.report_interval)
-        except OutOfBoundsDatetime:
-            self.index = pd.Index([self.start_date + self.report_interval * i for i in range(self.n_periods)])
+        self.index = self._get_index()
 
     def __enter__(self):
         return self
@@ -119,12 +116,30 @@ class SwmmOutput(SwmmOutExtract):
             columns += list(product([kind], self.labels[kind], self.variables[kind]))
         return columns
 
-    def to_numpy(self, ignore_filesize=False):
+    def _get_index(self, start=None, end=None):
+        if start is None:
+            start = self.start_date
+
+        # n_periods = number of time-steps (rows) to read (including start time-step (row))
+        if end is None:
+            n_periods = int(self.n_periods - (start - self.start_date) / self.report_interval)
+        else:
+            n_periods = int((end - start) / self.report_interval) + 1
+
+        try:
+            return pd.date_range(start, periods=n_periods, freq=self.report_interval)
+        except OutOfBoundsDatetime:
+            warnings.warn('Can not create a pandas.DatetimeIndex in given date-range. Default to pandas.Index.')
+            return pd.Index([start + self.report_interval * i for i in range(n_periods)])
+
+    def to_numpy(self, ignore_filesize=False, start=None, end=None):
         """
         Convert all data to a numpy-array.
 
         Args:
             ignore_filesize (bool): hide a warning when reading a huge output-file.
+            start (datetime): start datetime for the period to read.
+            end (datetime): end datetime for the period to read.
 
         Returns:
             numpy.ndarray: all data
@@ -144,15 +159,31 @@ class SwmmOutput(SwmmOutExtract):
                                   f"To disregard and suppress this message, use the ignore_filesize=True parameter.", SwmmOutputWarning)
 
             types = [('datetime', 'f8')] + [('/'.join(i), 'f4') for i in self._columns_raw]
-            self.fp.seek(self._pos_start_output, 0)
+
+            pos_start_output, n_periods = self._get_start_position_and_periods(start, end)
+
+            self.fp.seek(pos_start_output, 0)
 
             if isinstance(self.filename, str) and (self.filename == '<stream>'):
-                self._data = np.frombuffer(self.fp.read1(), dtype=np.dtype(types), count=self.n_periods)
+                array = np.frombuffer(self.fp.read1(), dtype=np.dtype(types), count=n_periods)
             else:
                 try:
-                    self._data = np.fromfile(self.fp, dtype=np.dtype(types))
+                    array = np.fromfile(self.fp, dtype=np.dtype(types), count=n_periods)
                 except:
-                    self._data = np.frombuffer(self.fp.read1(), dtype=np.dtype(types), count=self.n_periods)
+                    array = np.frombuffer(self.fp.read1(), dtype=np.dtype(types), count=n_periods)
+
+            if all([i is None for i in [start, end]]):
+                # if the data is not sliced, save it as an attribute
+                self._data = array
+
+            return array
+
+        # if the attribute self._data is already set
+        if not all([i is None for i in [start, end]]):
+            # slice data
+            i_start = (self.index < start).sum()
+            i_end = (self.index > end).sum()
+            return self._data[i_start:-i_end]
 
         return self._data
 
@@ -175,7 +206,7 @@ class SwmmOutput(SwmmOutExtract):
             del self._frame['datetime']
         return self._frame
 
-    def get_part(self, kind=None, label=None, variable=None, slim=False, processes=1, show_progress=True, ignore_filesize=False):
+    def get_part(self, kind=None, label=None, variable=None, slim=False, show_progress=True, ignore_filesize=False, start=None, end=None):
         """
         Get specific columns of the data.
 
@@ -231,18 +262,23 @@ class SwmmOutput(SwmmOutExtract):
             processes (int): number of parallel processes for the slim-reading.
             show_progress (bool): show a progress bar for the slim-reading.
             ignore_filesize (bool): hide a warning when reading a huge output-file.
+            start (datetime): start datetime for the period to read.
+            end (datetime): end datetime for the period to read.
 
         Returns:
             pandas.DataFrame | pandas.Series: Filtered data.
                 (return Series if only one column is selected otherwise return a DataFrame)
         """
         columns = self._filter_part_columns(kind, label, variable)
-        if slim:
-            values = self._get_selective_results(columns, processes=processes, show_progress=show_progress)
-        else:
-            values = self.to_numpy(ignore_filesize=ignore_filesize)[list(map('/'.join, columns))]
 
-        return self._to_pandas(values, drop_useless=True)
+        if slim:
+            values = self._get_selective_results(columns, show_progress=show_progress, start=start, end=end)
+        else:
+            values = self.to_numpy(ignore_filesize=ignore_filesize, start=start, end=end)[list(map('/'.join, columns))]
+
+        index = self._get_index(start, end)
+
+        return self._to_pandas(values, index, drop_useless=True)
 
     def _filter_part_columns(self, kind=None, label=None, variable=None):
         """
@@ -281,9 +317,9 @@ class SwmmOutput(SwmmOutExtract):
             columns += list(product([k], _filter(label, self.labels[k], f'{k} label'), _filter(variable, self.variables[k], f'{k} variable')))
         return columns
 
-    def _to_pandas(self, data, drop_useless=False):
+    def _to_pandas(self, data, index: pd.DatetimeIndex = None, drop_useless=False):
         """
-        convert interim results to pandas DataFrame or Series
+        Convert interim results to pandas DataFrame or Series.
 
         Args:
             data (dict, numpy.ndarray): timeseries data of swmm out file
@@ -292,24 +328,35 @@ class SwmmOutput(SwmmOutExtract):
         Returns:
             (pandas.DataFrame | pandas.Series): pandas Timerseries of data
         """
-        if isinstance(data, dict):
-            if not bool(data):
-                return pd.DataFrame()
-            df = pd.DataFrame.from_dict(data).set_index(self.index)
-        else:
-            if data.size == 0:
-                return pd.DataFrame()
+        if index is None:
+            index = self.index
 
-            if data.shape[0] != self.index.size:
-                data = data[:self.index.size]
+        if (isinstance(data, np.ndarray) and (data.size == 0)) or (isinstance(data, dict) and not bool(data)):  # successful for dict and np.array
+            return pd.DataFrame()
 
-            df = pd.DataFrame(data, index=self.index, dtype=float)
+        df = pd.DataFrame(data, index=index, dtype=float)
+
+        # if isinstance(data, dict):  # slim=True
+        #     df = pd.DataFrame.from_dict(data).set_index(index)
+        #
+        # else:  # slim=False - default - numpy.array
+        #     data: np.ndarray
+        #
+        #     # if data.shape[0] != index.size:
+        #     #     warnings.warn('index length does not match data length -> slice data')
+        #     #     data = data[:index.size]
+        #
+        #     pd.DataFrame.from_dict(data).set_index(index)
+        #
+        #     df = pd.DataFrame(data, index=index, dtype=float)
 
         # -----------
         if df.columns.size == 1:
             return df.iloc[:, 0]
         # -----------
+        # create multi-index-columns
         df.columns = pd.MultiIndex.from_tuples([col.split('/') for col in df.columns])
+
         if drop_useless:
             drop_useless_column_levels(df)
 
@@ -335,7 +382,7 @@ class SwmmOutput(SwmmOutExtract):
         }
         parquet.write(frame, self.filename.with_suffix('.parquet'))
 
-    def to_parquet_chunks(self, fn, rows_at_a_time=1000, show_progress=True, kind=None, label=None, variable=None):
+    def to_parquet_chunks(self, fn, rows_at_a_time=1000, show_progress=True, kind=None, label=None, variable=None, slim=False):
         import pyarrow as pa
         import pyarrow.parquet as pq
 
@@ -354,12 +401,30 @@ class SwmmOutput(SwmmOutExtract):
             iterator = range(0, self.n_periods, rows_at_a_time)
 
         # ---
-        for _ in iterator:
+        for i in iterator:
             # print(self.fp.tell())
-            data = np.fromfile(self.fp, dtype=types, count=rows_at_a_time)[use_columns]
-            df = pd.DataFrame(data)
+            if slim:
+                progress_desc = f'{repr(self)}.get_selective_results(n_cols={len(columns)})'
 
-            df.index = (pd.Timedelta(days=1) * df.pop('datetime') + self._base_date).dt.round('s')
+                label_list, offset_list = self._get_labels_and_offsets(columns)
+
+                from ._basic_selective_results import _get_selective_results
+
+                _pos_start_output = self._pos_start_output + i * self._bytes_per_period
+
+                data = _get_selective_results(self.fp, label_list, offset_list, _pos_start_output,
+                                              rows_at_a_time, self._bytes_per_period, progress_desc)
+
+                df = pd.DataFrame(data)
+
+                df.index = pd.date_range(self.start_date + i*self.report_interval, periods=rows_at_a_time, freq=self.report_interval)
+
+            else:
+                data = np.fromfile(self.fp, dtype=types, count=rows_at_a_time)[use_columns]
+
+                df = pd.DataFrame(data)
+
+                df.index = (pd.Timedelta(days=1) * df.pop('datetime') + self._base_date).dt.round('s')
 
             table = pa.Table.from_pandas(df)
 
@@ -372,7 +437,6 @@ class SwmmOutput(SwmmOutExtract):
         # close the parquet writer
         if parq_writer:
             parq_writer.close()
-
 
     # def to_netcdf(self, fn_nc):
     #     import xarray as xr

@@ -99,7 +99,7 @@ class SwmmOutExtract(BinaryReader):
             _pos_start_labels,  # starting file position of ID names
             _pos_start_input,  # starting file position of input data
             _pos_start_output,  # starting file position of output data
-            _n_periods,  # Number of reporting periods
+            self.n_periods,  # Number of reporting periods
             error_code,
             magic_num_end,
         ) = self._next(6)
@@ -119,7 +119,6 @@ class SwmmOutExtract(BinaryReader):
         if magic_num_end != _MAGIC_NUMBER:
             warn('Ending magic number incorrect.', SwmmOutExtractWarning)
             # raise SwmmExtractValueError('Ending magic number incorrect.')
-            _n_periods = 0
             self.run_failed = True
         elif error_code != 0:
             warn(f'Error code "{error_code}" in output file indicates a problem with the run.', SwmmOutExtractWarning)
@@ -247,8 +246,7 @@ class SwmmOutExtract(BinaryReader):
         self.start_date = self._base_date + _offset_start_td + self.report_interval * int(_factor)
 
         # ____
-        self.n_periods = _n_periods
-        if _n_periods == 0:
+        if magic_num_end != _MAGIC_NUMBER:
             self._infer_n_periods()
             warn('Infer time periods of the output file due to a corrupt SWMM .out-file.', SwmmOutExtractWarning)
 
@@ -302,87 +300,95 @@ class SwmmOutExtract(BinaryReader):
 
         return label_list, offset_list
 
+    def _get_start_position_and_periods(self, start=None, end=None):
+        if all([i is None for i in [start, end]]):
+            return self._pos_start_output, self.n_periods
 
-    def _get_selective_results(self, columns, processes=1, show_progress=True):
+        if start is None:
+            i_period_start = 0
+        else:
+            i_period_start = (start - self.start_date) / self.report_interval
+
+        if end is None:
+            i_period_end = self.n_periods - i_period_start
+        else:
+            i_period_end = (end - self.start_date) / self.report_interval
+
+        n_periods = i_period_end - i_period_start + 1
+        pos_start_output = self._pos_start_output + i_period_start * self._bytes_per_period
+        return int(pos_start_output), int(n_periods)
+
+    def _get_selective_results(self, columns, show_progress=True, start=None, end=None):
         """
-        get results of selective columns in .out-file
+        Get results of selective columns in .out-file.
 
-        this function is due to its iterative reading slow,
-        but has it advantages with out-files with many columns (>1000) and fewer time-steps
+        This function is due to its iterative reading slow,
+        but has its advantages with out-files with many columns (>1000) and fewer time-steps
 
         Args:
             columns (list[tuple]): list of column identifier tuple with [(kind, label, variable), ...]
-            processes (int): number of parallel processes.
             show_progress (bool): show a progress bar.
+            start (datetime): start datetime for the period to read.
+            end (datetime): end datetime for the period to read.
 
         Returns:
             dict[str, list]: dictionary where keys are the column names ('/' as separator) and values are the list of result values
         """
+        progress_desc = f'{repr(self)}.get_selective_results(n_cols={len(columns)})'
 
         label_list, offset_list = self._get_labels_and_offsets(columns)
-        # offset_list = [o*_RECORDSIZE for o in offset_list]
-        # cols = list(values.keys())
-        # cols_sorted = sorted(cols, key=lambda e: offset_list[cols.index(e)])
-        # offset_sorted = sorted(offset_list)
-        # iter_label_offset = tuple(zip(cols_sorted, offset_sorted))
-        iter_label_offset = tuple(zip(label_list, offset_list))
+        pos_start_output, n_periods = self._get_start_position_and_periods(start, end)
 
-        variable = range(self._pos_start_output,  # start
-                         self._pos_start_output + self.n_periods * self._bytes_per_period,  # stop
-                         self._bytes_per_period)
-
-        values = {col: [] for col in label_list}
-
-        def func(out, period_offset):
-            for label, offset in iter_label_offset:
-                out._set_position(offset + period_offset)
-                values[label].append(out._next_float())
-
-        # for period_offset in tqdm(range(self._pos_start_output,  # start
-        #                                 self._pos_start_output + self.n_periods * self._bytes_per_period,  # stop
-        #                                 self._bytes_per_period),
-        #                           desc=f'{repr(self)}.get_selective_results(n_cols={len(columns)})'):  # step
-        #     # period_offset = self.pos_start_output + period * self.bytes_per_period
-        #     for label, offset in iter_label_offset:
-        #         self._set_position(offset + period_offset)
-        #         values[label].append(self._next_float())
-
-        # -------------
-        from functools import partial
-        from itertools import cycle
-
-        if show_progress:
-            from tqdm.auto import tqdm
-        else:
-            tqdm = lambda _, desc=None: _
-
-        if processes == 1:
-            for period_offset in tqdm(variable, desc=f'{repr(self)}.get_selective_results(n_cols={len(columns)})'):
-                func(self, period_offset)
-
-        else:
-            from multiprocessing.dummy import Pool
-
-            files = [self.copy() for _ in range(processes)]
-            pool = Pool(processes)
-            for _ in tqdm(pool.starmap(partial(func), zip(cycle(files), variable)), total=len(variable), desc=f'{repr(self)}.get_selective_results(n_cols={len(columns)}, processes={processes})'):
-                pass
-        # -------------
-
-        return values
+        # ---
+        # from ._basic_selective_results import _get_selective_results  # cpython
+        from ._basic_selective_results_python import _get_selective_results
+        v = _get_selective_results(self.fp, label_list, offset_list, pos_start_output,
+                                   n_periods, self._bytes_per_period, progress_desc, show_progress)
+        return v
 
     def _infer_n_periods(self):
+        """
+        Internal function to infer the number of periods written in the out-file.
+
+        This is needed when the outfile was not generated properly.
+
+        Sets the attribute n_periods.
+        """
+        # print('start _infer_n_periods')
         not_done = True
+        # print(f'{self.filename.stat().st_size:_d}')
+        # 192_159_825_920 filesize
+        # 179_517_985_920
+        #       2_409_120 approx. index size
+        #          18_627 column size
+        #          91_772 already read bytes
+        #          74_516 bytes per period
+        # print(self.number_columns)
+        # print(self._bytes_per_period)
+        est_n_periods = int(self.filename.stat().st_size / self._bytes_per_period)
+        step = int(est_n_periods / 4)
         period = 0
+
+        # 1289386
+        # 2311667
+
+        import math
         while not_done:
             self.fp.seek(self._pos_start_output + period * self._bytes_per_period, SEEK_SET)
             try:
                 dt = self._next(dtype='d')
                 # print(dt)
-                # print(datetime.datetime(1899, 12, 30) + datetime.timedelta(days=dt))
-                period += 1
+
+                if dt < 0.00000001:
+                    raise EOFError()
+                period += step
+                # print(dt, datetime.datetime(1899, 12, 30) + datetime.timedelta(days=dt), period, step)
             except:
-                not_done = False
+                if step == 1:
+                    not_done = False
+                else:
+                    period -= step
+                    step = math.ceil(step/2)
 
         self.n_periods = period - 1
 
