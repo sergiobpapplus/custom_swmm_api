@@ -217,14 +217,15 @@ MORE INFORMATION COMING SOON
 - Schilling, J., & Tränckner, J. (2022). Generate_swmm_inp: An open-source qgis plugin to import and export model input files for swmm. *Water, 14(14)*, 2262. <https://doi.org/10.3390/w14142262>
 - Zhang, Z., Tian, W., & Liao, Z. (2023). Towards coordinated and robust real-time control: A decentralized approach for combined sewer overflow and urban flooding reduction based on multi-agent reinforcement learning. *Water Research, 229*, 119498. <https://doi.org/10.1016/j.watres.2022.119498>
 - van der Werf, J. A., Kapelan Z., Langeveld, J. G. (2023). Predictive heuristic control: inferring risks from heterogeneous nowcast accuracy. *Water Sci Technol* 2023; 87 (4): 1009–1028. <https://doi.org/10.2166/wst.2023.027>
-
+- Farina, A., Di Nardo, A., Gargano, R., Van Der Werf, J. A., & Greco, R. (2023). A simplified approach for the hydrological simulation of urban drainage systems with SWMM. Journal of Hydrology, 623, 129757. https://doi.org/10.1016/j.jhydrol.2023.129757
+- 
 ## Alternative packages
 
-R-language:
+- **swmmr** / R-language / [GitHub](https://github.com/dleutnant/swmmr) / [cran](https://cran.r-project.org/web/packages/swmmr/index.html)
+- **MatSWMM** / Matlab / [GitHub](https://github.com/gandresr/MatSWMM) 
+- **swmmNode** / TypeScript / [GitHub](https://github.com/swmm-js/swmmNode)
 
-- **swmmr** / [GitHub](https://github.com/dleutnant/swmmr) / [cran](https://cran.r-project.org/web/packages/swmmr/index.html)
-
-python:
+---
 
 - **swmmio** / [docs](https://swmmio.readthedocs.io/en/latest/) / [pypi](https://pypi.org/project/swmmio/) / [GitHub](https://github.com/aerispaha/swmmio) / simular to this package but more high-level approach (= slower for specific tasks)
 - **GisToSWMM5** / [GitHub](https://github.com/AaltoUrbanWater/GisToSWMM5) / converting gis data to swmm model (also possible with swmm_api: `swmm_api.input_file.macro_snippets.gis_standard_import` and `swmm_api.input_file.macro_snippets.gis_export`)
@@ -239,11 +240,9 @@ python:
 - **swmmreport** / [GitHub](https://github.com/lucashtnguyen/swmmreport) Report Reader (Lucas Nguyen)
 - **swmmdoodler** / [GitHub](https://github.com/Geosyntec/swmmdoodler)
 
-### Other SWMM-related packages
+### Other SWMM-related python-packages
 
-python:
-
-- **pyswmm** / [pypi](https://pypi.org/project/pyswmm/) / [GitHub](https://github.com/OpenWaterAnalytics/pyswmm) / RTC, etc. / based on swmm-toolkit (OpenWaterAnalytics)
+- **pyswmm** / [pypi](https://pypi.org/project/pyswmm/) / [GitHub](https://github.com/OpenWaterAnalytics/pyswmm) / [Website](https://www.pyswmm.org) / RTC, etc. / based on swmm-toolkit (OpenWaterAnalytics)
 - **swmm-toolkit** / [pypi](https://pypi.org/project/swmm-toolkit/) / [GitHub](https://github.com/OpenWaterAnalytics/swmm-python) / by Michael Tryby (OpenWaterAnalytics)
 - **SWMM5** / [pypi](https://pypi.org/project/SWMM5/) / [GitHub](https://github.com/asselapathirana/swmm5-python) / simular approach to swmm-toolkit (by Assela Pathirana)
 - **SWMM-xsections-shape-generator** / [pypi](https://pypi.org/project/SWMM-xsections-shape-generator/) / tool to generate custom shapes (by me)
