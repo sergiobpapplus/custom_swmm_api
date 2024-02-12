@@ -17,7 +17,7 @@ def write_swmm_timeseries_data(series, filename, drop_zeros=True):
 
     Args:
         series (pandas.Series): time-series-data
-        filename (str): path and filename for the new file
+        filename (pathlib.Path | str): path and filename for the new file
         drop_zeros (bool): remove all 0 (zero, null) entries in timeseries (SWMM will understand for precipitation)
     """
     if drop_zeros:
