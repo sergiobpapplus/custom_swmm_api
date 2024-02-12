@@ -121,7 +121,7 @@ class SYSTEM_VARIABLES:
     RAINFALL = 'rainfall'  # RAINFALL | rainfall intensity | Total rainfall [mm/hr] | Precipitation
     SNOW_DEPTH = 'snow_depth'  # SNOWDEPTH | snow depth | Total snow depth [mm]
     INFILTRATION = 'infiltration'  # INFIL | infil | Average system losses [mm/hr] | Infiltration # sum in infiltration of all sub-catchments (weighted by the sc-area)
-    RUNOFF = 'runoff'  # RUNOFF | runoff flow | Total runoff flow
+    RUNOFF = 'runoff'  # RUNOFF | runoff flow | Total runoff flow [*flow unit*]
     DW_INFLOW = 'dry_weather_inflow'  # DWFLOW | dry weather inflow | Total dry weather inflow | DW Inflow
     GW_INFLOW = 'groundwater_inflow'  # GWFLOW | ground water inflow | Total groundwater inflow | GW Inflow
     RDII_INFLOW = 'RDII_inflow'  # IIFLOW | RDII inflow | Total rainfall derived infiltration and inflow (RDII). | I&I Inflow
