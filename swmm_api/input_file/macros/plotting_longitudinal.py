@@ -167,9 +167,9 @@ def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=No
     else:
         fig = ax.get_figure()
 
-    ax.plot(res[COLS.STATION], res[COLS.INVERT_ELEV], c='k')
+    ax.plot(res[COLS.STATION], res[COLS.INVERT_ELEV], c='black')
     ax.plot(res[COLS.STATION], res[COLS.GROUND_ELEV], c='brown', lw=0.5)
-    ax.plot(res[COLS.STATION], res[COLS.CROWN_ELEV], c='k')
+    ax.plot(res[COLS.STATION], res[COLS.CROWN_ELEV], c='black')
     bottom = ax.get_ylim()[0]
 
     # Ground Fill
@@ -178,7 +178,7 @@ def plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=No
 
     if any(res[COLS.WATER]):
         # Water line
-        ax.plot(res[COLS.STATION], res[COLS.WATER], c='b', lw=0.7)
+        ax.plot(res[COLS.STATION], res[COLS.WATER], c='blue', lw=0.7)
         # Water fill
         ax.fill_between(res[COLS.STATION], res[COLS.WATER], res[COLS.INVERT_ELEV], color='#00D7FF', alpha=0.7)
         # Conduit Fill
@@ -255,7 +255,7 @@ def animated_plot_longitudinal(filename, inp, start_node, end_node, out=None, ax
                 ax.collections.remove(fill_conduit)
 
             # Water line
-            line_water = ax.plot(res[COLS.STATION], res[COLS.WATER], c='b', lw=0.7)
+            line_water = ax.plot(res[COLS.STATION], res[COLS.WATER], c='blue', lw=0.7)
             # Water fill
             fill_water = ax.fill_between(res[COLS.STATION], res[COLS.WATER], res[COLS.INVERT_ELEV], color='#00D7FF', alpha=0.7)
             # Conduit Fill
@@ -264,3 +264,65 @@ def animated_plot_longitudinal(filename, inp, start_node, end_node, out=None, ax
             ax.set_title(f'Time = {j}')
 
             writer.grab_frame()
+
+
+def jupyter_animated_plot_longitudinal(inp, start_node, end_node, out=None, ax=None, zero_node=None, add_node_labels=False):
+    from ipywidgets import interact
+    import ipywidgets as widgets
+    from IPython.display import display
+
+    fig, ax = plot_longitudinal(inp, start_node, end_node, zero_node=zero_node, add_node_labels=add_node_labels)
+    # fig.set_size_inches(15,6)
+
+    line_water = None
+    fill_water = None  # Define fill_water here
+    fill_conduit = None  # Define fill_conduit here
+
+    def plot_func(time):
+        global line_water, fill_water, fill_conduit  # Use global variables
+        print(time, type(time))
+        res = get_longitudinal_data(inp, start_node, end_node, out, zero_node=zero_node, depth_agg_func=lambda s: s.iloc[time])
+
+        if line_water is not None:
+            # ax.lines.remove(line_water[0])
+            line_water[0].remove()
+
+            # ax.collections.remove(fill_water)
+            fill_water.remove()
+            # ax.collections.remove(fill_conduit)
+            fill_conduit.remove()
+
+        # Water line
+        line_water = ax.plot(res[COLS.STATION], res[COLS.WATER], c='blue', lw=0.7)
+        # Water fill
+        fill_water = ax.fill_between(res[COLS.STATION], res[COLS.WATER], res[COLS.INVERT_ELEV], color='#00D7FF', alpha=0.7)
+        # Conduit Fill
+        fill_conduit = ax.fill_between(res[COLS.STATION], res[COLS.CROWN_ELEV], res[COLS.WATER], color='#B0B0B0', alpha=0.5)
+
+        ax.set_title(f'Time = {out.index[time]}')
+        fig.canvas.draw_idle()
+        return fig
+
+    # Creating IntSlider widget
+    play = widgets.Play(
+        value=0,
+        min=0,
+        max=200,  # out.index.size,
+        step=10,
+        interval=10,
+        description='Play',
+        disabled=False
+    )
+
+    slider = widgets.IntSlider()
+    widgets.jslink((play, 'value'), (slider, 'value'))
+
+    interact(plot_func, time=slider)
+
+    # Display the slider
+    # display(widgets)
+
+    # Attaching the function to the slider
+    # play.observe(plot_func, names='value')
+
+    widgets.HBox([play, slider])
