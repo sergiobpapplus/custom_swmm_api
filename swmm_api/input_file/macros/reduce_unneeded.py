@@ -1,10 +1,10 @@
+import numpy as np
+
 from .collection import links_dict, nodes_dict
 from ._helpers import get_used_curves
 from ..section_labels import *
 from ..misc.curve_simplification import ramer_douglas
-from ..section_lists import LINK_SECTIONS, NODE_SECTIONS
-from ..section_types import SECTION_TYPES
-from ..sections import Control, EvaporationSection, ReportSection
+from ..sections import Control, EvaporationSection, ReportSection, ControlVariable, ControlExpression
 
 
 def reduce_curves(inp):
@@ -71,24 +71,32 @@ def reduce_controls(inp):
 
     for label in list(inp.CONTROLS.keys()):
         control = inp.CONTROLS[label]
+
+        if isinstance(control, (ControlVariable, ControlExpression)):
+            continue
+
         # if unavailable object in condition: remove whole rule
         for condition in control.conditions:  # type: Control._Condition
+
+            if isinstance(condition.kind, float) and np.isnan(condition.kind):  # Condition of a variable
+                continue
+
             if condition.kind + 'S' in inp:
                 # CONDUIT PUMP ORIFICE WEIR OUTLET
                 if condition.label not in inp[condition.kind + 'S']:
                     # delete whole rule
                     del inp.CONTROLS[label]
-                    continue
+                    break
             elif condition.kind == Control.OBJECTS.NODE:
                 if condition.label not in nodes:
                     # delete whole rule
                     del inp.CONTROLS[label]
-                    continue
+                    break
             elif condition.kind == Control.OBJECTS.LINK:
                 if condition.label not in links:
                     # delete whole rule
                     del inp.CONTROLS[label]
-                    continue
+                    break
 
         if label not in inp.CONTROLS:
             continue
@@ -111,7 +119,7 @@ def reduce_controls(inp):
                 if action.label not in inp[section_label]:
                     # delete only this action
                     _delete_action(label, action)
-            elif section_label in SECTION_TYPES and section_label not in inp:
+            elif section_label in inp._converter and section_label not in inp:
                 # if section not in inp-file -> not objects in model -> delete action
                 _delete_action(label, action)
 
