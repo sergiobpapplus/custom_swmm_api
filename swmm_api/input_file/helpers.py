@@ -253,12 +253,15 @@ class InpSection(InpSectionABC):
         create an object for ``.inp``-file sections with objects (i.e. nodes, links, subcatchments, raingages, ...)
 
         Args:
-            section_object (type[BaseSectionObject]): object class which is stored in this section.
+            section_object (BaseSectionObject | similar): object class which is stored in this section.
                 This information is used to set the index of the section and
                 to decide if the section can be exported (converted to a string) as a table.
         """
         super().__init__()
         self._section_object = section_object
+
+        from .section_types import SECTIONS_MULTI_TYPES
+        self._possible_object_types = SECTIONS_MULTI_TYPES.get(section_object._section_label, (section_object,))
 
     # def __repr__(self):
     #     # return CustomDict.__repr__(self)
@@ -279,7 +282,7 @@ class InpSection(InpSectionABC):
                               f'Needed keys: "{self._identifier}"\n'
                               f'Given keys: "{key}"', SwmmInputWarning)
 
-        if not isinstance(value, self._section_object):
+        if not isinstance(value, self._possible_object_types):
             warnings.warn(f'Wrong section-object type (Unknown Behaviour)\n'
                           f'Needed type: "{self._section_object}"\n'
                           f'Given type: "{type(value)}"', SwmmInputWarning)
@@ -340,8 +343,8 @@ class InpSection(InpSectionABC):
         for obj in items:
             try:
                 self.add_obj(obj)
-            except:
-                print()
+            except Exception as e:
+                print(e, 'error adding objects to section')
 
     def add_obj(self, obj):
         """
@@ -604,14 +607,6 @@ class InpSectionGeo(InpSection):
         """
         from geopandas import GeoSeries
         return GeoSeries({label: item.geo for label, item in self.items()}, crs=crs, name='geometry')
-
-
-def split_line_with_quotes(line):
-    if isinstance(line, (list, tuple)):
-        line = ' '.join(line)
-    if '"' not in line:
-        return line.split()
-    return re.findall(r'("[^"]*"|[^" ]+)', line)
 
 
 def free_attributes(key):

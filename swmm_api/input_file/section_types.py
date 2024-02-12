@@ -42,7 +42,7 @@ SECTION_TYPES = {
     # -----
     SUBCATCHMENTS: SubCatchment,
     SUBAREAS     : SubArea,
-    INFILTRATION : InfiltrationGreenAmpt,
+    INFILTRATION : Infiltration,  # multiple possible
 
     LOADINGS     : Loading,
     WASHOFF      : WashOff,
@@ -55,9 +55,9 @@ SECTION_TYPES = {
     RAINGAGES    : RainGage,
     PATTERNS     : Pattern,
     POLLUTANTS   : Pollutant,
-    CONTROLS     : Control,
+    CONTROLS     : Control,  # multiple possible
     CURVES       : Curve,
-    TIMESERIES   : Timeseries,
+    TIMESERIES   : Timeseries,  # multiple possible
     TAGS         : Tag,
     HYDROGRAPHS  : Hydrograph,
     LANDUSES     : LandUse,
@@ -67,7 +67,14 @@ SECTION_TYPES = {
     LID_USAGE    : LIDUsage,
     # -----
     STREETS      : Street,
-    INLETS       : Inlet,
+    INLETS       : Inlet,  # multiple possible
     INLET_USAGE  : InletUsage,
 }
 """objects or section class for a section in the inp-file"""
+
+SECTIONS_MULTI_TYPES = {
+    INFILTRATION: (Infiltration, InfiltrationGreenAmpt, InfiltrationHorton, InfiltrationCurveNumber),
+    CONTROLS: (Control, ControlVariable, ControlExpression),
+    TIMESERIES: (Timeseries, TimeseriesFile, TimeseriesData),
+    INLETS: (Inlet, InletGrate, InletCurb, InletSlotted, InletCustom),
+}
