@@ -158,9 +158,9 @@ def compare_inp_files(fn1, fn2, precision=2, skip_section=None, sep='\n' + '#' *
     """
     parent = os.path.commonpath([str(fn1), str(fn2)])
     s = (f'Comparing ({parent})\n'
-         f'   "{fn1.replace(parent, "")}" (=inp1)\n'
+         f'   "{str(fn1).replace(parent, "")}" (=inp1)\n'
          f'   to\n'
-         f'   "{fn2.replace(parent, "")}" (=inp2)\n'
+         f'   "{str(fn2).replace(parent, "")}" (=inp2)\n'
          f'Ignoring Sections: {skip_section}\n')
     inp1 = SwmmInput.read_file(fn1)
     inp2 = SwmmInput.read_file(fn2)
