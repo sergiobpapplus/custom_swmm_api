@@ -2,6 +2,24 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.38 (2024-02-12)
+
+### Fix
+
+* Fixed issue in reduce_controls for new control syntax ([`70939ab`](https://gitlab.com/markuspichler/swmm_api/-/commit/70939abfbc608d52b11c79ef9ff5515db4431c03))
+* Added function create_cut_model to cut a model and create timeseries dat files for cut links using a give out-file. ([`4d47bd0`](https://gitlab.com/markuspichler/swmm_api/-/commit/4d47bd0bf609433a8d70f2ae573732b6aa8a4a73))
+* Fixed issue with string paths and pathlib paths in function compare_inp_files ([`d4ac897`](https://gitlab.com/markuspichler/swmm_api/-/commit/d4ac8972f440790076d96635eda1bc28e381eed1))
+* Added new control syntax with variables and expressions. ([`da735c1`](https://gitlab.com/markuspichler/swmm_api/-/commit/da735c114a4c27fbf5167c7debbb6ca11059526e))
+* Fixed issues with quoted strings in input file i.e. paths to files ([`3f01efe`](https://gitlab.com/markuspichler/swmm_api/-/commit/3f01efe0ef271ffda182d54e8384241202af8e91))
+* Allow climate file with fewer columns. ([`638cfb6`](https://gitlab.com/markuspichler/swmm_api/-/commit/638cfb634a35d1c686bcb965ed4d055c2442acce))
+* Don't show warning if section has multiple class-objects in it, when there are multiple objects allowed. ([`ba5bc1d`](https://gitlab.com/markuspichler/swmm_api/-/commit/ba5bc1dce06c6954d31a95b548cc27f63e28aca1))
+* Implemented more elegant way to find last timestep in broken out-file ([`c792c29`](https://gitlab.com/markuspichler/swmm_api/-/commit/c792c2994a4b5ba9bfabc1cc80abac4132c8ef39))
+
+### Documentation
+
+* Added flow unit in comment ([`76994ab`](https://gitlab.com/markuspichler/swmm_api/-/commit/76994abca907b98266bea12a7704cc38dec0a2b5))
+* Numbering publication in readme ([`b842526`](https://gitlab.com/markuspichler/swmm_api/-/commit/b8425268c93074464bd6523b4a333c444e5d2ada))
+
 ## v0.4.37 (2024-01-24)
 
 ### Fix
