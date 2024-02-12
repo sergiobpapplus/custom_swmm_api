@@ -70,4 +70,4 @@ def write_climate_dat_file(df, filename):
     df[COLUMNS.MONTH] = df.index.strftime('%m')
     df[COLUMNS.DAY] = df.index.strftime('%d')
 
-    df[COLUMNS.FOR_FILE].to_csv(filename, sep=' ', header=None, index=None, na_rep='*')
+    df[[c for c in COLUMNS.FOR_FILE if c in df]].to_csv(filename, sep=' ', header=None, index=None, na_rep='*')
