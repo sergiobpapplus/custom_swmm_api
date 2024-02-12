@@ -24,7 +24,7 @@ from .node_component import (
 
 from .others import (
     RainGage,
-    Control,
+    Control, ControlVariable, ControlExpression,
     Transect,
     Pattern,
     Pollutant,

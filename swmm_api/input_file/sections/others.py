@@ -9,7 +9,7 @@ from numpy import NaN
 
 from ._identifiers import IDENTIFIERS
 from .._type_converter import infer_type, to_bool, str_to_datetime, datetime_to_str, type2str, convert_string
-from ..helpers import BaseSectionObject, split_line_with_quotes
+from ..helpers import BaseSectionObject
 from ..section_labels import *
 
 
@@ -93,7 +93,7 @@ class RainGage(BaseSectionObject):
                     pass
 
             elif source == RainGage.SOURCES.FILE:
-                self.filename = args[0].strip('"')
+                self.filename = convert_string(args[0])
                 self.station = args[1]
                 self.units = args[2]
 
@@ -805,6 +805,9 @@ class Control(BaseSectionObject):
         AND = 'AND'  # for conditions and actions
         OR = 'OR'  # only for conditions
 
+    LOGIC_TYPES = {i for i in LOGIC.__dict__ if not i.startswith('__')}
+    OBJECT_TYPES = {i for i in OBJECTS.__dict__ if not i.startswith('__')}
+
     class _Condition(BaseSectionObject):
         """
         A **condition clause** of a Control Rule has the following format:
@@ -831,14 +834,25 @@ class Control(BaseSectionObject):
             SIMULATION CLOCKTIME = 22:45:00
         """
 
-        def __init__(self, logic: Literal['IF', 'OR', 'AND'], kind, *args, label=NaN, attribute=None, relation: Literal['=', '<>', '<', '<=', '>', '>=']=None, value=None):
+        def __init__(self, logic: Literal['IF', 'OR', 'AND'], kind=NaN, *args, label=NaN, attribute=None, relation: Literal['=', '<>', '<', '<=', '>', '>='] = None, value=None):
             self.logic = logic.upper()  # if, and, or
             self.kind = kind.upper()  # Control.OBJECTS
+
             line = list(args)
-            if line:
-                self.label = NaN
+            if line and self.kind not in Control.OBJECT_TYPES:
+                # Variable
+
+                self.attribute = NaN
+                self.label = kind
+                self.kind = NaN
+
+                self.relation = line.pop(0)
+                self.value = ' '.join([str(i) for i in line])
+
+            elif line:
+                self.label = NaN  # only for kind==SIMULATION
                 # 'SIMULATION' has/needs no label
-                if kind.upper() != Control.OBJECTS.SIMULATION:
+                if self.kind != Control.OBJECTS.SIMULATION:
                     self.label = line.pop(0)
 
                 self.attribute = line.pop(0).upper()
@@ -895,9 +909,9 @@ class Control(BaseSectionObject):
 
     def __init__(self, name, conditions, actions_if, actions_else=None, priority=0):
         self.name = str(name)
-        self.conditions = conditions
-        self.actions_if = actions_if
-        self.actions_else = [] if actions_else is None else actions_else
+        self.conditions = conditions  # type: list[Control._Condition]
+        self.actions_if = actions_if  # type: list[Control._Action]
+        self.actions_else = [] if actions_else is None else actions_else  # type: list[Control._Action]
         self.priority = int(priority)
 
     @classmethod
@@ -911,33 +925,40 @@ class Control(BaseSectionObject):
 
         last = None
         for logic, *line in multi_line_args:
-            if logic.upper() == cls.LOGIC.RULE:
+            logic = logic.upper()
+            if logic == ControlVariable.KEYWORD:
+                yield ControlVariable.from_inp_line(*line)
+
+            elif logic == ControlExpression.KEYWORD:
+                yield ControlExpression.from_inp_line(*line)
+
+            elif logic == cls.LOGIC.RULE:
                 if kwargs:
                     yield cls(**kwargs)
                     kwargs = {}
                 kwargs['name'] = line[0]
                 last = None
 
-            elif logic.upper() == cls.LOGIC.IF:
+            elif logic == cls.LOGIC.IF:
                 kwargs['conditions'] = [cls._Condition(logic, *line)]
                 # is_condition = True
                 last = SECTIONS.CONDITIONS
 
-            elif logic.upper() == cls.LOGIC.THEN:
+            elif logic == cls.LOGIC.THEN:
                 kwargs['actions_if'] = [cls._Action(*line)]
                 # args.append([cls._Action(logic, *line)])
                 # is_condition = False
                 # is_action = True
                 last = SECTIONS.ACTIONS_IF
 
-            elif logic.upper() == cls.LOGIC.ELSE:
+            elif logic == cls.LOGIC.ELSE:
                 kwargs['actions_else'] = [cls._Action(*line)]
                 # args.append([cls._Action(logic, *line)])
                 # is_condition = False
                 # is_action = True
                 last = SECTIONS.ACTIONS_ELSE
 
-            elif logic.upper() == cls.LOGIC.PRIORITY:
+            elif logic == cls.LOGIC.PRIORITY:
                 kwargs['priority'] = line[0]
                 # args.append(line[0])
                 # is_action = False
@@ -953,7 +974,7 @@ class Control(BaseSectionObject):
                 kwargs['actions_else'].append(cls._Action(*line))
 
         # last
-        yield cls(**kwargs)
+        yield Control(**kwargs)
 
     def copy(self):
         return type(self)(self.name, self.conditions.copy(), self.actions_if.copy(), self.actions_else.copy(), self.priority)
@@ -966,6 +987,112 @@ class Control(BaseSectionObject):
             s += 'ELSE {}\n'.format('\nAND '.join([a.to_inp_line() for a in self.actions_else]))
         s += f'{self.LOGIC.PRIORITY} {self.priority}\n'
         return s
+
+
+class ControlVariable(Control):
+    """
+    Named Variables are aliases used to represent the triplet of
+    <object type | object id | object attribute> (or a doublet for Simulation times)
+    that appear in the condition clauses of control rules.
+
+    They allow condition clauses to be written as:
+
+    - `variable relation value`
+    - `variable relation variable`
+
+    where `variable` is defined on a separate line before its first use in a rule using the format:
+    `VARIABLE name = object id attribute`
+
+    Here is an example of using this feature:
+    ::
+
+        VARIABLE N123_Depth = NODE N123 DEPTH
+        VARIABLE N456_Depth = NODE N456 DEPTH
+        VARIABLE P45 = PUMP 45 STATUS
+
+        RULE 1
+        IF N123_Depth > N456_Depth
+        AND P45 = OFF
+        THEN PUMP 45 STATUS = ON
+
+        RULE 2
+        IF N123_Depth < 1
+        THEN PUMP 45 STATUS = OFF
+
+    A variable is not allowed to have the same name as an object attribute.
+
+    Aside from saving some typing, named variables are required when using arithmetic expressions
+    in rule condition clauses.
+    """
+    KEYWORD = 'VARIABLE'
+
+    def __init__(self, name, object_kind, label, variable=NaN):
+        self.name = name
+        self.object_kind = object_kind
+        self.label = label
+        self.variable = variable
+
+    @classmethod
+    def from_inp_line(cls, *line_args):
+        return cls(*(l for l in line_args if l != '='))
+
+    def to_inp_line(self):
+        return f'{self.KEYWORD} {self.name} = {self.object_kind} {self.label} {self.variable}\n'
+
+
+class ControlExpression(Control):
+    """
+    In addition to a simple condition placed on a single variable, a control condition clause can also
+    contain an arithmetic expression formed from several variables whose value is compared
+    against. Thus the format of a condition clause can be extended as follows:
+
+    - `expression relation value`
+    - `expression relation variable`
+
+    where `expression` is defined on a separate line before its first use in a rule using the format:
+    `EXPRESSION name = f(variable1, variable2, ...)`
+
+    The function `f(...)` can be any well-formed mathematical expression containing one or more
+    named variables as well as any of the following math functions (which are case insensitive) and
+    operators:
+
+    - abs(x) for absolute value of x
+    - sgn(x) which is +1 for x >= 0 or -1 otherwise
+    - step(x) which is 0 for x <= 0 and 1 otherwise
+    - sqrt(x) for the square root of x
+    - log(x) for logarithm base e of x
+    - log10(x) for logarithm base 10 of x
+    - exp(x) for e raised to the x power
+    - the standard trig functions (sin, cos, tan, and cot)
+    - the inverse trig functions (asin, acos, atan, and acot)
+    - the hyperbolic trig functions (sinh, cosh, tanh, and coth)
+    - the standard operators +, -, *, /, ^ (for exponentiation ) and any level of nested parentheses.
+
+    Here is an example of using this feature:
+    ::
+        VARIABLE P1_flow = LINK 1 FLOW
+        VARIABLE P2_flow = LINK 2 FLOW
+        VARIABLE O3_flow = Link 3 FLOW
+
+        EXPRESSION Net_Inflow = (P1_flow + P2_flow)/2 - O3_flow
+
+        RULE 1
+        IF Net_Inflow > 0.1
+        THEN ORIFICE 3 SETTING = 1
+        ELSE ORIFICE 3 SETTING = 0.5
+    """
+    KEYWORD = 'EXPRESSION'
+
+    def __init__(self, name, expression, *_expressions):
+        self.name = name
+        self.expression = expression + ' '.join(_expressions)
+
+    @classmethod
+    def from_inp_line(cls, *line_args):
+        return cls(*(l for l in line_args if l != '='))
+
+    def to_inp_line(self):
+        return f'{self.KEYWORD} {self.name} = {self.expression}\n'
 
 
 class Curve(BaseSectionObject):
@@ -1537,10 +1664,7 @@ class TimeseriesFile(Timeseries):
         """
         Timeseries.__init__(self, name)
         self.kind = self.TYPES.FILE
-        self.filename = filename.strip('"')
-
-    def to_inp_line(self):
-        return f'{self.name} {self.kind} "{self.filename}"'
+        self.filename = convert_string(filename)
 
 
 class TimeseriesData(Timeseries):
@@ -1788,10 +1912,6 @@ class Label(BaseSectionObject):
         self.size = size
         self.bold = bold
         self.italic = italic
-
-    @classmethod
-    def from_inp_line(cls, *line):
-        return cls(*split_line_with_quotes(line))
 
 
 class Hydrograph(BaseSectionObject):
