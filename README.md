@@ -212,13 +212,14 @@ MORE INFORMATION COMING SOON
 
 ## Publications mentioning swmm-api
 
-- Baumann, H., Ravn, N. H., & Schaum, A. (2022). Efficient hydrodynamic modelling of urban stormwater systems for real-time applications. *Modelling, 3(4)*, 464–480. <https://doi.org/10.3390/modelling3040030>
-- Farina, A., Di Nardo, A., Gargano, R., & Greco, R. (2022). Assessing the environmental impact of combined sewer overflows through a parametric study. *EWaS5*, 8. <https://doi.org/10.3390/environsciproc2022021008>
-- Schilling, J., & Tränckner, J. (2022). Generate_swmm_inp: An open-source qgis plugin to import and export model input files for swmm. *Water, 14(14)*, 2262. <https://doi.org/10.3390/w14142262>
-- Zhang, Z., Tian, W., & Liao, Z. (2023). Towards coordinated and robust real-time control: A decentralized approach for combined sewer overflow and urban flooding reduction based on multi-agent reinforcement learning. *Water Research, 229*, 119498. <https://doi.org/10.1016/j.watres.2022.119498>
-- van der Werf, J. A., Kapelan Z., Langeveld, J. G. (2023). Predictive heuristic control: inferring risks from heterogeneous nowcast accuracy. *Water Sci Technol* 2023; 87 (4): 1009–1028. <https://doi.org/10.2166/wst.2023.027>
-- Farina, A., Di Nardo, A., Gargano, R., Van Der Werf, J. A., & Greco, R. (2023). A simplified approach for the hydrological simulation of urban drainage systems with SWMM. Journal of Hydrology, 623, 129757. https://doi.org/10.1016/j.jhydrol.2023.129757
-- 
+1. Baumann, H., Ravn, N. H., & Schaum, A. (2022). Efficient hydrodynamic modelling of urban stormwater systems for real-time applications. *Modelling, 3(4)*, 464–480. <https://doi.org/10.3390/modelling3040030>
+2. Farina, A., Di Nardo, A., Gargano, R., & Greco, R. (2022). Assessing the environmental impact of combined sewer overflows through a parametric study. *EWaS5*, 8. <https://doi.org/10.3390/environsciproc2022021008>
+3. Schilling, J., & Tränckner, J. (2022). Generate_swmm_inp: An open-source qgis plugin to import and export model input files for swmm. *Water, 14(14)*, 2262. <https://doi.org/10.3390/w14142262>
+4. Zhang, Z., Tian, W., & Liao, Z. (2023). Towards coordinated and robust real-time control: A decentralized approach for combined sewer overflow and urban flooding reduction based on multi-agent reinforcement learning. *Water Research, 229*, 119498. <https://doi.org/10.1016/j.watres.2022.119498>
+5. van der Werf, J. A., Kapelan Z., Langeveld, J. G. (2023). Predictive heuristic control: inferring risks from heterogeneous nowcast accuracy. *Water Sci Technol* 2023; 87 (4): 1009–1028. <https://doi.org/10.2166/wst.2023.027>
+6. Farina, A., Di Nardo, A., Gargano, R., Van Der Werf, J. A., & Greco, R. (2023). A simplified approach for the hydrological simulation of urban drainage systems with SWMM. Journal of Hydrology, 623, 129757. <https://doi.org/10.1016/j.jhydrol.2023.129757>
+
+
 ## Alternative packages
 
 - **swmmr** / R-language / [GitHub](https://github.com/dleutnant/swmmr) / [cran](https://cran.r-project.org/web/packages/swmmr/index.html)
