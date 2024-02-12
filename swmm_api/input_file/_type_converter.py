@@ -10,7 +10,6 @@ from pandas.tseries.frequencies import to_offset
 from .._io_helpers import CONFIG
 
 
-
 def to_bool(x):
     if isinstance(x, bool):
         return x
@@ -268,10 +267,20 @@ def format_inp_geo_number(x):
 # ignore comments after a semicolon
 _SECTION_PATTERN = re.compile(r'^[ \t]*([^;\n]+)[ \t]*;?[^\n]*$', flags=re.M)
 
+# split at whitespace but keep text between "-sign together
+_LINE_SPLITTER = re.compile(r'(?:"[^"]*"|\S)+')
+
+
+def get_line_splitter(section_string):
+    if '"' in section_string:
+        return lambda l: _LINE_SPLITTER.findall(l)  # split at whitespace but keep text between "-sign together
+    else:
+        return lambda l: l.split()
+
 
 def txt_to_lines(content):
     """
-    converts text to multiple line arguments
+    Converts text to multiple line arguments.
 
     Comments will be ignored:
         ;; section comment
@@ -282,8 +291,11 @@ def txt_to_lines(content):
     Yields:
         list[str]: arguments per line in the input file section
     """
+
+    _split_line = get_line_splitter(content)
+
     for line in _SECTION_PATTERN.finditer(content):
-        yield line.group().split()
+        yield _split_line(line.group())
 
 
 # class CaseInsensitiveString(UserString):

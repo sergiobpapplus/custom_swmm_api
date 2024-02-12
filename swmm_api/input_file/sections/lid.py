@@ -3,7 +3,7 @@ from typing import Mapping
 from numpy import NaN
 
 from ._identifiers import IDENTIFIERS
-from .._type_converter import to_bool
+from .._type_converter import to_bool, convert_string
 from ..helpers import BaseSectionObject
 from ..section_labels import LID_USAGE, LID_CONTROLS
 
@@ -546,6 +546,6 @@ class LIDUsage(BaseSectionObject):
         self.saturation_init = float(saturation_init)
         self.impervious_portion = float(impervious_portion)
         self.route_to_pervious = int(route_to_pervious)
-        self.fn_lid_report = fn_lid_report
+        self.fn_lid_report = convert_string(fn_lid_report)
         self.drain_to = drain_to
         self.from_pervious = from_pervious

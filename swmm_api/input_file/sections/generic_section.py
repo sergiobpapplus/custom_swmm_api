@@ -3,7 +3,7 @@ import logging
 import warnings
 from typing import Literal
 
-from .._type_converter import infer_type, type2str
+from .._type_converter import infer_type, type2str, get_line_splitter, convert_string
 from ..helpers import InpSectionGeneric, SEP_INP
 from ..section_labels import TITLE, OPTIONS, REPORT, EVAPORATION, TEMPERATURE, MAP, FILES, ADJUSTMENTS, BACKDROP
 
@@ -13,7 +13,10 @@ logger = logging.getLogger(__name__)
 
 def line_iter(lines):
     if isinstance(lines, str):
+        _split_line = get_line_splitter(lines)
         lines = lines.split('\n')
+    else:
+        _split_line = get_line_splitter('"')
 
     for line in lines:
         line = line.split(';')[0]
@@ -21,7 +24,8 @@ def line_iter(lines):
         if line == '':  # ignore empty and comment lines
             continue
         else:
-            yield line.split()
+
+            yield _split_line(line)
 
 
 class TitleSection(InpSectionGeneric):
@@ -1480,12 +1484,12 @@ class FilesSection(InpSectionGeneric):
             FilesSection: object of the Files-section. Dict-like-object.
         """
         data = cls()
-        for use_save, kind, *fn in line_iter(lines):
+        for use_save, kind, fn in line_iter(lines):
             use_save = use_save.upper()
             kind = kind.upper()
             assert use_save in cls.KEYS._use_or_save
             assert kind in cls.KEYS._possible
-            data[f'{use_save} {kind}'] = ' '.join(fn).strip('"')
+            data[f'{use_save} {kind}'] = convert_string(fn)
         return data
 
     def use(self, kind, filename):
