@@ -365,32 +365,66 @@ class SwmmOutExtract(BinaryReader):
         #          74_516 bytes per period
         # print(self.number_columns)
         # print(self._bytes_per_period)
-        est_n_periods = int(self.filename.stat().st_size / self._bytes_per_period)
+
+        last_offset = self.fp.seek(-6*_RECORDSIZE, SEEK_END)
+        est_n_periods = int((last_offset - self._pos_start_output) / self._bytes_per_period)-1
+        # self.n_periods
+
         step = int(est_n_periods / 4)
         period = 0
 
         # 1289386
         # 2311667
+        # print(f'{est_n_periods=} | {step=}')
 
+        # self.start_date
+
+        # start_date = self._base_date + _offset_start_td + self.report_interval * int(_factor)
+
+        # self.start_date + est_n_periods * self.report_interval
+
+        # self.fp.tell()
         import math
+
+        # period = est_n_periods-1
+
+        first_failed = False
+        i = 1
         while not_done:
+            dt_theory = self.start_date + period * self.report_interval
+            # print(f'___\n{i}: {period=}/{est_n_periods} | {str(dt_theory)=} | {step=}')
+            # print(f'pos={self._pos_start_output + period * self._bytes_per_period}')
             self.fp.seek(self._pos_start_output + period * self._bytes_per_period, SEEK_SET)
             try:
-                dt = self._next(dtype='d')
-                # print(dt)
+                dt = self._next(dtype='d')  # unpack requires a buffer of 8 bytes
 
+                # print(f'{dt=}')
+                # if dt is very large, python will raise an error
+                # dt can also be near zero, what is also an error, but will not raise
+
+                # print(self._base_date + datetime.timedelta(days=dt))
+                # print(f'tell={self.fp.tell()}')
                 if dt < 0.00000001:
-                    raise EOFError()
-                period += step
-                # print(dt, datetime.datetime(1899, 12, 30) + datetime.timedelta(days=dt), period, step)
-            except:
-                if step == 1:
-                    not_done = False
-                else:
-                    period -= step
-                    step = math.ceil(step/2)
+                    raise EOFError('dt < 0.00000001')
 
-        self.n_periods = period - 1
+                if first_failed:
+                    step = math.ceil(step/2)
+                period += step
+
+            except Exception as e:
+                if not first_failed:
+                    first_failed = True
+
+                # print('###', e, f'tell={self.fp.tell()}')
+
+                if step <= 1:
+                    break
+
+                step = math.ceil(step/2)
+                period -= step
+            i += 1
+
+        self.n_periods = period
 
     def copy(self):
         new = type(self)(self.filename, skip_init=True)
