@@ -72,6 +72,7 @@ class InpSectionDummy(InpSection):
     def update(self, d=None, **kwargs):
         self._data += d
 
+
 class DummySectionObject(BaseSectionObject):
     _identifier = None
     _section_class = InpSectionDummy
