@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.39 (2024-02-13)
+
+### Fix
+
+* Added function to set default style for geopackage export when using QGIS ([`0592c17`](https://gitlab.com/markuspichler/swmm_api/-/commit/0592c17a3d1edabc4b27c44512f61d7f5e3052ba))
+
 ## v0.4.38 (2024-02-12)
 
 ### Fix
