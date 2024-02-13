@@ -20,7 +20,7 @@ def main():
         f.write('-'*len(_header) + '\n')
 
         for file in Path(macros.__file__).parent.iterdir():
-            if file.stem.startswith('_'):
+            if file.stem.startswith('_') or file.is_dir():
                 continue
             print(file.stem)
 
