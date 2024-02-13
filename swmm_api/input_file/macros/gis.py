@@ -447,3 +447,47 @@ def update_area(inp, decimals=4):
     """
     for sc in inp.SUBCATCHMENTS.values():
         sc.area = round(inp.POLYGONS[sc.name].geo.area, decimals-4) * 1e-4  # m² to ha
+
+
+def apply_gis_style_to_gpkg(fn_gpkg):
+    from swmm_api.input_file.macros.gis_styles import GIS_STYLE_PATH
+    import sqlite3
+
+    for section in (JUNCTIONS, STORAGE, OUTFALLS, CONDUITS, ORIFICES, PUMPS, WEIRS):
+        layer_name = section
+
+        # Path to your QML file and GeoPackage
+        fn_qml = GIS_STYLE_PATH / f'{section.capitalize()}.qml'
+        fn_sld = fn_qml.with_suffix('.sld')
+
+        # Read the QML file
+        with open(fn_qml, 'r') as file:
+            qml_content = file.read()
+
+        with open(fn_sld, 'r') as file:
+            sld_content = file.read().replace('__XX__', str(GIS_STYLE_PATH))
+
+        # Connect to the GeoPackage
+        conn = sqlite3.connect(fn_gpkg)
+        cursor = conn.cursor()
+
+        # Assuming you have a table for styles ('layer_styles') and a layer ('your_layer_name')
+        # Check if a style already exists for the layer
+        cursor.execute("SELECT COUNT(*) FROM layer_styles WHERE f_table_name = ?", (layer_name,))
+        if cursor.fetchone()[0] == 0:
+            # Insert new style entry if it doesn't exist
+            cursor.execute("""
+                INSERT INTO layer_styles (styleName, f_table_name, f_geometry_column, styleQML, styleSLD, useAsDefault)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (layer_name, 'geom', qml_content, sld_content, 1))
+        else:
+            # Update existing style entry
+            cursor.execute("""
+                UPDATE layer_styles
+                SET styleQML = ?, styleSLD = ?, useAsDefault = ?, styleName = ?, f_table_catalog = "", f_table_schema = "", owner = "", description = ?
+                WHERE f_table_name = ? AND f_geometry_column = ?
+            """, (qml_content, sld_content, 1, f'{section.lower()}_style', f'style for section {section}', layer_name, 'geom'))
+
+        # Commit changes and close connection
+        conn.commit()
+        conn.close()
