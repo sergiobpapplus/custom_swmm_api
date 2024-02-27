@@ -92,7 +92,7 @@ def convert_inp_to_geo_package(inp_fn, gpkg_fn=None, driver='GPKG', label_sep='.
     write_geo_package(inp, gpkg_fn, driver=driver, label_sep=label_sep, crs=crs)
 
 
-def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:32633", simplify_link_min_length=None):
+def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:32633", simplify_link_min_length=None, add_style=False):
     """
     Write the inp file data to a GIS database.
 
@@ -106,6 +106,7 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
                     Can be anything accepted by pyproj.CRS.from_user_input(),
                     such as an authority string (eg “EPSG:4326”) or a WKT string.
         simplify_link_min_length (float): simplify links with a minimum length of ... (default: all)
+        add_style (bool): if the default style should be added to the geopackage.
     """
     from geopandas import GeoDataFrame
 
@@ -186,6 +187,9 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
             GeoDataFrame(gs_connector).to_file(gpkg_fn, driver=driver, layer=SUBCATCHMENTS + '_connector')
     else:
         print(f'{f"-":^{len(SUBCATCHMENTS)}s}')
+
+    if add_style:
+        apply_gis_style_to_gpkg(gpkg_fn)
 
 
 def get_subcatchment_connectors(inp):
@@ -449,11 +453,46 @@ def update_area(inp, decimals=4):
         sc.area = round(inp.POLYGONS[sc.name].geo.area, decimals-4) * 1e-4  # m² to ha
 
 
+def _create_gpkg_style_table(fn_gpkg):
+    import sqlite3
+    # Connect to the GeoPackage
+    conn = sqlite3.connect(fn_gpkg)
+    cursor = conn.cursor()
+
+    # SQL statement to create the layer_styles table
+    create_table_sql = """
+    CREATE TABLE IF NOT EXISTS layer_styles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        f_table_name TEXT NOT NULL,
+        f_geometry_column TEXT NOT NULL,
+        styleQML TEXT,
+        styleSLD TEXT,
+        styleName TEXT DEFAULT '',
+        description TEXT DEFAULT '',
+        owner TEXT DEFAULT '',
+        f_table_catalog TEXT DEFAULT '',
+        f_table_schema TEXT DEFAULT '',
+        ui TEXT DEFAULT '',
+        useAsDefault BOOLEAN DEFAULT TRUE,
+        update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    """
+
+    # Execute the SQL statement
+    cursor.execute(create_table_sql)
+
+    # Commit changes and close connection
+    conn.commit()
+    conn.close()
+
+
 def apply_gis_style_to_gpkg(fn_gpkg):
     from swmm_api.input_file.macros.gis_styles import GIS_STYLE_PATH
     import sqlite3
 
-    for section in (JUNCTIONS, STORAGE, OUTFALLS, CONDUITS, ORIFICES, PUMPS, WEIRS):
+    _create_gpkg_style_table(fn_gpkg)
+
+    for section in (JUNCTIONS, STORAGE, OUTFALLS, CONDUITS, ORIFICES, PUMPS, WEIRS, SUBCATCHMENTS + '_connector'):
         layer_name = section
 
         # Path to your QML file and GeoPackage
@@ -479,7 +518,7 @@ def apply_gis_style_to_gpkg(fn_gpkg):
             cursor.execute("""
                 INSERT INTO layer_styles (styleName, f_table_name, f_geometry_column, styleQML, styleSLD, useAsDefault)
                 VALUES (?, ?, ?, ?, ?, ?)
-            """, (layer_name, 'geom', qml_content, sld_content, 1))
+            """, (f'{section.lower()}_style', layer_name, 'geom', qml_content, sld_content, 1))
         else:
             # Update existing style entry
             cursor.execute("""
