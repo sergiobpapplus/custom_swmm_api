@@ -3,7 +3,7 @@ from .check import (check_for_nodes, check_for_duplicates, check_for_duplicate_l
 from .collection import nodes_dict, links_dict, subcatchments_per_node_dict, nodes_subcatchments_dict
 from .compare import CompareSections, compare_inp_files, compare_sections
 from .convert_model import to_kinematic_wave
-from .convert_object import junction_to_storage, junction_to_outfall, conduit_to_orifice, storage_to_outfall, junction_to_divider
+from .convert_object import junction_to_storage, junction_to_outfall, conduit_to_orifice, storage_to_outfall, junction_to_divider, orifice_to_conduit
 from .curve import curve_figure
 from .edit import (combine_conduits, combine_conduits_keep_slope, combine_vertices, delete_link, delete_node,
                    delete_subcatchment, dissolve_conduit, flip_link_direction, move_flows, rename_link, rename_node,
