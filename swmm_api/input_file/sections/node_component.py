@@ -135,6 +135,8 @@ class Inflow(BaseSectionObject):
         """
         self.node = str(node)
         self.constituent = str(constituent)
+        if self.constituent.upper() == self.TYPES.FLOW:
+            self.constituent = self.constituent.upper()
         self.time_series = time_series
         self.kind = str(kind)
         self.mass_unit_factor = float(mass_unit_factor)
