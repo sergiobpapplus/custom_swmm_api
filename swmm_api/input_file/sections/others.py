@@ -836,7 +836,11 @@ class Control(BaseSectionObject):
 
         def __init__(self, logic: Literal['IF', 'OR', 'AND'], kind=NaN, *args, label=NaN, attribute=None, relation: Literal['=', '<>', '<', '<=', '>', '>='] = None, value=None):
             self.logic = logic.upper()  # if, and, or
-            self.kind = kind.upper()  # Control.OBJECTS
+
+            if isinstance(kind, str):
+                self.kind = kind.upper()  # Control.OBJECTS
+            else:
+                self.kind = kind  # NaN for Variables
 
             line = list(args)
             if line and self.kind not in Control.OBJECT_TYPES:
@@ -1032,6 +1036,9 @@ class ControlVariable(Control):
         self.label = label
         self.variable = variable
 
+    def copy(self):
+        return BaseSectionObject.copy(self)
+
     @classmethod
     def from_inp_line(cls, *line_args):
         return cls(*(l for l in line_args if l != '='))
@@ -1086,6 +1093,9 @@ class ControlExpression(Control):
     def __init__(self, name, expression, *_expressions):
         self.name = name
         self.expression = expression + ' '.join(_expressions)
+
+    def copy(self):
+        return BaseSectionObject.copy(self)
 
     @classmethod
     def from_inp_line(cls, *line_args):
@@ -1192,7 +1202,7 @@ class Curve(BaseSectionObject):
         Args:
             name (str): Name assigned to table.
             kind (str): One of ``STORAGE`` / ``SHAPE`` / ``DIVERSION`` / ``TIDAL`` / ``PUMP1`` / ``PUMP2`` / ``PUMP3`` / `PUMP4`` / ``RATING`` / ``CONTROL`` (:attr:`Curve.TYPES`).
-            points (list[list[float, float]]): tuple of X-value (an independent variable) and the corresponding Y-value (a dependent variable)
+            points (list[list[float | int]]): tuple of X-value (an independent variable) and the corresponding Y-value (a dependent variable)
         """
         self.name = str(name)
         self.kind = kind.upper()
