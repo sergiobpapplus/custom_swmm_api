@@ -2,6 +2,20 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.40 (2024-02-27)
+
+### Fix
+
+* Fixed minor issue with mixed letter cases ([`a099f88`](https://gitlab.com/markuspichler/swmm_api/-/commit/a099f884f6a202169a1ebab78939b54c16f6f134))
+* Fixed minor issue with control class ([`0772544`](https://gitlab.com/markuspichler/swmm_api/-/commit/0772544295a89835d022a4e8f10db16ea6e86391))
+* Fixed issue when style table was not in geopackage when adding default style in apply_gis_style_to_gpkg function ([`9579535`](https://gitlab.com/markuspichler/swmm_api/-/commit/957953509fd553c1c695e9070ede7849b9d825ae))
+* Added ffmpeg-path and inded-to-plot arguments to animated_plot_longitudinal function ([`e0e86d3`](https://gitlab.com/markuspichler/swmm_api/-/commit/e0e86d354bcbaf9bd2c4cc1b192c7654dc59019a))
+* Added orifice_to_conduit macro function ([`083b9b6`](https://gitlab.com/markuspichler/swmm_api/-/commit/083b9b6903aab3aeec29b01709f39fd3bdf45fd8))
+
+### Documentation
+
+* Added master thesis where api was used ([`630585c`](https://gitlab.com/markuspichler/swmm_api/-/commit/630585cf82e63ccd44c510d01e40833fc15f0304))
+
 ## v0.4.39 (2024-02-13)
 
 ### Fix
