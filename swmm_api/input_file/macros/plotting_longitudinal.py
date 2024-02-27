@@ -213,7 +213,7 @@ def _add_node_labels(ax, res):
 
 
 
-def animated_plot_longitudinal(filename, inp, start_node, end_node, out=None, ax=None, zero_node=None, add_node_labels=False):
+def animated_plot_longitudinal(filename, inp, start_node, end_node, out=None, ax=None, zero_node=None, add_node_labels=False, index_to_plot=None, path_ffmpeg=None):
     """
     Create an animation of the water level in the nodes as a mp4 file.
 
@@ -229,8 +229,21 @@ def animated_plot_longitudinal(filename, inp, start_node, end_node, out=None, ax
     """
     import matplotlib.animation as animation
     from tqdm import tqdm
+    import sys
 
-    plt.rcParams['animation.ffmpeg_path'] = r'C:\Program Files\ffmpeg\bin\ffmpeg.exe'
+    if path_ffmpeg is None:
+        # AIX 'aix'
+        # Emscripten 'emscripten'
+        # Linux 'linux'
+        # WASI 'wasi'
+        # Windows 'win32'
+        # Windows/Cygwin 'cygwin'
+        # macOS 'darwin'
+        if 'win32' in sys.platform:
+            plt.rcParams['animation.ffmpeg_path'] = r'C:\Program Files\ffmpeg\bin\ffmpeg.exe'
+        else:
+            plt.rcParams['animation.ffmpeg_path'] = r'ffmpeg'
+
     fps = 10  # frames per second
     extra_args = ['-vcodec', 'libx264', '-crf', '18']  # codec and quality
 
@@ -245,14 +258,20 @@ def animated_plot_longitudinal(filename, inp, start_node, end_node, out=None, ax
 
     line_water = None
 
+    if index_to_plot is None:
+        index_to_plot = out.index
+
     with writer.saving(fig, filename, 200):  # dpi > 200: maybe performance problems when playing
-        for j in tqdm(out.index[8:240:2]):
+        for j in tqdm(index_to_plot):
             res = get_longitudinal_data(inp, start_node, end_node, out, zero_node=zero_node, depth_agg_func=lambda s: s.loc[j])
 
             if line_water is not None:
-                ax.lines.remove(line_water[0])
-                ax.collections.remove(fill_water)
-                ax.collections.remove(fill_conduit)
+                # ax.lines.remove(line_water[0])
+                line_water[0].remove()
+                # ax.collections.remove(fill_water)
+                fill_water.remove()
+                # ax.collections.remove(fill_conduit)
+                fill_conduit.remove()
 
             # Water line
             line_water = ax.plot(res[COLS.STATION], res[COLS.WATER], c='blue', lw=0.7)
