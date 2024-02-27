@@ -20,8 +20,9 @@ from swmm_api.run_swmm.run_epaswmm import get_swmm_version_epa, swmm5_run_epa as
 # KOSTRA 01-01-2021 00:10 2.8000000000000007""")
 # exit()
 
-CONFIG['exe_path'] = r"C:\Program Files\EPA SWMM 5.2.3 (64-bit)\runswmm.exe"
-CONFIG['encoding'] = 'ISO-8859-1'
+# CONFIG['exe_path'] = r"C:\Program Files\EPA SWMM 5.2.3 (64-bit)\runswmm.exe"
+# CONFIG['encoding'] = 'ISO-8859-1'
+CONFIG['exe_path'] = "/Users/markus/.bin/runswmm"
 
 warnings.filterwarnings('ignore', category=SwmmInputWarning)
 
