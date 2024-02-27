@@ -218,6 +218,7 @@ MORE INFORMATION COMING SOON
 4. Zhang, Z., Tian, W., & Liao, Z. (2023). Towards coordinated and robust real-time control: A decentralized approach for combined sewer overflow and urban flooding reduction based on multi-agent reinforcement learning. *Water Research, 229*, 119498. <https://doi.org/10.1016/j.watres.2022.119498>
 5. van der Werf, J. A., Kapelan Z., Langeveld, J. G. (2023). Predictive heuristic control: inferring risks from heterogeneous nowcast accuracy. *Water Sci Technol* 2023; 87 (4): 1009–1028. <https://doi.org/10.2166/wst.2023.027>
 6. Farina, A., Di Nardo, A., Gargano, R., Van Der Werf, J. A., & Greco, R. (2023). A simplified approach for the hydrological simulation of urban drainage systems with SWMM. Journal of Hydrology, 623, 129757. <https://doi.org/10.1016/j.jhydrol.2023.129757>
+7. Wicki, T. (2022). Effekt der Einzugsgebietsmodellierung auf  die Abflusssimulation im urbanen Gebiet. Master thesis. Paris Lodron-Universität Salzburg. <https://unigis.at/files/Mastertheses/Full/106726.pdf>
 
 
 ## Alternative packages
