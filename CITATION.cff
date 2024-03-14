@@ -1,12 +1,28 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-- family-names: "Pichler"
-  given-names: "Markus"
-  orcid: "https://orcid.org/0000-0002-8101-2163 "
-
-title: "swmm_api: API for reading, manipulating and running SWMM-Projects"
+  - family-names: Pichler
+    given-names: Markus
+    orcid: https://orcid.org/0000-0002-8101-2163
+    affiliation: Graz University of Technology
+title: "swmm_api: API for reading, manipulating and running SWMM-Projects with python"
 version: 0.3
 doi: 10.5281/zenodo.7054804
 date-released: 2022-09-06
 url: "https://gitlab.com/markuspichler/swmm_api"
+license: MIT
+identifiers:
+  - description: This is the collection of archived snapshots of all versions of swmm_api
+    type: doi
+    value: "10.5281/zenodo.5862140"
+  - description: This is the archived snapshot of version 0.3 of swmm_api
+    type: doi
+    value: "10.5281/zenodo.7054804"
+keywords:
+ - SWMM
+ - Stormwater
+ - Hyraulics
+ - Hydrology
+ - api
+ - python
+abstract: "ith this package you can read INP-files, manipulate them and write new ones. You can run swmm within the python api. And you can read the RPT- and OUT-files as a pandas DataFrame for further analysis."
