@@ -23,7 +23,7 @@ For metric units,
     - evaporation is in mm/day, and
     - wind speed is in km/hour.
 
-.. automodule:: swmm_api.input_file.misc.climate_file
+.. automodule:: swmm_api.external_files.climate_file
     :members:
     :no-undoc-members:
 
@@ -34,6 +34,6 @@ Timeseries File
 
 SWMM5 User Manual: Section 11.6 Time Series Files
 
-.. automodule:: swmm_api.input_file.misc.dat_timeseries
+.. automodule:: swmm_api.external_files.dat_timeseries
     :members:
     :no-undoc-members:
