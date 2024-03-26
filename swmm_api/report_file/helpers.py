@@ -186,7 +186,11 @@ def _part_to_frame(part, replace_parts=None):
         if 'days hr:min' in col:
             df[col] = pd.to_timedelta(df[col].str.replace('  ', ' days ') + ':00')
         else:
-            df[col] = pd.to_numeric(df[col], errors='ignore')
+            try:
+                df[col] = pd.to_numeric(df[col])
+            except ValueError as e:
+                pass
+                # print(e)
 
     return df.copy()
 
