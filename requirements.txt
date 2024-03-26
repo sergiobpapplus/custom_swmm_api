@@ -13,6 +13,6 @@ geopandas  # handle GIS data
 fiona  # read and write to GIS database
 SWMM_xsections_shape_generator  # analyse cross-section information
 pyswmm  # and its requirements [swmm-toolkit] | run swmm with progress bar (tqdm)
-cchardet  # detect inp- and rpt-file encoding
+#cchardet  # detect inp- and rpt-file encoding
 
 scikit-learn  # get geographically next nodes in inp file

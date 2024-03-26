@@ -56,6 +56,26 @@ To add the GIS functionality on **Windows**, I recommend using python version >=
  (or [miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/))
 and run `mamba install geopandas` to install the GIS dependencies (see [GeoPandas](https://geopandas.org/en/stable/getting_started.html)).
 
+Here you can see which packages are getting installed:
+
+| packages                       | required | macros | gis | full | docs |
+|:------------------------------:|:--------:|:------:|:---:|:----:|:----:|
+| pandas                         | x        | x      | x   | x    | x    |
+| tqdm                           | x        | x      | x   | x    | x    |
+| networkx                       |          | x      |     | x    | x    |
+| fastparquet                    |          | x      |     | x    | x    |
+| matplotlib                     |          | x      |     | x    | x    |
+| SWMM_xsections_shape_generator |          | x      |     | x    | x    |
+| pyswmm                         |          | x      |     | x    | x    |
+| Shapely                        |          |        | x   | x    | x    |
+| pyproj                         |          |        | x   | x    | x    |
+| Rtree                          |          |        | x   | x    | x    |
+| geopandas                      |          |        | x   | x    | x    |
+| sphinx                         |          |        |     |      | x    |
+| nbsphinx                       |          |        |     |      | x    |
+| recommonmark                   |          |        |     |      | x    |
+| pydata_sphinx_theme            |          |        |     |      | x    |
+
 ## 📖 Documentation
 [Link](https://markuspichler.gitlab.io/swmm_api) to the documentation of the api and some example jupyter notebook.
 
@@ -142,8 +162,12 @@ swmm5 C:\path\to\new_inputfile.inp:  77%|███████▋  | 77/100 [00:
 
 ## Read the OUT-File
 ```python
-from swmm_api import read_out_file
+from swmm_api import read_out_file, SwmmOutput
+
 out = read_out_file('new_inputfile.out')   # type: swmm_api.SwmmOut
+# or
+out = SwmmOutput('new_inputfile.out')
+
 df = out.to_frame()  # type: pandas.DataFrame
 ```
 see [examples/out_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/main/examples/out_file_reader.ipynb)
@@ -151,8 +175,12 @@ see [examples/out_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-
 
 ## Read the RPT-File
 ```python
-from swmm_api import read_rpt_file
+from swmm_api import read_rpt_file, SwmmReport
+
 rpt = read_rpt_file('new_inputfile.rpt')  # type: swmm_api.SwmmReport
+# or
+rpt = SwmmReport('new_inputfile.rpt')
+
 node_flooding_summary = rpt.node_flooding_summary  # type: pandas.DataFrame
 ```
 see [examples/rpt_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-/blob/main/examples/rpt_file_reader.ipynb)
@@ -165,7 +193,7 @@ see [examples/rpt_file_reader.ipynb](https://gitlab.com/markuspichler/swmm_api/-
 from swmm_api import SwmmInput
 from swmm_api.input_file.macros.gis import write_geo_package, gpkg_to_swmm, complete_vertices
 
-inp = SwmmInput.read_file('inputfile.inp')
+inp = SwmmInput('inputfile.inp')
 
 coords = inp.COORDINATES.geo_series  # type: geoandas.GeoSeries with points for all nodes
 

@@ -35,8 +35,8 @@ version = { attr = "swmm_api.__version__" }
 [project.optional-dependencies]
 macros = ["networkx", "fastparquet", "matplotlib", "SWMM_xsections_shape_generator", "pyswmm"]
 gis = ["Shapely", "pyproj", "Rtree", "geopandas"]
-full = ["networkx", "fastparquet", "matplotlib", "SWMM_xsections_shape_generator", "Shapely", "pyproj", "Rtree", "geopandas", "pyswmm"]
-docs = ["networkx", "fastparquet", "matplotlib", "Shapely", "pyproj", "Rtree", "geopandas", "SWMM_xsections_shape_generator",
+full = ["networkx", "fastparquet", "matplotlib", "SWMM_xsections_shape_generator", "pyswmm", "Shapely", "pyproj", "Rtree", "geopandas"]
+docs = ["networkx", "fastparquet", "matplotlib", "SWMM_xsections_shape_generator", "pyswmm", "Shapely", "pyproj", "Rtree", "geopandas",
         "sphinx", "nbsphinx", "recommonmark", "pydata_sphinx_theme", 'sphinx-codeautolink', 'sphinx-favicon']
 
 [project.urls]
