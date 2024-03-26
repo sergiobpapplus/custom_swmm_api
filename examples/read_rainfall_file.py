@@ -1,4 +1,4 @@
-from swmm_api.input_file.misc.dat_timeseries import read_swmm_rainfall_file
+from swmm_api.external_files.dat_timeseries import read_swmm_rainfall_file
 from io import StringIO
 
 if __name__ == '__main__':
