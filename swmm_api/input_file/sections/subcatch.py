@@ -413,6 +413,9 @@ class Polygon(BaseSectionObject):
                        dtype={'names': ('polygon', 'x', 'y'),
                               'formats': ('O', 'f4', 'f4')})
 
+        if a.size == 0:
+            return ()
+
         _, unique_index = np.unique(a['polygon'], return_index=True)
         unique_index_sorted = unique_index[unique_index.argsort()]
 
