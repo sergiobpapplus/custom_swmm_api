@@ -346,5 +346,3 @@ def add_backdrop(ax, inp):
         x0, y0, x1, y1 = inp.BACKDROP[k.DIMENSIONS]
         im = plt.imread(fn)
         ax.imshow(im, extent=[x0, x1, y0, y1])
-
-    pass
