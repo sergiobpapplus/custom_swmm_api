@@ -407,6 +407,8 @@ class Polygon(BaseSectionObject):
 
     @classmethod
     def _convert_lines(cls, multi_line_args):
+        if isinstance(multi_line_args, str) and multi_line_args == '':
+            return ()
         a = np.loadtxt(io.StringIO(multi_line_args), comments=';',
                        dtype={'names': ('polygon', 'x', 'y'),
                               'formats': ('O', 'f4', 'f4')})
@@ -616,6 +618,7 @@ class Coverage(BaseSectionObject):
     """
     _identifier = IDENTIFIERS.subcatchment
     _section_label = COVERAGES
+    _table_inp_export = False
 
     def __init__(self, subcatchment, land_use_dict=None):
         """
