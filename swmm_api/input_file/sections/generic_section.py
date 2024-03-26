@@ -631,7 +631,7 @@ class OptionSection(InpSectionGeneric):
         """
         self['DRY_STEP'] = value
 
-    def set_routing_step(self, value=600):
+    def set_routing_step(self, value=600.):
         """
         ROUTING_STEP is the time step length in seconds used for routing flows and water quality constituents through the conveyance system.
         
@@ -644,7 +644,7 @@ class OptionSection(InpSectionGeneric):
         """
         self['ROUTING_STEP'] = value
 
-    def set_lengthening_step(self, value=0):
+    def set_lengthening_step(self, value=0.):
         """
         LENGTHENING_STEP is a time step, in seconds, used to lengthen conduits under dynamic wave routing, so that they meet the Courant stability criterion under full-flow conditions (i.e., the travel time of a wave will not be smaller than the specified conduit lengthening time step). 
         
@@ -657,7 +657,7 @@ class OptionSection(InpSectionGeneric):
         """
         self['LENGTHENING_STEP'] = value
 
-    def set_variable_step(self, value=0):
+    def set_variable_step(self, value=0.):
         """
         VARIABLE_STEP is a safety factor applied to a variable time step computed for each time period under dynamic wave flow routing.
 
@@ -666,7 +666,7 @@ class OptionSection(InpSectionGeneric):
         If the safety factor is 0 (the default), then no variable time step is used.
         
         Args:
-            value (int): 
+            value (float):
         """
         self['VARIABLE_STEP'] = value
 
