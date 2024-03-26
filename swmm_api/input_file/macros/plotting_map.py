@@ -208,9 +208,6 @@ def add_node_map(ax: plt.Axes, inp: SwmmInput,
             new_size = lambda _: size_default
 
         # -------------
-
-
-        # -------------
         for section in [JUNCTIONS, STORAGE, OUTFALLS]:
             if section in inp:
                 is_in_sec = coords.index.isin(inp[section].keys())
