@@ -41,7 +41,7 @@ docs = ["networkx", "fastparquet", "matplotlib", "Shapely", "pyproj", "Rtree", "
 
 [project.urls]
 Documentation = "https://markuspichler.gitlab.io/swmm_api"
-Changelog = "https://gitlab.com/markuspichler/swmm_api/-/blob/master/CHANGELOG.md"
+Changelog = "https://gitlab.com/markuspichler/swmm_api/-/blob/main/CHANGELOG.md"
 homepage = "https://gitlab.com/markuspichler/swmm_api"
 
 [tool.setuptools.packages.find]
