@@ -368,6 +368,7 @@ class Weir(_Link):
         can_surcharge (bool): ``YES`` (:obj:`True`) if the weir can surcharge (have an upstream water level higher than the height of the opening); ``NO`` (:obj:`False`) if it cannot (default is ``YES``).
         road_width (float): Width of road lanes and shoulders for ``ROADWAY`` weir (ft or m).
         road_surface (str): Type of road surface for ``ROADWAY`` weir: ``PAVED`` or ``GRAVEL``.
+        coefficient_curve (str): Name of an optional Weir Curve that allows the central Discharge Coeff. to vary with head (ft or m) across the weir. Does not apply to Roadway weirs. Available curves are listed in the [``CURVES``] section (:class:`Curve`) of the input.
 
         FORMS: Enum-like for the attribute :attr:`Weir.form` with following members -> {``TRANSVERSE`` | ``SIDEFLOW`` | ``V_NOTCH`` | ``TRAPEZOIDAL`` | ``ROADWAY``}
         ROAD_SURFACES: Enum-like for the attribute :attr:`Weir.road_surface` with following members -> {``ROADWAY`` | ``PAVED`` | ``GRAVEL``}
@@ -388,7 +389,8 @@ class Weir(_Link):
         GRAVEL = 'GRAVEL'
 
     def __init__(self, name, from_node, to_node, form, height_crest, discharge_coefficient, has_flap_gate=False,
-                 n_end_contractions=0, discharge_coefficient_end=NaN, can_surcharge=True, road_width=NaN, road_surface=NaN):
+                 n_end_contractions=0, discharge_coefficient_end=NaN, can_surcharge=True,
+                 road_width=NaN, road_surface=NaN, coefficient_curve=NaN):
         """
         Weir link information.
 
@@ -406,6 +408,7 @@ class Weir(_Link):
             higher than the height of the opening); ``NO`` (:obj:`False`) if it cannot (default is ``YES``).
             road_width (float): Width of road lanes and shoulders for ``ROADWAY`` weir (ft or m).
             road_surface (str): Type of road surface for ``ROADWAY`` weir: ``PAVED`` or ``GRAVEL``.
+            coefficient_curve (str): Name of an optional Weir Curve that allows the central Discharge Coeff. to vary with head (ft or m) across the weir. Does not apply to Roadway weirs. Available curves are listed in the [``CURVES``] section (:class:`Curve`) of the input.
         """
         _Link.__init__(self, name, from_node, to_node)
         self.form = str(form)
@@ -417,5 +420,39 @@ class Weir(_Link):
             discharge_coefficient_end = discharge_coefficient
         self.discharge_coefficient_end = float(discharge_coefficient_end)
         self.can_surcharge = to_bool(can_surcharge)
-        self.road_width = float(road_width)
-        self.road_surface = road_surface if isinstance(road_surface, str) and (road_surface.lower() != 'nan') else road_surface
+
+        # road_width and road_surface will be marked as '*' in epa-swmm GUI
+        # either '*', NaN or a float
+        self.road_width = NaN if isinstance(road_width, str) and road_width == '*' else float(road_width)
+        # either '*', NaN or a string
+        if isinstance(road_surface, str):
+            if road_surface.lower() in {'*', 'nan'}:
+                self.road_surface = NaN
+            elif road_surface.upper() in (self.ROAD_SURFACES.PAVED, self.ROAD_SURFACES.GRAVEL):
+                self.road_surface = road_surface.upper()
+            else:
+                raise NotImplementedError(f'The parameter road_surface takes either "*", np.NaN, "{self.ROAD_SURFACES.PAVED}" or "{self.ROAD_SURFACES.GRAVEL}"')
+        elif isinstance(road_surface, (float, int)) and isnan(road_surface):
+            self.road_surface = road_surface  # = NaN
+        else:
+            raise NotImplementedError(f'The parameter road_surface takes either "*", np.NaN, "{self.ROAD_SURFACES.PAVED}" or "{self.ROAD_SURFACES.GRAVEL}"')
+        # either NaN or a string
+        self.coefficient_curve = coefficient_curve
+        self._set_unused_parameters_stars()
+
+    def _set_unused_parameters_stars(self):
+        """Set "*" for the parameters ``road_width`` and ``road_surface`` when both are unused and ``coefficient_curve`` is set."""
+        if isinstance(self.coefficient_curve, str):
+            if isinstance(self.road_width, float) and isnan(self.road_width):
+                self.road_width = '*'
+            if isinstance(self.road_surface, float) and isnan(self.road_surface):
+                self.road_surface = '*'
+
+    @property
+    def curve_name(self):
+        if isinstance(self.coefficient_curve, str):
+            return self.coefficient_curve
+
+    def to_inp_line(self):
+        self._set_unused_parameters_stars()
+        return super().to_inp_line()
