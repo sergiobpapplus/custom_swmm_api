@@ -36,7 +36,6 @@ _PROPERTY_LABELS = ['type', 'area', 'invert', 'max_depth', 'offset', 'length']
 _NODES_TYPES = ['JUNCTION', 'OUTFALL', 'STORAGE', 'DIVIDER']
 _LINK_TYPES = ['CONDUIT', 'PUMP', 'ORIFICE', 'WEIR', 'OUTLET']
 
-
 _ERROR_MESSAGE_PREFIX = '*   '
 
 
