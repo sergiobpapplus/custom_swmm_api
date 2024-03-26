@@ -2,6 +2,35 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.41 (2024-03-26)
+
+### Fix
+
+* Fixed error when empty polygon section is in inp-file. ([`1b48a33`](https://gitlab.com/markuspichler/swmm_api/-/commit/1b48a33ed28a4b32a51d0ae75c82465ed7554831))
+* Added coefficient_curve as parameter for Weir object. ([`94810c1`](https://gitlab.com/markuspichler/swmm_api/-/commit/94810c1aad97b3181ae27eb06c89283030d8b6f0))
+* Removed pandas deprecation-warning when using SwmmReport and pandas version > 2.2 ([`7872369`](https://gitlab.com/markuspichler/swmm_api/-/commit/787236928dee2551fda228eba57a911a72855641))
+* Added return value to SwmmInput.read_text() ([`7080635`](https://gitlab.com/markuspichler/swmm_api/-/commit/7080635940820aeee4a18ab40214767fe88f9eee))
+* Added function swmm_api.input_fie.macros.plotting_sub_map.plot_sub_map ([`38d9411`](https://gitlab.com/markuspichler/swmm_api/-/commit/38d9411dc73b52b040583d5b04bb79dc7d42f2f7))
+* Added function plot_time_series_instabile_links ([`bf26de8`](https://gitlab.com/markuspichler/swmm_api/-/commit/bf26de806ace7c10f740941ce3a5b9e35154b73c))
+* Moved climate-file and dat-timeseries-file functions to swmm_api.external_files ([`38e2085`](https://gitlab.com/markuspichler/swmm_api/-/commit/38e20853e8e921eaa17b9ae037efa5e4095b7014))
+* Added WEIR as curve type in Curve class ([`aafaf43`](https://gitlab.com/markuspichler/swmm_api/-/commit/aafaf43c98978369f5e2e6aa334b84f64dbf5a35))
+* Fixed treatment section string when using parameter SwmmInput.write_file(fast=False) ([`ad05bc6`](https://gitlab.com/markuspichler/swmm_api/-/commit/ad05bc6633c040c094509982ce63d772bd4a658c))
+* Fixed error when empty polygon section is in inp-file. And fixed coverage section string when using parameter SwmmInput.write_file(fast=False) ([`cfe8cdf`](https://gitlab.com/markuspichler/swmm_api/-/commit/cfe8cdf4c8f16660539a07eb3ea3d256cb68e862))
+* Fixed unexpected behaviour where several warnings are shown when using SwmmOutput.get_part(kind=None, ...) and one of label or variable is given. ([`139fa6f`](https://gitlab.com/markuspichler/swmm_api/-/commit/139fa6f73a28f2d7ea31358a93c86f1218e742fb))
+* Added function print_raw_part to Swmm Report class ([`ef01593`](https://gitlab.com/markuspichler/swmm_api/-/commit/ef01593754a9465b88a725f060962d3cc897003d))
+
+### Documentation
+
+* Added some text to doc. ([`c263f50`](https://gitlab.com/markuspichler/swmm_api/-/commit/c263f50fee2f8d9f24a17300336f54761d33bed8))
+* Cleanup of requirements info ([`b4ca60d`](https://gitlab.com/markuspichler/swmm_api/-/commit/b4ca60d3b3402273de3bfe4f1a33b563e9915c7c))
+* Added warning in function create_sub_inp ([`53237d9`](https://gitlab.com/markuspichler/swmm_api/-/commit/53237d9bcd3512826888c6b9e6ed58ebf42c54cb))
+* Changed some parameter value types in option section functions ([`82dbcea`](https://gitlab.com/markuspichler/swmm_api/-/commit/82dbceac434e676a0aae25bffb158d0d27f3535a))
+* Fixed wrong link from pypi to changelog ([`0088d9f`](https://gitlab.com/markuspichler/swmm_api/-/commit/0088d9f83198af894e8552f5fa87d5aadc5c484f))
+* Added master thesis where api was used ([`deccae2`](https://gitlab.com/markuspichler/swmm_api/-/commit/deccae23675270ffc380e9e0d0f83af24cdb658b))
+* Added Matrix channel ([`e75ec4c`](https://gitlab.com/markuspichler/swmm_api/-/commit/e75ec4c2495d082dadfaa1c6d63cdb32391efb41))
+* Added Matrix channel ([`07254e2`](https://gitlab.com/markuspichler/swmm_api/-/commit/07254e2b4c7d1f0bb29519aab7334cd3435ffcaf))
+* Added citation information ([`fc0d230`](https://gitlab.com/markuspichler/swmm_api/-/commit/fc0d230311a72d94d7b6a8d19eb24f7183bd88d9))
+
 ## v0.4.40 (2024-02-27)
 
 ### Fix
