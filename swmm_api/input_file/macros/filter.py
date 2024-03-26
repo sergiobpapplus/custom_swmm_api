@@ -169,10 +169,10 @@ def filter_subcatchments(inp, final_nodes):
 
 def create_sub_inp(inp, nodes):
     """
-    split model network and only keep nodes.
+    Split model network and only keep nodes.
 
-    Notes:
-        CONTROLS not supported
+    Warnings:
+        This changes the inp-object. Use inp.copy() as parameter for this function when original structure should not be changed.
 
     Args:
         inp (SwmmInput): inp-file data
