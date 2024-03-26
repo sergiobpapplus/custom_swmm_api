@@ -199,6 +199,7 @@ class Pattern(BaseSectionObject):
     """
     _identifier = IDENTIFIERS.name
     _section_label = PATTERNS
+    _table_inp_export = False
 
     class CYCLES:
         MONTHLY = 'MONTHLY'
@@ -1138,6 +1139,7 @@ class Curve(BaseSectionObject):
             - ``PUMP4``: pump outflow v. continuous depth in ft (m)
             - ``RATING``: outlet flow v. head in ft (m)
             - ``CONTROL``: control setting v. controller variable
+            - ``WEIR``: weir coefficient v. head in ft|m
 
     Examples:
         ::
@@ -1150,26 +1152,27 @@ class Curve(BaseSectionObject):
 
     Attributes:
         name (str): Name assigned to table.
-        kind (str): One of ``STORAGE`` / ``SHAPE`` / ``DIVERSION`` / ``TIDAL`` / ``PUMP1`` / ``PUMP2`` / ``PUMP3`` / ``PUMP4`` / ``RATING`` / ``CONTROL`` (:attr:`Curve.TYPES`).
+        kind (str): One of ``STORAGE`` / ``SHAPE`` / ``DIVERSION`` / ``TIDAL`` / ``PUMP1`` / ``PUMP2`` / ``PUMP3`` / ``PUMP4`` / ``RATING`` / ``CONTROL`` / ``WEIR`` (:attr:`Curve.TYPES`).
         points (list[list[float, float]]): tuple of X-value (an independent variable) and the corresponding Y-value (a dependent variable)
 
-        TYPES: Enum-like for the attribute :attr:`Inflow.kind` with following members -> {`STORAGE`` | ``SHAPE`` | ``DIVERSION`` | ``TIDAL`` | ``PUMP1`` | ``PUMP2`` | ``PUMP3`` | ``PUMP4`` | ``RATING`` | ``CONTROL``}
+        TYPES: Enum-like for the attribute :attr:`Inflow.kind` with following members -> {`STORAGE`` | ``SHAPE`` | ``DIVERSION`` | ``TIDAL`` | ``PUMP1`` | ``PUMP2`` | ``PUMP3`` | ``PUMP4`` | ``RATING`` | ``CONTROL`` | ``WEIR``}
     """
     _identifier = IDENTIFIERS.name
     _table_inp_export = False
     _section_label = CURVES
 
     class TYPES:
-        STORAGE = 'STORAGE'
-        SHAPE = 'SHAPE'
+        CONTROL = 'CONTROL'
         DIVERSION = 'DIVERSION'
-        TIDAL = 'TIDAL'
         PUMP1 = 'PUMP1'
         PUMP2 = 'PUMP2'
         PUMP3 = 'PUMP3'
         PUMP4 = 'PUMP4'
         RATING = 'RATING'
-        CONTROL = 'CONTROL'
+        STORAGE = 'STORAGE'
+        SHAPE = 'SHAPE'
+        TIDAL = 'TIDAL'
+        WEIR = 'WEIR'
 
     @classmethod
     def _get_names(cls, Type):
@@ -1194,6 +1197,8 @@ class Curve(BaseSectionObject):
             return ['head', 'flow']
         elif Type == TYPES.CONTROL:
             return ['variable', 'setting']
+        elif Type == TYPES.WEIR:
+            return ['head', 'coefficient']
 
     def __init__(self, name, kind, points):
         """
