@@ -5,7 +5,7 @@ import pandas as pd
 from .graph import inp_to_graph
 from .graph import _previous_links_labels
 from .collection import nodes_dict
-from ..misc.dat_timeseries import write_swmm_timeseries_data
+from ...external_files.dat_timeseries import write_swmm_timeseries_data
 from ..sections import Inflow, TimeseriesFile
 from ...output_file import OBJECTS, VARIABLES
 

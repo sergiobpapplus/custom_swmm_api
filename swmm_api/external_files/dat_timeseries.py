@@ -8,7 +8,7 @@ __license__ = "MIT"
 from pathlib import Path
 
 import pandas as pd
-from .following_values import remove_following_zeros
+from swmm_api.external_files.following_values import remove_following_zeros
 
 
 def write_swmm_timeseries_data(series, filename, drop_zeros=True):
