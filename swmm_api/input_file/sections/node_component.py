@@ -319,6 +319,7 @@ class Treatment(BaseSectionObject):
     """
     _identifier = (IDENTIFIERS.node, IDENTIFIERS.pollutant)
     _section_label = TREATMENT
+    _table_inp_export = False
 
     def __init__(self, node, pollutant, result, function):
         """
