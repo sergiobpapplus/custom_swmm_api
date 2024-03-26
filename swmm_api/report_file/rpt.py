@@ -121,6 +121,9 @@ class SwmmReport:
         #
         # })
 
+    def print_raw_part(self, part):
+        print(self._raw_parts[part])
+
     def is_empty(self) -> bool:
         """Bool if file is empty."""
         return not bool(self._raw_parts)
