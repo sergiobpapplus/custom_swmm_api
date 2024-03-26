@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "swmm-api"
-description = "US-EPA-SWMM python interface"
+description = "API for reading, manipulating and running US-EPA-SWMM-Projects"
 readme = "README.md"
 authors = [
     { name = "Markus Pichler", email = "markus.pichler@tugraz.at" }
