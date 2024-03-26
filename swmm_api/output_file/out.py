@@ -299,6 +299,8 @@ class SwmmOutput(SwmmOutExtract):
             elif isinstance(i, str):
                 if i in possibilities:
                     return [i]
+                elif kind is None:
+                    return []
                 else:
                     warnings.warn(f'Did not found {error_label} "{i}" in output-file, return empty data. Possibilities: {possibilities}.', SwmmOutputWarning)
                     return []
@@ -308,13 +310,17 @@ class SwmmOutput(SwmmOutExtract):
                 for j in i:
                     if j in possibilities:
                         l.append(j)
+                    elif kind is None:
+                        continue
                     else:
                         warnings.warn(f'Did not found {error_label} "{j}" in output-file, skipping request. Possibilities: {possibilities}', SwmmOutputWarning)
                 return l
 
         columns = []
         for k in _filter(kind, OBJECTS.LIST_, 'object kind'):
-            columns += list(product([k], _filter(label, self.labels[k], f'{k} label'), _filter(variable, self.variables[k], f'{k} variable')))
+            columns += list(product([k],
+                                    _filter(label, self.labels[k], f'{k} label'),
+                                    _filter(variable, self.variables[k], f'{k} variable')))
         return columns
 
     def _to_pandas(self, data, index: pd.DatetimeIndex = None, drop_useless=False):
