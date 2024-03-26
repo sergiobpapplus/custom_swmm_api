@@ -154,3 +154,10 @@ class VARIABLES:
     NODE = NODE_VARIABLES
     LINK = LINK_VARIABLES
     SYSTEM = SYSTEM_VARIABLES
+
+
+di_flow_unit_label = {
+    'CMS': 'm3/s',
+    'LPS': 'L/s',
+    'MLD': '10^6*L/d',
+}
