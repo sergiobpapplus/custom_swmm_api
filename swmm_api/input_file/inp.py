@@ -172,6 +172,7 @@ class SwmmInput(CustomDict):
         """
         inp = cls(custom_section_handler=custom_converter)
         inp._init_from_str(txt, force_ignore_case=force_ignore_case)
+        return inp
 
     def force_convert_all(self):
         """
