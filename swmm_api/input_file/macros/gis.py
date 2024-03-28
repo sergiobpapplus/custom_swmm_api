@@ -92,7 +92,8 @@ def convert_inp_to_geo_package(inp_fn, gpkg_fn=None, driver='GPKG', label_sep='.
     write_geo_package(inp, gpkg_fn, driver=driver, label_sep=label_sep, crs=crs)
 
 
-def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:32633", simplify_link_min_length=None, add_style=False):
+def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:32633",
+                      simplify_link_min_length=None, add_style=False, add_subcatchment_connector=False):
     """
     Write the inp file data to a GIS database.
 
@@ -107,6 +108,7 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
                     such as an authority string (eg “EPSG:4326”) or a WKT string.
         simplify_link_min_length (float): simplify links with a minimum length of ... (default: all)
         add_style (bool): if the default style should be added to the geopackage.
+        add_subcatchment_connector (bool): if a line layer should be added which symbolize the connection between the subcatchments and their outlet.
     """
     from geopandas import GeoDataFrame
 
@@ -182,7 +184,7 @@ def write_geo_package(inp, gpkg_fn, driver='GPKG', label_sep='.', crs="EPSG:3263
 
         print(f'{f"{time.perf_counter() - t0:0.1f}s":^{len(SUBCATCHMENTS)}s}')
 
-        if COORDINATES in inp:
+        if add_subcatchment_connector and (COORDINATES in inp):
             gs_connector = get_subcatchment_connectors(inp)
             GeoDataFrame(gs_connector).to_file(gpkg_fn, driver=driver, layer=SUBCATCHMENTS + '_connector')
     else:
@@ -492,7 +494,7 @@ def apply_gis_style_to_gpkg(fn_gpkg):
 
     _create_gpkg_style_table(fn_gpkg)
 
-    for section in (JUNCTIONS, STORAGE, OUTFALLS, CONDUITS, ORIFICES, PUMPS, WEIRS, SUBCATCHMENTS + '_connector'):
+    for section in (JUNCTIONS, STORAGE, OUTFALLS, CONDUITS, ORIFICES, PUMPS, WEIRS, SUBCATCHMENTS, SUBCATCHMENTS + '_connector'):
         layer_name = section
 
         # Path to your QML file and GeoPackage
