@@ -6,6 +6,7 @@ from abc import ABC
 from collections.abc import Mapping
 from inspect import isfunction, isclass, getdoc, signature
 import warnings
+from packaging import version
 
 import pandas as pd
 from numpy import isnan
@@ -908,7 +909,7 @@ def dataframe_to_inp_string(df, index=True):
     if not index:
         c.columns = [COMMENT_STR + c.columns[0]] + list(c.columns)[1:]
 
-    if pd.__version__.startswith('2.1.'):
+    if version.parse(pd.__version__) >= version.parse('2.1'):
         return c.map(type2str).to_string(sparsify=False,
                                          line_width=999999,
                                          max_rows=999999,
