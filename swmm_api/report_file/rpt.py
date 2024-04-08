@@ -553,7 +553,19 @@ class SwmmReport:
     @property
     def flow_classification_summary(self):
         """
-        Flow Classification Summary
+        Flow Classification Summary (Dynamic Wave Routing Only)
+
+        Ratio of adjusted conduit length to actual length
+        Fraction of all time steps spent in the following flow categories:
+          - dry on both ends
+          - dry on the upstream end
+          - dry on the downstream end
+          - subcritical flow
+          - supercritical flow
+          - critical flow at the upstream end
+          - critical flow at the downstream end
+        Fraction of all time steps flow is limited to normal flow
+        Fraction of all time steps flow is inlet controlled (for culverts only)
 
         Returns:
             pandas.DataFrame: Flow Classification Summary
@@ -568,6 +580,19 @@ class SwmmReport:
     def conduit_surcharge_summary(self):
         """
         Conduit Surcharge Summary
+
+        Hours that conduit is full at:
+
+          - both ends*
+          - upstream end
+          - downstream end
+
+        Hours that conduit flows above full normal flow
+        Hours that conduit is capacity limited*
+
+        Note: only conduits with one or more non-zero entries are listed and
+        a conduit is considered capacity limited if its upstream end is full and
+        the HGL slope is greater than the conduit slope.
 
         Returns:
             pandas.DataFrame: Conduit Surcharge Summary
