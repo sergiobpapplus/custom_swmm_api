@@ -1,4 +1,4 @@
-from swmm_api import read_out_file, swmm5_run
+from swmm_api import read_out_file, swmm5_run, SwmmOutput
 from swmm_api.output_file import OBJECTS, VARIABLES
 
 
@@ -6,6 +6,7 @@ from swmm_api.output_file import OBJECTS, VARIABLES
 
 # swmm5_run('epaswmm5_apps_manual/Example6-Final.inp')
 
+# out = SwmmOutput('test_long_broken.out')
 out = read_out_file('epaswmm5_apps_manual/Example6-Final.out')
 
 # read all node heads using the python engine (slower but able to read huge files)
@@ -16,7 +17,9 @@ d2 = out.get_part(OBJECTS.NODE, None, VARIABLES.NODE.HEAD, slim=False)
 
 # testing start and end times for sliced reading
 start = d.index[123]
+# start = d.index[5]
 end = d.index[982]
+# end = d.index[10]
 
 # reading data for a specific time range
 d2_ = out.get_part(OBJECTS.NODE, None, VARIABLES.NODE.HEAD, slim=False, start=start, end=end)

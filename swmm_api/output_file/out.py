@@ -172,6 +172,10 @@ class SwmmOutput(SwmmOutExtract):
                 except:
                     array = np.frombuffer(self.fp.read1(), dtype=np.dtype(types), count=n_periods)
 
+            # if file is incomplete n_periods can be different to inferred number of periods
+            self.n_periods = int(array.size)
+            self.index = self._get_index(start, end)
+
             if all([i is None for i in [start, end]]):
                 # if the data is not sliced, save it as an attribute
                 self._data = array
