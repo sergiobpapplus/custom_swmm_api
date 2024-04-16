@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.42 (2024-04-16)
+
+### Fix
+
+* Reading corrupt outfile raised an error. this is now fixed. ([`dc5e05e`](https://gitlab.com/markuspichler/swmm_api/-/commit/dc5e05e87815d468e2afe44ccb6e56998a757281))
+
+### Documentation
+
+* Added additional info for summary tables ([`3151964`](https://gitlab.com/markuspichler/swmm_api/-/commit/3151964b5f42cf9afb89b76544b60e6d23e6dcc1))
+* Changed package description for pypi ([`62bd8f0`](https://gitlab.com/markuspichler/swmm_api/-/commit/62bd8f096abb37da11dfd26b2999ca7810f10f70))
+* Fixed some links in doc-creation files ([`76720f4`](https://gitlab.com/markuspichler/swmm_api/-/commit/76720f4b88cfe7dadcbd2a88dfd5dff4779aa24c))
+
 ## v0.4.41 (2024-03-26)
 
 ### Fix
